@@ -7,7 +7,7 @@
 ## Установка
 
 ``` bash
-$ composer require baks-dev/users-profile-type
+$ composer require baks-dev/users-profile-user
 ```
 
 ## Журнал изменений ![Changelog](https://img.shields.io/badge/changelog-yellow)
