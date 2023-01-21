@@ -1,0 +1,51 @@
+{% trans_default_domain('user.user.profile') %}
+
+{# ---- ШАБЛОН ------------------------------------------------------------ #}
+{% extends '@Template/default/user/base.html.twig' %}
+
+{% block title %}
+{{ 'user.page.new'|trans }}
+{% endblock %}
+
+{# ---- CSS ------------------------------------------------------------ #}
+{% block stylesheets %}
+	<link href="/plugins/datepicker/datepicker.min.css" rel="stylesheet">
+{% endblock %}
+
+{# ---- HEADER-БЛОК ------------------------------------------------------------ #}
+{# {% block header %}
+    {{ include(_self|replace({ "template.html.twig": "header.html.twig" })) }}
+{% endblock %} #}
+
+
+{# ---- LEFT-БЛОК ------------------------------------------------------------ #}
+{# {% block left %} #}
+{#   {% include '@Template/flowers/left.html.twig' %} #}
+{# {% endblock %} #}
+
+
+{# ---- КОНТЕНТ-БЛОК ------------------------------------------------------------ #}
+{% block content %}
+	{{ include(_self|replace({ "template.html.twig": "content.html.twig" })) }}
+{% endblock %}
+
+
+{# ---- FOOTER-БЛОК ------------------------------------------------------------ #}
+{#
+{% block footer %}
+    {{ include(_self|replace({ "template.html.twig": "footer.html.twig" })) }}
+{% endblock %}
+#}
+
+{% block javascript %}
+
+<script nonce="{{ csp_nonce() }}" data-src="/js/image.input.min.js" defer class="lazy"></script>
+<script nonce="{{ csp_nonce() }}" data-src="/js/radio.input.min.js" defer class="lazy"></script>
+<script nonce="{{ csp_nonce() }}" data-src="/plugins/semantic/semantic.min.js" defer class="lazy"></script>
+<script nonce="{{ csp_nonce() }}" data-src="/plugins/datepicker/datepicker.min.js" defer class="lazy"></script>
+<script nonce="{{ csp_nonce() }}" data-src="/plugins/geocountry/geocountry.min.js" defer class="lazy pointer"></script>
+<script nonce="{{ csp_nonce() }}" data-src="/plugins/inputmask/inputmask.min.js" defer class="lazy"></script>
+<script nonce="{{ csp_nonce() }}" data-src="/profile_user/script.min.js" defer class="lazy"></script>
+<script nonce="{{ csp_nonce() }}" data-src="https://api-maps.yandex.ru/2.1/?apikey={{ MAPS_YANDEX_API }}&lang={{ app.request.locale|lower }}" defer class="lazy"></script>
+
+{% endblock %}

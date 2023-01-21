@@ -1,0 +1,21 @@
+{% trans_default_domain 'user.profile.status' %}
+
+{% if status == 'act' %}
+	<div class="badge bg-success">
+		{{ 'ACTIVE'|trans }}
+	</div>
+{% elseif status == 'new' %}
+	<div class="badge bg-secondary">
+		{{ 'NEW'|trans }}
+	</div>
+
+{% elseif status == 'mod' %}
+	<div class="badge bg-secondary ">
+		{{ 'MODERATION'|trans }}
+	</div>
+
+{% elseif status == 'ban' %}
+	<div class="badge bg-danger">
+		{{ 'BLOCK'|trans }}
+	</div>
+{% endif %}

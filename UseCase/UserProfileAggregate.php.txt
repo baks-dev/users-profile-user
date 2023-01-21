@@ -1,0 +1,221 @@
+<?php
+/*
+ *  Copyright 2022.  Baks.dev <admin@baks.dev>
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *   limitations under the License.
+ *
+ */
+
+namespace BaksDev\Users\Profile\UserProfile\UseCase;
+
+use App\Module\Files\Res\Upload\Image\ImageUploadInterface;
+use BaksDev\Users\Profile\UserProfile\Entity;
+
+use BaksDev\Users\Profile\UserProfile\Entity\Event\EventInterface;
+use BaksDev\Users\Profile\UserProfile\Message\ModerationUserProfile\ModerationUserProfileDTO;
+use BaksDev\Users\Profile\UserProfile\Repository\UniqProfileUrl\UniqProfileUrlInterface;
+use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
+use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Avatar\AvatarDTO;
+use BaksDev\Core\Type\Modify\ModifyActionEnum;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
+
+final class UserProfileAggregate
+{
+    private EntityManagerInterface $entityManager;
+    private ImageUploadInterface $imageUpload;
+    private UniqProfileUrlInterface $uniqProfileUrl;
+    private TranslatorInterface $translator;
+    
+    public function __construct(
+      EntityManagerInterface $entityManager,
+      ImageUploadInterface $imageUpload,
+      UniqProfileUrlInterface $uniqProfileUrl,
+    TranslatorInterface $translator,
+    )
+    {
+        $this->entityManager = $entityManager;
+        $this->imageUpload = $imageUpload;
+    
+        $this->uniqProfileUrl = $uniqProfileUrl;
+        $this->translator = $translator;
+    }
+    
+    public function handle(
+      EventInterface $command,
+      //?UploadedFile $cover = null
+    ) : string|\BaksDev\Users\Profile\UserProfile\Entity\UserProfile
+    {
+        
+        if($command->getEvent())
+        {
+            $EventRepo = $this->entityManager->getRepository(\BaksDev\Users\Profile\UserProfile\Entity\Event\Event::class)->find($command->getEvent());
+            $Event = $EventRepo->cloneEntity();
+        }
+        else
+        {
+            $Event = new \BaksDev\Users\Profile\UserProfile\Entity\Event\Event();
+            $this->entityManager->persist($Event);
+        }
+    
+    
+        $Event->setEntity($command);
+    
+        /** @var \BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Info\InfoDTO $infoDTO */
+        $infoDTO = $command->getInfo();
+    
+    
+    
+    
+        //        if(method_exists($command, 'getPasswordPlain') && !empty($command->getPasswordPlain()))
+//        {
+//
+//            $passwordNash = $this->userPasswordHasher->hashPassword(
+//              $Event,
+//              $command->getPasswordPlain()
+//            );
+//
+//            /* Присваиваем новый пароль */
+//            $Event->passwordHash($passwordNash);
+//        }
+
+        //$Event->updAccountEvent($command);
+        
+        /* Загрузка файла изображения */
+        
+       
+        
+        if(method_exists($command, 'getAvatar'))
+        {
+            /** @var AvatarDTO $Avatar */
+            $Avatar = $command->getAvatar();
+    
+            if(!empty($Avatar->file))
+            {
+                //$Avatar->setCdn(false);
+                $this->imageUpload->upload('profile_avatar_dir', $Avatar->file, $Event->getUploadAvatar());
+            }
+        }
+        
+        
+        
+        
+
+        
+        
+        
+        //dump($command);
+        //dd($Event);
+        
+        $this->entityManager->clear();
+        $this->entityManager->persist($Event);
+        
+        /** @var \BaksDev\Users\Profile\UserProfile\Entity\UserProfile $UserProfile */
+        if($Event->getProfile())
+        {
+            /* Восстанавливаем из корзины */
+            if($Event->isModifyActionEquals(ModifyActionEnum::RESTORE))
+            {
+                $UserProfile = new \BaksDev\Users\Profile\UserProfile\Entity\UserProfile();
+                $UserProfile->setId($Event->getProfile());
+                $this->entityManager->persist($UserProfile);
+
+                $remove = $this->entityManager->getRepository(\BaksDev\Users\Profile\UserProfile\Entity\Event\Event::class)
+                  ->find($command->getEvent());
+                $this->entityManager->remove($remove);
+                
+            }
+            else
+            {
+                $UserProfile = $this->entityManager->getRepository(
+					\BaksDev\Users\Profile\UserProfile\Entity\UserProfile::class)->findOneBy(
+                  ['event' => $command->getEvent()]);
+    
+                $UserProfileInfo = $this->entityManager->getRepository(
+					\BaksDev\Users\Profile\UserProfile\Entity\Info\Info::class)->find($UserProfile);
+                
+            }
+            
+            if(empty($UserProfile))
+            {
+                return false;
+            }
+        }
+        else
+        {
+
+            $UserProfile = new \BaksDev\Users\Profile\UserProfile\Entity\UserProfile();
+            $this->entityManager->persist($UserProfile);
+            $Event->setProfile($UserProfile);
+            
+            $UserProfileInfo = new \BaksDev\Users\Profile\UserProfile\Entity\Info\Info($UserProfile);
+            $this->entityManager->persist($UserProfileInfo);
+        }
+        
+        /* Если URL оизменяется */
+        if(method_exists($infoDTO, 'getUrl'))
+        {
+            /* Проверяем на уникальность Адрес персональной страницы */
+            $uniqProfileUrl =  $this->uniqProfileUrl->get($infoDTO->getUrl(), $UserProfileInfo->getProfile());
+            if($uniqProfileUrl) { $infoDTO->updateUrlUniq(); } /* Обновляем URL на уникальный с префиксом */
+        }
+        
+        
+        /* Деактивируем профиль пользователя, Если был ранеее активный */
+        if(method_exists($infoDTO, 'isActive') && $infoDTO->isActive() !== $UserProfileInfo->isNotActiveProfile())
+        {
+            $InfoActive = $this->entityManager->getRepository(\BaksDev\Users\Profile\UserProfile\Entity\Info\Info::class)->findOneBy(['user' => $infoDTO->getUser(), 'active' => true]);
+            /* Если у текущего пользователя имеется активный профиль - деактивируем */
+            if($InfoActive) { $InfoActive->deactivate(); }
+        }
+    
+//        $InfoUsers = $this->entityManager->getRepository(Entity\Info\Info::class)->findBy(['user' => $this->getUser()]);
+//
+//        /** @var Entity\Info\Info $infoUser */
+//        foreach($InfoUsers as $infoUser)
+//        {
+//            $infoUser->deactivate();
+//        }
+        
+        /* Удаляем профиль */
+        if($Event->isModifyActionEquals(ModifyActionEnum::DELETE))
+        {
+            $this->entityManager->remove($UserProfile);
+            $infoDTO->updateUrlUniq();
+        }
+    
+        $UserProfileInfo->setEntity($infoDTO);
+        $UserProfile->setEvent($Event);
+
+        $this->entityManager->flush();
+        
+        /* Чистим кеш профиля */
+        $cache = new FilesystemAdapter();
+        $locale = $this->translator->getLocale();
+        $cache->delete('profile-'.$locale.'-'.$infoDTO->getUser()->getValue());
+        
+        
+        
+
+        
+        
+        
+        
+        
+        return $UserProfile;
+    }
+    
+}

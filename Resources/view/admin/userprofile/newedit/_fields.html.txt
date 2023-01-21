@@ -1,0 +1,51 @@
+{% trans_default_domain 'userprofile' %}
+
+{% set section_name = null %}
+
+{% for value in form.value %}
+
+
+	{% if value.value.vars.attr is not empty %}
+
+		{% if section_name != value.value.vars.attr["data-section-name"] %}
+
+			{% set section_name = value.value.vars.attr["data-section-name"] %}
+
+			{# Закрываем секцию, eсли она не первая в цикле #}
+			{% if loop.first != true %}
+				</div></div>
+			{% endif %}
+
+			{# Открываем новую секцию #}
+			<div class="card card-flush">
+
+			<div class="card-header">
+				<div class="card-title">
+					<h2>
+						{# Название секции #}
+						{{ section_name }}
+					</h2>
+				</div>
+			</div>
+
+			<div class="card-body pt-0">
+
+		{% endif %}
+
+
+		{# РЕНДЕР ПОЛЕЙ #}
+		{{ render_field(value.value.vars.attr["data-type"], value.value) }}
+
+	{% endif %}
+
+	{# Закрываем секцию, eсли цикл последний #}
+	{% if loop.last %}</div></div>{% endif %}
+
+{% endfor %}
+
+
+
+
+
+
+
