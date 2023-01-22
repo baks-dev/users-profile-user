@@ -26,9 +26,9 @@ use BaksDev\Users\Profile\TypeProfile\Type\Section\Field\Id\TypeProfileSectionFi
 use BaksDev\Users\Profile\TypeProfile\Type\Section\Id\TypeProfileSectionUid;
 use BaksDev\Users\Profile\UserProfile\Entity\Value\UserProfileValueInterface;
 use BaksDev\Users\Profile\UserProfile\Repository\FieldValueForm\FieldValueFormDTO;
-use BaksDev\Core\Type\Field\FieldEnum;
-use BaksDev\Core\Type\Field\InputField;
-use BaksDev\Core\Type\Field\InputFieldType;
+use BaksDev\Reference\Field\Type\FieldEnum;
+use BaksDev\Reference\Field\Type\InputField;
+use BaksDev\Reference\Field\Type\InputFieldType;
 use Symfony\Component\Validator\Constraints as Assert;
 
 final class ValueDTO implements UserProfileValueInterface

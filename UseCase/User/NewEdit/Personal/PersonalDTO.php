@@ -19,8 +19,8 @@
 namespace BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\Personal;
 
 use BaksDev\Users\Profile\UserProfile\Entity\Personal\UserProfilePersonalInterface;
-use BaksDev\Core\Type\Gender\Gender;
-use BaksDev\Core\Type\Gender\GenderEnum;
+use BaksDev\Reference\Gender\Type\Gender;
+use BaksDev\Reference\Gender\Type\GenderEnum;
 use DateTimeImmutable;
 use Symfony\Component\Validator\Constraints as Assert;
 

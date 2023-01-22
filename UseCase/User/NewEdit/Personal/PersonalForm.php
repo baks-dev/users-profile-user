@@ -18,7 +18,7 @@
 
 namespace BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\Personal;
 
-use BaksDev\Core\Type\Gender\Gender;
+use BaksDev\Reference\Gender\Type\Gender;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;

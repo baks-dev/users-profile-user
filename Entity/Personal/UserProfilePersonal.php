@@ -20,7 +20,7 @@ namespace BaksDev\Users\Profile\UserProfile\Entity\Personal;
 
 use BaksDev\Users\Profile\UserProfile\Entity\Event\UserProfileEvent;
 use BaksDev\Core\Entity\EntityEvent;
-use BaksDev\Core\Type\Gender\Gender;
+use BaksDev\Reference\Gender\Type\Gender;
 use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
