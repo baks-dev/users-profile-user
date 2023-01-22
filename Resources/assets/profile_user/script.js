@@ -52,7 +52,6 @@ if (readGeoMaps) {
     readGeoMaps($idLocation, $idLocationHelp);
 }
 
-
 /* Определяем поле ввода Username */
 let $name = document.getElementById('user_profile_form_personal_username');
 if ($name) {
