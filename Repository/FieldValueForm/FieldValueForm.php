@@ -86,7 +86,7 @@ final class FieldValueForm implements FieldValueFormInterface
         //$qb->join(Entity\Section\Fields\Field::class, 'field', 'WITH', 'field.section = section.id');
         
         $qb->join(
-          Entity\Section\Fields\Trans\TypeProfileSectionFieldsTrans::class,
+          Entity\Section\Fields\Trans\TypeProfileSectionFieldTrans::class,
           'field_trans',
           'WITH',
           'field_trans.field = field.id AND field_trans.local = :locale');

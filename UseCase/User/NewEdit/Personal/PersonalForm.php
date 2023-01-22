@@ -53,7 +53,7 @@ final class PersonalForm extends AbstractType
             'expanded' => true,
             'multiple' => false,
             'required' => true,
-            'translation_domain' => 'gender',
+            'translation_domain' => 'reference.gender',
           ]);
     
         $builder->add('birthday', DateType::class, [

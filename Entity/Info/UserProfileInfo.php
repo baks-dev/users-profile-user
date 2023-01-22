@@ -23,6 +23,7 @@ use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatus;
 use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatusEnum;
 use BaksDev\Users\User\Entity\User;
+use BaksDev\Users\User\Entity\UserProfile\UserProfileInterface;
 use BaksDev\Users\User\Type\Id\UserUid;
 use BaksDev\Core\Entity\EntityEvent;
 use BaksDev\Core\Entity\EntityState;
@@ -45,23 +46,23 @@ class UserProfileInfo extends EntityState
     /** ID UserProfile */
     #[ORM\Id]
     #[ORM\Column(type: UserProfileUid::TYPE)]
-    protected ?UserProfileUid $profile;
+    private ?UserProfileUid $profile;
     
     /** Пользователь, кому принадлежит профиль */
     #[ORM\Column(name: 'user_id', type: UserUid::TYPE)]
-    protected UserUid $user;
+    private UserUid $user;
     
     /** Текущий активный профиль, выбранный пользователем */
     #[ORM\Column(type: Types::BOOLEAN)]
-    protected bool $active = false;
+    private bool $active = false;
     
     /** Статус профиля (модерация, активен, заблокирован) */
     #[ORM\Column(type: UserProfileStatus::TYPE)]
-    protected UserProfileStatus $status;
+    private UserProfileStatus $status;
     
     /** Ссылка на профиль пользователя */
     #[ORM\Column(type: Types::STRING, unique: true)]
-    protected string $url;
+    private string $url;
 
 
     public function __construct(UserProfileUid|UserProfile $profile)

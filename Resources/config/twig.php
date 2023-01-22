@@ -13,12 +13,12 @@ return static function (TwigConfig $config, ContainerConfigurator $configurator)
 	$config->path(__DIR__.'/../view', 'UserProfile');
 	
     /** Абсолютный Путь для загрузки аватарок профилей пользователя */
-    $configurator->parameters()->set(UserProfileAvatar::TABLE, '%kernel.project_dir%/public/assets/'.UserProfileAvatar::TABLE);
+    $configurator->parameters()->set(UserProfileAvatar::TABLE, '%kernel.project_dir%/public/assets/'.UserProfileAvatar::TABLE.'/');
     
     /** Относительный путь аватарок профилей пользователя */
-    $config->global(UserProfileAvatar::TABLE)->value('/assets/'.UserProfileAvatar::TABLE);
+    $config->global(UserProfileAvatar::TABLE)->value('/assets/'.UserProfileAvatar::TABLE.'/');
 	
-
+	
     $services = $configurator->services()
       ->defaults()
       ->autowire()      // Automatically injects dependencies in your services.

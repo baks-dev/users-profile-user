@@ -94,7 +94,7 @@ final class UserListener
 //        }
         
         /* Присваиваем пользователю роли */
-        $data->setProfile($userProfile);
+        //$data->setProfile($userProfile);
         
     }
     

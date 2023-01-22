@@ -2,6 +2,8 @@
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
+use BaksDev\Users\Profile\UserProfile\Decorator\UserProfileDecorator;
+
 return static function (ContainerConfigurator $configurator)
 {
     $services = $configurator->services()
@@ -22,6 +24,10 @@ return static function (ContainerConfigurator $configurator)
     $services->load($namespace.'\UseCase\\', __DIR__.'/../../UseCase')
       ->exclude('../../UseCase/**/*DTO.php');
 	
-	
+//	$services->set(UserProfileDecorator::class)
+//		->decorate(\BaksDev\Users\User\Repository\UserProfile\UserProfileInterface::class, null, 1)
+//		->args([service('.inner')])
+//	;
+
 };
 

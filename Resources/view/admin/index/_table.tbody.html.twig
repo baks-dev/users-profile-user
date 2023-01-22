@@ -22,7 +22,7 @@
 			{% set img_min = item.avatar_cdn == true ? 'small.' : '' %}
 
 			<a href="{{ path('UserProfile:admin.newedit.edit', { id: item.event }) }}" class="symbol symbol-circle symbol-50px pe-5">
-            	<span class="symbol-label lazy" data-bg="{{ item.avatar_name ? img_path ~ profile_avatar_dir ~ item.avatar_dir ~'/'~ item.avatar_name ~'.'~ img_min ~ item.avatar_ext : '/img/blank.svg' }}"></span>
+            	<span class="symbol-label lazy" data-bg="{{ item.avatar_name ? img_path ~ profile_avatar_dir ~ item.avatar_dir ~'/'~ item.avatar_name ~'.'~ img_min ~ item.avatar_ext : '/assets/img/blank.svg' }}"></span>
 			</a>
 
 

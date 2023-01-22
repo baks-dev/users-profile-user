@@ -15,28 +15,17 @@
  *
  */
 
-///window.addEventListener('load', function () {
-
-// document.querySelectorAll('[data-select="select2"]').forEach(function (item) {
-//     new NiceSelect(item, {searchable: true});
-// });
-
-
-
 /* Статус */
 //let $circle = document.getElementById('user_status_circle');
 let $status = document.getElementById('user_profile_form_info_status');
 
-if($status)
-{
+if ($status) {
     changeProfileStaus($status.options[$status.selectedIndex].value);
 
     $status.addEventListener('change', function () {
         changeProfileStaus(this.value);
     })
 }
-
-
 
 function changeProfileStaus($status) {
 
@@ -47,69 +36,33 @@ function changeProfileStaus($status) {
     $circle.classList.remove('bg-warning');
 
 
-    if($status === 'new')
-    {
+    if ($status === 'new') {
         $circle.classList.add('bg-warning');
-    }
-    else if($status === 'act')
-    {
+    } else if ($status === 'act') {
         $circle.classList.add('bg-primary');
-    }
-    else if($status === 'ban')
-    {
+    } else if ($status === 'ban') {
         $circle.classList.add('bg-danger');
     }
 }
 
-    /* Инициируем календарь */
-     if (initDatepick) {
-         initDatepick('user_profile_form_personal_birthday');
-     }
+let $idLocation = 'user_profile_form_personal_location';
+let $idLocationHelp = 'user_profile_form_personal_location_help';
 
-    let $idLocation = 'user_profile_form_personal_location';
-    let $idLocationHelp = 'user_profile_form_personal_location_help';
-
-    if (readGeoMaps) { readGeoMaps($idLocation, $idLocationHelp); }
+if (readGeoMaps) {
+    readGeoMaps($idLocation, $idLocationHelp);
+}
 
 
-    /* Определяем поле ввода Username */
-    let $name = document.getElementById('user_profile_form_personal_username');
-    if ($name) {
-        $name.addEventListener('input', profileUrl.debounce(500));
+/* Определяем поле ввода Username */
+let $name = document.getElementById('user_profile_form_personal_username');
+if ($name) {
 
-        function profileUrl() {
-            /* Заполняем транслитом URL */
-            $semantic = translitRuEn(this.value).toLowerCase();
-            document.getElementById('user_profile_form_info_url').value = $semantic;
-        }
+    $name.addEventListener('input', profileUrl.debounce(500));
+
+    function profileUrl() {
+        /* Заполняем транслитом URL */
+        $semantic = translitRuEn(this.value).toLowerCase();
+        document.getElementById('user_profile_form_info_url').value = $semantic;
     }
-
-    // $semantic = translitRuEn(this.value).toLowerCase();
-    // document.getElementById('post_semanticUrl').value = $semantic;
-
-
-
-        /* Определяем, какой профиль выбран пользователем */
-        /*document.querySelectorAll("input[name='profile[typeProfile]']").forEach((input) => {
-
-            if(input.checked) { readGeoMaps(null) }
-
-            input.addEventListener('change', readGeoMaps);
-        });*/
-
-
-    /* Определяем поле ввода Заголовка */
-    // let $name = document.getElementById('user_profile_form_profile_username');
-    // if ($name) {
-    //     $name.addEventListener('input', profileUrl.debounce(500));
-    // }
-
-
-
-
-
-
-//});
-
-
+}
 

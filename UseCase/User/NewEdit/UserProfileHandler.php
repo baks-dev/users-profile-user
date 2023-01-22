@@ -221,7 +221,7 @@ final class UserProfileHandler
 		if($Avatar->file !== null)
 		{
 			$UserProfileAvatar = $Event->getUploadAvatar();
-			$this->imageUpload->upload('profile_avatar_dir', $Avatar->file, $UserProfileAvatar);
+			$this->imageUpload->upload($Avatar->file, $UserProfileAvatar);
 		}
 
 		/* Присваиваем событие INFO */
