@@ -19,7 +19,7 @@
 namespace BaksDev\Users\Profile\UserProfile\Entity\Avatar;
 
 
-use App\Module\Files\Res\Upload\UploadEntityInterface;
+use BaksDev\Files\Resources\Upload\UploadEntityInterface;
 use BaksDev\Users\Profile\UserProfile\Entity\Event\Event;
 use BaksDev\Users\Profile\UserProfile\Entity\Event\UserProfileEvent;
 use BaksDev\Users\Profile\UserProfile\Type\Event\UserProfileEventUid;

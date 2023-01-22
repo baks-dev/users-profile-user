@@ -18,7 +18,7 @@
 
 namespace BaksDev\Users\Profile\UserProfile\UseCase\User\Activate;
 
-use App\Module\Files\Res\Upload\Image\ImageUploadInterface;
+use BaksDev\Files\Resources\Upload\Image\ImageUploadInterface;
 use BaksDev\Users\Profile\UserProfile\Entity;
 
 use BaksDev\Users\Profile\UserProfile\Entity as EntityUserProfile;

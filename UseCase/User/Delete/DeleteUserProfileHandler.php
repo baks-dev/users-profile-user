@@ -18,7 +18,7 @@
 
 namespace BaksDev\Users\Profile\UserProfile\UseCase\User\Delete;
 
-use App\Module\Files\Res\Upload\Image\ImageUploadInterface;
+use BaksDev\Files\Resources\Upload\Image\ImageUploadInterface;
 use BaksDev\Users\Profile\UserProfile\Entity as EntityUserProfile;
 
 use BaksDev\Users\Profile\UserProfile\Repository\UniqProfileUrl\UniqProfileUrlInterface;
