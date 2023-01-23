@@ -29,19 +29,19 @@ return static function (ContainerConfigurator $configurator)
       ->autowire()
       ->autoconfigure();
     
-    /** EntityListeners */
-    $services->set('type.user.profile.modify.entity.listeners')
-      ->class(EntityListeners\ModifyListener::class)
-      ->tag(
-        'doctrine.orm.entity_listener',
-        ['event' => 'prePersist', 'lazy' => true, 'entity' => Entity\Modify\Modify::class]);
+//    /** EntityListeners */
+//    $services->set('type.user.profile.modify.entity.listeners')
+//      ->class(EntityListeners\ModifyListener::class)
+//      ->tag(
+//        'doctrine.orm.entity_listener',
+//        ['event' => 'prePersist', 'lazy' => true, 'entity' => Entity\Modify\Modify::class]);
     
-    /** EntityListeners */
-    $services->set('user.profile.entity.listeners')
-      ->class(EntityListeners\UserListener::class)
-      ->tag(
-        'doctrine.orm.entity_listener',
-        ['event' => 'postLoad', 'lazy' => true, 'entity' => User::class]);
-    
+//    /** EntityListeners */
+//    $services->set('user.profile.entity.listeners')
+//      ->class(EntityListeners\UserListener::class)
+//      ->tag(
+//        'doctrine.orm.entity_listener',
+//        ['event' => 'postLoad', 'lazy' => true, 'entity' => User::class]);
+//
     
 };

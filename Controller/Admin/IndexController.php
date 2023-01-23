@@ -25,22 +25,22 @@
 
 namespace BaksDev\Users\Profile\UserProfile\Controller\Admin;
 
+
+use BaksDev\Core\Services\Security\RoleSecurity;
 use BaksDev\Users\Profile\TypeProfile\Repository\AllProfileType\AllProfileTypeInterface;
+
 use BaksDev\Users\Profile\UserProfile\Repository\AllUserProfile\AllUserProfileInterface;
 use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatus;
-use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatusEnum;
 use BaksDev\Core\Controller\AbstractController;
 use BaksDev\Core\Form\Search\SearchDTO;
 use BaksDev\Core\Form\Search\SearchForm;
-use BaksDev\Core\Helper\Paginator;
-use BaksDev\Core\Type\Locale\Locale;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 
-#[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USERPROFILE')")]
+#[RoleSecurity(['ROLE_ADMIN', 'ROLE_USERPROFILE'])]
 final class IndexController extends AbstractController
 {
     #[Route('/admin/users/profiles/{page<\d+>}', name: 'admin.index',  methods: [
@@ -49,26 +49,26 @@ final class IndexController extends AbstractController
     ])]
     public function index(
       Request $request,
-      AllUserProfileInterface $allUserProfile,
-      AllProfileTypeInterface $allProfileType, /* Типы профилей */
+     AllUserProfileInterface $allUserProfile,
+     AllProfileTypeInterface $allTypeProfile, /* Типы профилей */
       int $page = 0,
     ) : Response
     {
-        
-    
+		/* Список доступных типов профилей */
+		$profile = $allTypeProfile->get()->getData();
+		
         /* Поиск */
         $search = new SearchDTO();
         $searchForm = $this->createForm(SearchForm::class, $search);
         $searchForm->handleRequest($request);
-        
-        /* Получаем список */
+
+		/* Получаем список */
         $status = !$request->get('status') ? null : new UserProfileStatus($request->get('status'));
-        $stmt = $allUserProfile->get($search, $status);
-        $query = new Paginator($page, $stmt, $request);
-    
+		$query= $allUserProfile->fetchUserProfileAllAssociative($search, $status);
+		
         return $this->render(
           [
-            'profiles' => $allProfileType->get()->executeQuery()->fetchAllAssociative(),
+            'profiles' => $profile,
             'status' => $status,
             'query' => $query,
             'search' => $searchForm->createView(),

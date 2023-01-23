@@ -46,9 +46,12 @@ final class UserListener
         $this->translator = $translator;
     }
     
+	/** Получаем активный профиль пользователя и декарируем сущность User метод getProfile  */
     public function postLoad(UserInterface $data, LifecycleEventArgs $event) : void
     {
 
+		return;
+		
         $cache = new FilesystemAdapter();
         
         //$locale = $this->request->getCurrentRequest()->getLocale();
@@ -90,7 +93,7 @@ final class UserListener
 //        if($this->kernel->getEnvironment() === 'dev')
 //        {
 //            /* Сбрасываем кеш */
-          $cache->delete('profile-'.$locale.'-'.$data->getId());
+          //$cache->delete('profile-'.$locale.'-'.$data->getId());
 //        }
         
         /* Присваиваем пользователю роли */

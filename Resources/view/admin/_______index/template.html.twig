@@ -1,14 +1,5 @@
-{% trans_default_domain("admin.user.profile") %}
-
-{% set ROLE = 'ROLE_USERPROFILE' %}
-
 {# ---- ШАБЛОН ------------------------------------------------------------ #}
 {% extends '@Core/admin/base.html.twig' %}
-
-{# ---- CSS ------------------------------------------------------------ #}
-{% block title %}
-    {{ 'user.page.index'|trans }}
-{% endblock %}
 
 {# ---- CSS ------------------------------------------------------------ #}
 {% block stylesheets %}
@@ -29,10 +20,7 @@
 
 {# ---- КОНТЕНТ-БЛОК ------------------------------------------------------------ #}
 {% block content %}
-    {{ include(_self|replace({ "template.html.twig": settings.device~"/content.html.twig" })) }}
-    <div style="display: none !important;"
-         class="popover popover-body popover-arrow fade show rounded-pill spinner-border spinner-border-sm vertical-middle d-none tooltip bs-tooltip-bottom tooltip-arrow tooltip-inner bg-secondary bg-success">
-    </div>
+    {{ include(_self|replace({ "template.html.twig": "content.html.twig" })) }}
 {% endblock %}
 
 

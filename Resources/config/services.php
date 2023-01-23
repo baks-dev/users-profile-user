@@ -2,7 +2,9 @@
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use BaksDev\Users\Profile\UserProfile\Decorator\UserProfileDecorator;
+
+use BaksDev\Users\Profile\UserProfile\Repository\CurrentUserProfile\CurrentUserProfileInterface;
+use BaksDev\Users\Profile\UserProfile\Repository\CurrentUserProfile\UserProfileDecorator;
 
 return static function (ContainerConfigurator $configurator)
 {
@@ -24,10 +26,13 @@ return static function (ContainerConfigurator $configurator)
     $services->load($namespace.'\UseCase\\', __DIR__.'/../../UseCase')
       ->exclude('../../UseCase/**/*DTO.php');
 	
-//	$services->set(UserProfileDecorator::class)
-//		->decorate(\BaksDev\Users\User\Repository\UserProfile\UserProfileInterface::class, null, 1)
-//		->args([service('.inner')])
-//	;
+	$services->set(UserProfileDecorator::class)
+		->decorate(\BaksDev\Users\User\Repository\UserProfile\UserProfileInterface::class, null, 20)
+		->arg('$profile', service('.inner'))
+		->arg('$current', service(CurrentUserProfileInterface::class))
+		->arg('$cdn', env('CDN_HOST'))
+		->autowire()
+	;
 
 };
 
