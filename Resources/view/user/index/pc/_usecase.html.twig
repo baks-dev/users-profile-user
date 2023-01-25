@@ -29,35 +29,35 @@
 
 
 		{# Активировать #}
-		{#{% if item.active == false and item.status == 'act' %}
+		{% if item.active == false and item.status == 'act' %}
 			<li class="list-group-item d-flex justify-content-between bg-transparent border-0 text-truncate rounded-5">
 				<a href="{{ path('UserProfile:user.activate', {id: item.event }) }}"
 				   class="text-decoration-none text-dark w-100"
-				   title="{{ 'btn.apply'|trans({}, 'messages') }}">
-					{{ 'btn.apply'|trans }}
+				   title="{{ 'btn.apply'|trans({}, 'core.btn') }}">
+					{{ 'btn.apply'|trans({}, 'core.btn') }}
 				</a>
 			</li>
-		{% endif %}#}
+		{% endif %}
 
 		{# Редактировать #}
-		{#<li class="list-group-item d-flex justify-content-between bg-transparent border-0 text-truncate rounded-5">
+		<li class="list-group-item d-flex justify-content-between bg-transparent border-0 text-truncate rounded-5">
 			<a href="{{ path('UserProfile:user.newedit.edit', {id: item.event }) }}"
 			   class="text-decoration-none text-dark w-100"
-			   title="{{ 'btn.edit'|trans({}, 'messages') }}">
-				{{ 'btn.edit'|trans({}, 'messages') }}
+			   title="{{ 'btn.edit'|trans({}, 'core.btn') }}">
+				{{ 'btn.edit'|trans({}, 'core.btn') }}
 			</a>
-		</li>#}
+		</li>
 
 		{# Удалить #}
-			{#<li class="list-group-item d-flex justify-content-between bg-transparent border-0 text-truncate rounded-5">
+			<li class="list-group-item d-flex justify-content-between bg-transparent border-0 text-truncate rounded-5">
 				<a href="{{ path('UserProfile:user.delete', { id: item.event }) }}"
 				   class="text-decoration-none text-dark w-100 modal-link"
 				   data-bs-toggle="modal"
 				   data-bs-target="#modal"
-				   title="{{ 'btn.delete'|trans }}">
-					{{ 'btn.delete'|trans }}
+				   title="{{ 'btn.delete'|trans({}, 'core.btn') }}">
+					{{ 'btn.delete'|trans({}, 'core.btn') }}
 				</a>
-			</li>#}
+			</li>
 
 	</ul>
 </div>

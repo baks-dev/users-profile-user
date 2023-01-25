@@ -16,7 +16,8 @@
  */
 
 /* Статус */
-//let $circle = document.getElementById('user_status_circle');
+let $circle = document.getElementById('user_status_circle');
+
 let $status = document.getElementById('user_profile_form_info_status');
 
 if ($status) {

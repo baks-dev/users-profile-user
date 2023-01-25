@@ -24,7 +24,7 @@
             <p>
                 {# Убедитесь, что выбран именно тот объект, который нужно удалить, и нажмите Удалить. Если вы не
                     желаете удалять выбранный объект, нажмите кнопку Отмена.  #}
-                {{ 'txt.default.delete'|trans({}, 'messages') }}
+                {{ 'txt.default.delete'|trans({}, 'core.modal') }}
             </p>
         </div>
 
@@ -37,7 +37,7 @@
 
             {# Удалить #}
             {{ form_widget(form.delete, { label: '
-				<span>'~ 'btn.delete'|trans({}, 'messages') ~'</span>
+				<span>'~ 'btn.delete'|trans({}, 'core.btn') ~'</span>
 				<span class="spinner-border spinner-border-sm vertical-middle d-none"></span>
 			'}) }}
 

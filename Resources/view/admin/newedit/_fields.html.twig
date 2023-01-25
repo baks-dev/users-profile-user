@@ -1,4 +1,4 @@
-{% trans_default_domain 'userprofile' %}
+{% trans_default_domain 'admin.user.profile' %}
 
 {% set section = null %}
 
@@ -15,22 +15,25 @@
 
 
 		{# Открываем новую секцию #}
-		<div class="card card-flush">
+		<div class="card border-light">
 
-		<div class="card-header">
+		<div class="card-header border-light bg-body">
 			<div class="card-title">
-				<h2>
+				<h4>
 					{# Название секции #}
 					{{ value.vars.data.sectionName }}
-				</h2>
+				</h4>
 			</div>
 		</div>
 
-		<div class="card-body pt-0">
+		<div class="card-body">
 
 	{% endif %}
 
+
+
 	{# РЕНДЕР ПОЛЕЙ #}
+	{#{{ render_field(value.vars.data.type, value.value) }}#}
 	{{ render_field(value.vars.data.type, value.value) }}
 
 

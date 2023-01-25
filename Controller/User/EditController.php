@@ -44,11 +44,11 @@ final class EditController extends AbstractController
 		Request $request,
 		#[MapEntity] Entity\Event\UserProfileEvent $Event,
 		EntityManagerInterface $entityManager,
-		UserProfileHandler $userProfileAggregate,
+		UserProfileHandler $handler,
 		MessageBusInterface $bus
 	) : Response
 	{
-
+		
 		$Info = $entityManager->getRepository(Entity\Info\UserProfileInfo::class)
 			->findOneBy(['profile' => $Event->getProfile()])
 		;
@@ -67,14 +67,9 @@ final class EditController extends AbstractController
 		$form->handleRequest($request);
 		
 		
-		
-		
 		if($form->isSubmitted() && $form->isValid() && $form->has('Save'))
 		{
-			
-			dd($request);
-			
-			$UserProfile = $userProfileAggregate->handle($profile);
+			$UserProfile = $handler->handle($profile);
 			
 			if($UserProfile instanceof Entity\UserProfile)
 			{
@@ -83,11 +78,11 @@ final class EditController extends AbstractController
 				/* Отправляем уведомление о модерации в телегу */
 				//$telega = new ModerationUserProfileDTO($UserProfile->getEvent());
 				//$bus->dispatch($telega);
-			} else
-			{
-				$this->addFlash('danger', 'user.danger.update', 'user.user.profile', [$UserProfile]);
 			}
-			
+			else
+			{
+				$this->addFlash('danger', 'user.danger.update', 'user.user.profile', $UserProfile);
+			}
 			
 			return $this->redirectToRoute('UserProfile:user.index');
 			

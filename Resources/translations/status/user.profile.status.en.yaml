@@ -2,6 +2,7 @@ NEW: New
 MODERATION: Moderation
 ACTIVE: Active
 BLOCK: Ban
+DELETE: Delete
 
 
 status: Status
@@ -9,4 +10,5 @@ new: New
 act: Active
 mod: Moderated
 ban: Blocked
+del: Delete
 

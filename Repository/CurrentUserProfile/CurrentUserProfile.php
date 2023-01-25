@@ -74,6 +74,7 @@ final class CurrentUserProfile implements CurrentUserProfileInterface
 
 	public function fetchProfileAssociative(UserUid $user) : bool|array
 	{
+
 		$qb = $this->connection->createQueryBuilder();
 		
 		/* Пользователь */
@@ -163,7 +164,7 @@ final class CurrentUserProfile implements CurrentUserProfileInterface
 		$qb->setParameter('user', $user, UserUid::TYPE);
 		
 		/* Кешируем результат запроса */
-		$cacheFilesystem = new FilesystemAdapter('UserProfile');
+		$cacheFilesystem = new FilesystemAdapter('CacheUserProfile');
 		
 		$config = $this->connection->getConfiguration();
 		$config?->setResultCache($cacheFilesystem);
@@ -174,7 +175,5 @@ final class CurrentUserProfile implements CurrentUserProfileInterface
 			$qb->getParameterTypes(),
 			new QueryCacheProfile((60 * 60 * 30), 'current_user_profile'.$user.$this->locale)
 		)->fetchAssociative();
-
-		//return $qb->fetchAssociative();
 	}
 }

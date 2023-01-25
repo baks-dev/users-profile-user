@@ -25,28 +25,34 @@ declare(strict_types=1);
 
 namespace BaksDev\Users\Profile\UserProfile\Repository\CurrentUserProfile;
 
+use BaksDev\Users\Profile\UserProfile\Entity\Avatar\UserProfileAvatar;
+use BaksDev\Users\Profile\UserProfile\Repository\CurrentAllUserProfiles\CurrentAllUserProfilesByUserInterface;
 use BaksDev\Users\User\Repository\UserProfile\UserProfileInterface;
 use BaksDev\Users\User\Type\Id\UserUid;
 
 final class UserProfileDecorator implements UserProfileInterface
 {
-
+	
 	public ?UserUid $user;
 	
 	/** Массив текущего профиля пользовтаеля */
 	public bool|array $current;
-
+	
 	
 	private ?string $username;
 	private ?string $contact;
 	private ?string $type;
-
+	
 	private ?string $avatar;
 	private ?string $personal;
+	
+	
+	private array $allProfiles;
 	
 	public function __construct(
 		UserProfileInterface $profile,
 		CurrentUserProfileInterface $current,
+		CurrentAllUserProfilesByUserInterface $allProfiles,
 		string $cdn
 	)
 	{
@@ -54,6 +60,8 @@ final class UserProfileDecorator implements UserProfileInterface
 		$this->contact = $profile->getContact();
 		
 		/* Переопределяем ствойства */
+		$this->allProfiles = $allProfiles->fetchUserProfilesAllAssociative($this->user);
+		
 		$UserProfile = $current->fetchProfileAssociative($this->user);
 		$this->username = $UserProfile ? $UserProfile['profile_username'] : $profile->getUsername();
 		$this->type = $UserProfile ? $UserProfile['profile_type'] : $profile->getType();
@@ -69,14 +77,14 @@ final class UserProfileDecorator implements UserProfileInterface
 				$avatar .= $cdn;
 			}
 			
+			$avatar .= '/assets/'.UserProfileAvatar::TABLE;
 			$avatar .= '/'.$UserProfile['profile_avatar_dir'];
 			$avatar .= '/'.$UserProfile['profile_avatar_name'];
 			$avatar .= '.'.$UserProfile['profile_avatar_ext'];
 		}
 		
 		$this->avatar = $avatar;
-		
-		//$this->current = $current->fetchProfileAssociative($this->user);
+
 	}
 	
 	/**  Username пользователя */
@@ -94,7 +102,7 @@ final class UserProfileDecorator implements UserProfileInterface
 	/** Тип пользователя */
 	public function getType() : ?string
 	{
-		return  $this->type;
+		return $this->type;
 	}
 	
 	/** Адрес персональной страницы */
@@ -108,5 +116,11 @@ final class UserProfileDecorator implements UserProfileInterface
 	public function getImage() : ?string
 	{
 		return $this->avatar;
+	}
+	
+	/** Массив всех профилей пользователя  */
+	public function getProfiles() : ?array
+	{
+		return $this->allProfiles;
 	}
 }

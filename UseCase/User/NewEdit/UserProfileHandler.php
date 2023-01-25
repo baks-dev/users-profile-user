@@ -70,8 +70,7 @@ final class UserProfileHandler
 	}
 	
 	public function handle(
-		Entity\Event\UserProfileEventInterface $command,
-		//?UploadedFile $cover = null
+		Entity\Event\UserProfileEventInterface $command
 	) : string|Entity\UserProfile
 	{
 		
@@ -121,39 +120,6 @@ final class UserProfileHandler
 		$this->entityManager->clear();
 		
 		
-		
-		/** @var Info\InfoDTO $infoDTO */
-		$infoDTO = $command->getInfo();
-		
-		
-		//        if(method_exists($command, 'getPasswordPlain') && !empty($command->getPasswordPlain()))
-		//        {
-		//
-		//            $passwordNash = $this->userPasswordHasher->hashPassword(
-		//              $Event,
-		//              $command->getPasswordPlain()
-		//            );
-		//
-		//            /* Присваиваем новый пароль */
-		//            $Event->passwordHash($passwordNash);
-		//        }
-		
-		//$Event->updAccountEvent($command);
-		
-		/* Загрузка файла изображения */
-		
-
-
-		
-		//}
-		
-		
-		//dump($command);
-		//dd($Event);
-		
-		//$this->entityManager->clear();
-		//$this->entityManager->persist($Event);
-		
 		/** @var Entity\UserProfile $UserProfile */
 		if($Event->getProfile())
 		{
@@ -188,7 +154,13 @@ final class UserProfileHandler
 			$UserProfileInfo = new Entity\Info\UserProfileInfo($UserProfile);
 			$this->entityManager->persist($UserProfileInfo);
 		}
-
+		
+		
+		
+		/** @var Info\InfoDTO $infoDTO */
+		$infoDTO = $command->getInfo();
+		
+		
 		/* Проверяем на уникальность Адрес персональной страницы */
 		$uniqProfileUrl = $this->uniqProfileUrl->exist($infoDTO->getUrl(), $UserProfileInfo->getProfile());
 		
@@ -198,7 +170,7 @@ final class UserProfileHandler
 		}
 		
 		/* Деактивируем профиль пользователя, Если был ранеее активный */
-		if($infoDTO->isActive() !== $UserProfileInfo->isNotActiveProfile())
+		if($infoDTO->getActive() !== $UserProfileInfo->isNotActiveProfile())
 		{
 			$InfoActive = $this->entityManager->getRepository(Entity\Info\UserProfileInfo::class)->findOneBy(
 				['user' => $infoDTO->getUser(), 'active' => true]
@@ -216,6 +188,7 @@ final class UserProfileHandler
 		$this->entityManager->persist($Event);
 
 		/* Загружаем файл аватарки профиля */
+		
 		/** @var Avatar\AvatarDTO $Avatar */
 		$Avatar = $command->getAvatar();
 		if($Avatar->file !== null)
@@ -230,12 +203,10 @@ final class UserProfileHandler
 		$UserProfile->setEvent($Event);
 		$this->entityManager->flush();
 		
-		
 		/* Чистим кеш профиля */
-		$cache = new FilesystemAdapter();
+		$cache = new FilesystemAdapter('CacheUserProfile');
 		$locale = $this->translator->getLocale();
-		$cache->delete('profile-'.$locale.'-'.$infoDTO->getUser()->getValue());
-		
+		$cache->delete('current_user_profile'.$infoDTO->getUser()->getValue().$locale);
 		
 		return $UserProfile;
 	}

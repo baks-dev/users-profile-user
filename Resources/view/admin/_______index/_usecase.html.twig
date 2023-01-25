@@ -16,7 +16,7 @@
 			<li>
 				<a href="{{ path('UserProfile:admin.newedit.edit', { id: item.event }) }}"
 				   class="dropdown-item">
-					{{ 'btn.edit'|trans({}, 'messages') }}
+					{{ 'btn.edit'|trans({}, 'core.btn') }}
 				</a>
 			</li>
 
@@ -29,7 +29,7 @@
 				   class="dropdown-item modal-link"
 				   data-bs-toggle="modal" data-bs-target="#modal"
 				>
-					{{ 'btn.delete'|trans }}
+					{{ 'btn.delete'|trans({}, 'core.btn') }}
 				</a>
 			</li>
 		{% endif %}

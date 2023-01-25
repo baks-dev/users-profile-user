@@ -45,7 +45,7 @@
             <div class="ms-0">
                 {# Username #}
                 <a href="{{ path('UserProfile:admin.newedit.edit', { id: item.event }) }}"
-                   class=""
+                   class="text-decoration-none"
                 >{{ item.user_profile_username }}</a>
                 {# Описание #}
                 <div class="text-muted small d-flex align-items-center gap-1">
@@ -72,7 +72,7 @@
         </svg>
 
         <a href="{{ path('AuthEmail:admin.newedit.edit', { id: item.account_id }) }}"
-           class="text-muted ms-2"
+           class="text-decoration-none ms-2"
         >{{ item.account_email }}</a>
     </td>
 

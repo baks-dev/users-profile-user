@@ -1,7 +1,10 @@
-{% trans_default_domain 'userprofile' %}
+{% trans_default_domain 'admin.user.profile' %}
 
-{# Имя пользователя #}
-{{ form_row(form.personal.username, {  label : 'Имя профиля'|trans }) }}
+{# Имя профиля #}
+{{ form_row(form.personal.username, {  label : 'admin.form.label.username'|trans }) }}
 
 {# URL Адрес профиля #}
-{{ form_row(form.info.url, {  label : 'user.profile.form.info.label.url'|trans }) }}
+{{ form_row(form.info.url, {  label : 'admin.form.label.url'|trans }) }}
+
+{# Сортировка #}
+{{ form_row(form.sort, { label: 'admin.form.label.sort'|trans }) }}
