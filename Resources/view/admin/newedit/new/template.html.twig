@@ -4,18 +4,18 @@
 {% extends '@Core/admin/base.html.twig' %}
 
 {% block title %}
-    {# Добавить профиль пользователя #}
-    {{ 'admin.page.new'|trans }}
+	{# Добавить профиль пользователя #}
+	{{ 'admin.page.new'|trans }}
 {% endblock %}
 
 {# ---- CSS ------------------------------------------------------------ #}
 {% block stylesheets %}
-    <link href="/assets//plugins/datepicker/datepicker.min.css" rel="stylesheet">
+	<link href="/assets//plugins/datepicker/datepicker.min.css" rel="stylesheet">
 {% endblock %}
 
 {# ---- КОНТЕНТ-БЛОК ------------------------------------------------------------ #}
 {% block content %}
-    {{ include(_self|replace({ "template.html.twig": "content.html.twig" })) }}
+	{{ include(_self|replace({ "template.html.twig": "content.html.twig" })) }}
 {% endblock %}
 
 

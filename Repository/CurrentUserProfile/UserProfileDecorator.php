@@ -1,17 +1,17 @@
 <?php
 /*
  *  Copyright 2023.  Baks.dev <admin@baks.dev>
- *
+ *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
  *  in the Software without restriction, including without limitation the rights
  *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  *  copies of the Software, and to permit persons to whom the Software is furnished
  *  to do so, subject to the following conditions:
- *
+ *  
  *  The above copyright notice and this permission notice shall be included in all
  *  copies or substantial portions of the Software.
- *
+ *  
  *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  *  FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL THE
@@ -38,24 +38,27 @@ final class UserProfileDecorator implements UserProfileInterface
 	/** Массив текущего профиля пользовтаеля */
 	public bool|array $current;
 	
-	
 	private ?string $username;
+	
 	private ?string $contact;
+	
 	private ?string $type;
 	
 	private ?string $avatar;
+	
 	private ?string $personal;
 	
-	
 	private array $allProfiles;
+	
 	
 	public function __construct(
 		UserProfileInterface $profile,
 		CurrentUserProfileInterface $current,
 		CurrentAllUserProfilesByUserInterface $allProfiles,
-		string $cdn
+		string $cdn,
 	)
 	{
+		
 		$this->user = $profile->user;
 		$this->contact = $profile->getContact();
 		
@@ -77,15 +80,16 @@ final class UserProfileDecorator implements UserProfileInterface
 				$avatar .= $cdn;
 			}
 			
-			$avatar .= '/assets/'.UserProfileAvatar::TABLE;
+			$avatar .= '/upload/'.UserProfileAvatar::TABLE;
 			$avatar .= '/'.$UserProfile['profile_avatar_dir'];
 			$avatar .= '/'.$UserProfile['profile_avatar_name'];
 			$avatar .= '.'.$UserProfile['profile_avatar_ext'];
 		}
 		
 		$this->avatar = $avatar;
-
+		
 	}
+	
 	
 	/**  Username пользователя */
 	public function getUsername() : ?string
@@ -93,17 +97,20 @@ final class UserProfileDecorator implements UserProfileInterface
 		return $this->username;
 	}
 	
+	
 	/** Контакт */
 	public function getContact() : ?string
 	{
 		return $this->contact;
 	}
 	
+	
 	/** Тип пользователя */
 	public function getType() : ?string
 	{
 		return $this->type;
 	}
+	
 	
 	/** Адрес персональной страницы */
 	public function getPage() : ?string
@@ -112,15 +119,18 @@ final class UserProfileDecorator implements UserProfileInterface
 		///return $this->current ? $this->current['profile_url'] : $this->profile->getType();
 	}
 	
+	
 	/** Аватарка */
 	public function getImage() : ?string
 	{
 		return $this->avatar;
 	}
 	
+	
 	/** Массив всех профилей пользователя  */
 	public function getProfiles() : ?array
 	{
 		return $this->allProfiles;
 	}
+	
 }

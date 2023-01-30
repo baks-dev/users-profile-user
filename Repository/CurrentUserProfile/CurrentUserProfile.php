@@ -1,19 +1,24 @@
 <?php
 /*
- *  Copyright  Baks.dev <admin@baks.dev>
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *  http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *   limitations under the License.
- *
+ *  Copyright 2023.  Baks.dev <admin@baks.dev>
+ *  
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy
+ *  of this software and associated documentation files (the "Software"), to deal
+ *  in the Software without restriction, including without limitation the rights
+ *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *  copies of the Software, and to permit persons to whom the Software is furnished
+ *  to do so, subject to the following conditions:
+ *  
+ *  The above copyright notice and this permission notice shall be included in all
+ *  copies or substantial portions of the Software.
+ *  
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL THE
+ *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ *  THE SOFTWARE.
  */
 
 namespace BaksDev\Users\Profile\UserProfile\Repository\CurrentUserProfile;
@@ -38,18 +43,26 @@ use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-
 final class CurrentUserProfile implements CurrentUserProfileInterface
 {
 	private Connection $connection;
+	
 	private Locale $locale;
+	
 	private AccountStatus $status;
+	
 	private UserProfileStatus $statusProfile;
+	
 	private ParameterBagInterface $parameter;
+	
 	
 	//private bool|self $result;
 	
-	public function __construct(Connection $connection, TranslatorInterface $translator, ParameterBagInterface $parameter)
+	public function __construct(
+		Connection $connection,
+		TranslatorInterface $translator,
+		ParameterBagInterface $parameter,
+	)
 	{
 		$this->connection = $connection;
 		$this->locale = new Locale($translator->getLocale());
@@ -57,6 +70,7 @@ final class CurrentUserProfile implements CurrentUserProfileInterface
 		$this->statusProfile = new UserProfileStatus(UserProfileStatusEnum::ACTIVE);
 		$this->parameter = $parameter;
 	}
+	
 	
 	/** Активный профиль пользователя
 	 *
@@ -71,10 +85,9 @@ final class CurrentUserProfile implements CurrentUserProfileInterface
 	 * profile_avatar_cdn - фгаг загрузки файла на CDN
 	 */
 	
-
 	public function fetchProfileAssociative(UserUid $user) : bool|array
 	{
-
+		
 		$qb = $this->connection->createQueryBuilder();
 		
 		/* Пользователь */
@@ -90,7 +103,6 @@ final class CurrentUserProfile implements CurrentUserProfileInterface
 		);
 		
 		$qb->setParameter('profile_status', $this->statusProfile, UserProfileStatus::TYPE);
-		
 		
 		//$qb->addSelect('profile.id AS user_profile_id'); /* ID профиля */
 		//$qb->addSelect('profile.event AS user_profile_event'); /* ID события профиля */
@@ -159,7 +171,6 @@ final class CurrentUserProfile implements CurrentUserProfileInterface
 		
 		$qb->setParameter('local', $this->locale, Locale::TYPE);
 		
-		
 		$qb->where('users.user_id = :user');
 		$qb->setParameter('user', $user, UserUid::TYPE);
 		
@@ -176,4 +187,5 @@ final class CurrentUserProfile implements CurrentUserProfileInterface
 			new QueryCacheProfile((60 * 60 * 30), 'current_user_profile'.$user.$this->locale)
 		)->fetchAssociative();
 	}
+	
 }

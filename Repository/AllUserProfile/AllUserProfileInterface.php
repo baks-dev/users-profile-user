@@ -52,4 +52,5 @@ interface AllUserProfileInterface
 	 */
 	
 	public function fetchUserProfileAllAssociative(SearchDTO $search, ?UserProfileStatus $status) : Paginator;
+	
 }

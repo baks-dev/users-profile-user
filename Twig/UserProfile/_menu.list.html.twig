@@ -2,25 +2,32 @@
 
 <button class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary"
 		data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">
-	<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
-		<path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+	<svg xmlns="http://www.w3.org/2000/svg"
+			width="16"
+			height="16"
+			fill="currentColor"
+			class="bi bi-list"
+			viewBox="0 0 16 16">
+		<path fill-rule="evenodd"
+				d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z" />
 	</svg>
 </button>
 
 <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-800 menu-state-bg-light-primary fw-bold w-200px py-3"
-	 data-kt-menu="true">
-
-{#	<div class="menu-item px-3">
+		data-kt-menu="true">
+	
+	{#    <div class="menu-item px-3">
 		<div class="menu-content text-muted pb-2 px-3 fs-7 text-uppercase">Payments</div>
-	</div>#}
-
+	</div> #}
+	
 	<div class="menu-item px-3">
-		<a href="{{ path('UserProfile:user.newedit.edit', { id : app.user.profile.user_profile_event }) }}" class="menu-link px-3">Редактировать профиль</a>
+		<a href="{{ path('UserProfile:user.newedit.edit', { id : app.user.profile.user_profile_event }) }}"
+				class="menu-link px-3">Редактировать профиль</a>
 	</div>
-
-
+	
+	
 	{# Пункт с выпадающим блоком меню #}
-	{#<div class="menu-item px-3" data-kt-menu-trigger="hover"
+	{# <div class="menu-item px-3" data-kt-menu-trigger="hover"
 		 data-kt-menu-placement="right-end">
 		<a href="#" class="menu-link px-3">
 			<span class="menu-title">Subscription</span>
@@ -62,8 +69,7 @@
 
 		</div>
 
-	</div>#}
-
+	</div> #}
 
 
 </div>

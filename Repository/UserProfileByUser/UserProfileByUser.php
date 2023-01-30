@@ -1,19 +1,24 @@
 <?php
 /*
- *  Copyright 2022.  Baks.dev <admin@baks.dev>
+ *  Copyright 2023.  Baks.dev <admin@baks.dev>
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy
+ *  of this software and associated documentation files (the "Software"), to deal
+ *  in the Software without restriction, including without limitation the rights
+ *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *  copies of the Software, and to permit persons to whom the Software is furnished
+ *  to do so, subject to the following conditions:
  *
- *  http://www.apache.org/licenses/LICENSE-2.0
+ *  The above copyright notice and this permission notice shall be included in all
+ *  copies or substantial portions of the Software.
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *   limitations under the License.
- *
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL THE
+ *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ *  THE SOFTWARE.
  */
 
 namespace BaksDev\Users\Profile\UserProfile\Repository\UserProfileByUser;
@@ -42,18 +47,24 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 final class UserProfileByUser implements UserProfileByUserInterface
 {
 	private Connection $connection;
+	
 	private Locale $local;
+	
 	private Switcher $switcher;
+	
 	private ?UserInterface $user;
+	
 	private PaginatorInterface $paginator;
+	
 	private Security $security;
+	
 	
 	public function __construct(
 		Connection $connection,
 		TranslatorInterface $translator,
 		Switcher $switcher,
 		Security $security,
-		PaginatorInterface $paginator
+		PaginatorInterface $paginator,
 	)
 	{
 		$this->connection = $connection;
@@ -63,6 +74,7 @@ final class UserProfileByUser implements UserProfileByUserInterface
 		$this->paginator = $paginator;
 		$this->security = $security;
 	}
+	
 	
 	public function get(SearchDTO $search, ?UserProfileStatus $status) : PaginatorInterface
 	{
@@ -74,7 +86,6 @@ final class UserProfileByUser implements UserProfileByUserInterface
 		$qb->select('userprofile.id');
 		$qb->addSelect('userprofile.event');
 		$qb->from(EntityUserProfile\UserProfile::TABLE, 'userprofile');
-		
 		
 		/* INFO */
 		
@@ -99,7 +110,6 @@ final class UserProfileByUser implements UserProfileByUserInterface
 			$qb->setParameter('status', $status, UserProfileStatus::TYPE);
 		}
 		
-		
 		$qb->addSelect('userprofile_event.sort');
 		$qb->join(
 			'userprofile',
@@ -107,7 +117,6 @@ final class UserProfileByUser implements UserProfileByUserInterface
 			'userprofile_event',
 			'userprofile_event.id = userprofile.event'
 		);
-		
 		
 		/* PERSONAL */
 		
@@ -120,7 +129,6 @@ final class UserProfileByUser implements UserProfileByUserInterface
 			'personal',
 			'personal.event = userprofile.event'
 		);
-		
 		
 		/* AVATAR */
 		$qb->addSelect('avatar.name AS avatar_name');
@@ -177,9 +185,7 @@ final class UserProfileByUser implements UserProfileByUserInterface
 			'type_trans.event = type_event.id AND type_trans.local = :local'
 		);
 		
-		
 		$qb->setParameter('local', $this->local, Locale::TYPE);
-		
 		
 		/* Поиск */
 		if($search?->query)
@@ -198,7 +204,6 @@ final class UserProfileByUser implements UserProfileByUserInterface
 			$qb->setParameter('query', '%'.$this->switcher->toRus($search->query).'%');
 			$qb->setParameter('switcher', '%'.$this->switcher->toEng($search->query).'%');
 		}
-		
 		
 		$qb->orderBy('userprofile_event.sort', 'ASC');
 		$qb->addOrderBy('userprofile_event.id', 'ASC');

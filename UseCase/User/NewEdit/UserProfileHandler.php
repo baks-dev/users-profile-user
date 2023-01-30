@@ -1,26 +1,30 @@
 <?php
 /*
- *  Copyright 2022.  Baks.dev <admin@baks.dev>
+ *  Copyright 2023.  Baks.dev <admin@baks.dev>
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy
+ *  of this software and associated documentation files (the "Software"), to deal
+ *  in the Software without restriction, including without limitation the rights
+ *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *  copies of the Software, and to permit persons to whom the Software is furnished
+ *  to do so, subject to the following conditions:
  *
- *  http://www.apache.org/licenses/LICENSE-2.0
+ *  The above copyright notice and this permission notice shall be included in all
+ *  copies or substantial portions of the Software.
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *   limitations under the License.
- *
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL THE
+ *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ *  THE SOFTWARE.
  */
 
 namespace BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit;
 
 use BaksDev\Files\Resources\Upload\Image\ImageUploadInterface;
 use BaksDev\Users\Profile\UserProfile\Entity;
-
 
 use BaksDev\Users\Profile\UserProfile\Entity\Avatar\UserProfileAvatar;
 use BaksDev\Users\Profile\UserProfile\Message\ModerationUserProfile\ModerationUserProfileDTO;
@@ -40,12 +44,19 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 final class UserProfileHandler
 {
 	private EntityManagerInterface $entityManager;
+	
 	private ImageUploadInterface $imageUpload;
+	
 	private UniqProfileUrlInterface $uniqProfileUrl;
+	
 	private TranslatorInterface $translator;
+	
 	private ValidatorInterface $validator;
+	
 	private LoggerInterface $logger;
+	
 	private RequestStack $request;
+	
 	
 	public function __construct(
 		EntityManagerInterface $entityManager,
@@ -69,11 +80,11 @@ final class UserProfileHandler
 		$this->request = $request;
 	}
 	
+	
 	public function handle(
-		Entity\Event\UserProfileEventInterface $command
+		Entity\Event\UserProfileEventInterface $command,
 	) : string|Entity\UserProfile
 	{
-		
 		
 		/* Валидация */
 		$errors = $this->validator->validate($command);
@@ -83,16 +94,15 @@ final class UserProfileHandler
 			$uniqid = uniqid('', false);
 			$errorsString = (string) $errors;
 			$this->logger->error($uniqid.': '.$errorsString);
+			
 			return $uniqid;
 		}
-		
 		
 		if($command->getEvent())
 		{
 			$EventRepo = $this->entityManager->getRepository(Entity\Event\UserProfileEvent::class)->find(
 				$command->getEvent()
 			);
-			
 			
 			if($EventRepo === null)
 			{
@@ -109,16 +119,14 @@ final class UserProfileHandler
 			
 			$Event = $EventRepo->cloneEntity();
 			
-		} else
+		}
+		else
 		{
 			$Event = new Entity\Event\UserProfileEvent();
 			$this->entityManager->persist($Event);
 		}
 		
-		
-		
 		$this->entityManager->clear();
-		
 		
 		/** @var Entity\UserProfile $UserProfile */
 		if($Event->getProfile())
@@ -144,7 +152,8 @@ final class UserProfileHandler
 				$UserProfile
 			);
 			
-		} else
+		}
+		else
 		{
 			
 			$UserProfile = new Entity\UserProfile();
@@ -155,11 +164,8 @@ final class UserProfileHandler
 			$this->entityManager->persist($UserProfileInfo);
 		}
 		
-		
-		
 		/** @var Info\InfoDTO $infoDTO */
 		$infoDTO = $command->getInfo();
-		
 		
 		/* Проверяем на уникальность Адрес персональной страницы */
 		$uniqProfileUrl = $this->uniqProfileUrl->exist($infoDTO->getUrl(), $UserProfileInfo->getProfile());
@@ -183,10 +189,9 @@ final class UserProfileHandler
 			}
 		}
 		
-		
 		$Event->setEntity($command);
 		$this->entityManager->persist($Event);
-
+		
 		/* Загружаем файл аватарки профиля */
 		
 		/** @var Avatar\AvatarDTO $Avatar */
@@ -196,7 +201,7 @@ final class UserProfileHandler
 			$UserProfileAvatar = $Event->getUploadAvatar();
 			$this->imageUpload->upload($Avatar->file, $UserProfileAvatar);
 		}
-
+		
 		/* Присваиваем событие INFO */
 		$UserProfileInfo->setEntity($infoDTO);
 		/* присваиваем событие корню */

@@ -41,15 +41,19 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 final class AllUserProfile implements AllUserProfileInterface
 {
 	private Connection $connection;
+	
 	private Locale $local;
+	
 	private Switcher $switcher;
+	
 	private Paginator $paginator;
+	
 	
 	public function __construct(
 		Connection $connection,
 		TranslatorInterface $translator,
 		Switcher $switcher,
-		Paginator $paginator
+		Paginator $paginator,
 	)
 	{
 		$this->connection = $connection;
@@ -58,6 +62,7 @@ final class AllUserProfile implements AllUserProfileInterface
 		$this->switcher = $switcher;
 		$this->paginator = $paginator;
 	}
+	
 	
 	/**
 	 * Список всех добавленных профилей пользователей
@@ -88,7 +93,6 @@ final class AllUserProfile implements AllUserProfileInterface
 		$qb->addSelect('userprofile.id');
 		$qb->addSelect('userprofile.event');
 		$qb->from(UserProfileEntity\UserProfile::TABLE, 'userprofile');
-		
 		
 		/* INFO */
 		$qb->join(
@@ -125,7 +129,6 @@ final class AllUserProfile implements AllUserProfileInterface
 		$qb->addSelect('userprofile_profile.username AS user_profile_username');
 		$qb->addSelect('userprofile_profile.location AS user_profile_location');
 		
-		
 		$qb->addSelect('userprofile_avatar.name AS user_profile_avatar_name');
 		$qb->addSelect('userprofile_avatar.dir AS user_profile_avatar_dir');
 		$qb->addSelect('userprofile_avatar.ext AS user_profile_avatar_ext');
@@ -138,17 +141,14 @@ final class AllUserProfile implements AllUserProfileInterface
 			'userprofile_avatar.event = userprofile_event.id'
 		);
 		
-		
 		/* Аккаунт пользователя */
 		/** Пользователь User */
 		$qb->join('userprofile_info', Account::TABLE, 'account', 'account.id = userprofile_info.user_id');
-		
 		
 		/** Событие пользователя User\Event */
 		$qb->addSelect('account_event.id AS account_id');
 		$qb->addSelect('account_event.email AS account_email');
 		$qb->leftJoin('account', AccountEvent::TABLE, 'account_event', 'account_event.id = account.event');
-		
 		
 		/* Тип профиля */
 		
@@ -173,7 +173,6 @@ final class AllUserProfile implements AllUserProfileInterface
 		$qb->addSelect('profiletype_trans.name as user_profile_type');
 		
 		$qb->setParameter('local', $this->local, Locale::TYPE);
-		
 		
 		/* Поиск */
 		if($search?->query)
