@@ -29,7 +29,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
-class BaksDevUsersProfileUserBundle extends AbstractBundle
+class BaksDevUsersProfileUserProfileBundle extends AbstractBundle
 {
 	
 	public function prependExtension(ContainerConfigurator $container, ContainerBuilder $builder) : void
