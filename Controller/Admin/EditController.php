@@ -66,14 +66,14 @@ final class EditController extends AbstractController
 		if($form->isSubmitted() && $form->isValid() && $form->has('Save'))
 		{
 			$UserProfile = $handler->handle($profile);
-			$this->addFlash('success', 'admin.success.update', 'admin.user.profile');
 			
-			if(!$UserProfile instanceof UserProfile)
+			if($UserProfile instanceof UserProfile)
 			{
-				$this->addFlash('danger', 'admin.danger.update', 'admin.user.profile', $UserProfile);
+				$this->addFlash('success', 'admin.success.update', 'admin.user.profile');
+				return $this->redirectToRoute('UserProfile:admin.index');
 			}
 			
-			return $this->redirectToRoute('UserProfile:admin.index');
+			$this->addFlash('danger', 'admin.danger.update', 'admin.user.profile', $UserProfile);
 		}
 		
 		return $this->render(['form' => $form->createView()]);

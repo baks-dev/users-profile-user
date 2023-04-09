@@ -29,6 +29,7 @@ use BaksDev\Core\Controller\AbstractController;
 use BaksDev\Users\Profile\UserProfile\Entity as EntityUserProfile;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
+use Symfony\Component\Cache\Adapter\ApcuAdapter;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -73,6 +74,11 @@ final class ActivateController extends AbstractController
 		if($UserProfile instanceof EntityUserProfile\UserProfile)
 		{
 			$this->addFlash('success', 'user.success.activate', 'user.user.profile');
+			
+			/* Сбрасываем кеш пользователя  */
+			$cache = new ApcuAdapter($this->getUser()?->getUserIdentifier());
+			$cache->clear();
+			
 		}
 		else
 		{

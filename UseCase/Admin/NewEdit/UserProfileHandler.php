@@ -25,10 +25,13 @@ namespace BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit;
 
 use BaksDev\Files\Resources\Upload\Image\ImageUploadInterface;
 use BaksDev\Users\Profile\UserProfile\Entity;
+use BaksDev\Users\Profile\UserProfile\Messenger\UserProfileMessage;
 use BaksDev\Users\Profile\UserProfile\Repository\UniqProfileUrl\UniqProfileUrlInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Cache\Adapter\ApcuAdapter;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -46,6 +49,8 @@ final class UserProfileHandler
 	
 	private LoggerInterface $logger;
 	
+	private MessageBusInterface $bus;
+	
 	
 	public function __construct(
 		EntityManagerInterface $entityManager,
@@ -54,6 +59,7 @@ final class UserProfileHandler
 		TranslatorInterface $translator,
 		ValidatorInterface $validator,
 		LoggerInterface $logger,
+		MessageBusInterface $bus,
 	)
 	{
 		$this->entityManager = $entityManager;
@@ -63,6 +69,7 @@ final class UserProfileHandler
 		$this->translator = $translator;
 		$this->validator = $validator;
 		$this->logger = $logger;
+		$this->bus = $bus;
 	}
 	
 	
@@ -196,10 +203,11 @@ final class UserProfileHandler
 		$UserProfile->setEvent($Event);
 		$this->entityManager->flush();
 		
-		/* Чистим кеш профиля */
-		$cache = new FilesystemAdapter('CacheUserProfile');
-		$locale = $this->translator->getLocale();
-		$cache->delete('current_user_profile'.$infoDTO->getUser()->getValue().$locale);
+		
+		/* Отправляем собыие в шину  */
+		$this->bus->dispatch(new UserProfileMessage($UserProfile->getId(), $UserProfile->getEvent(), $command->getEvent()));
+		
+		
 		
 		return $UserProfile;
 	}

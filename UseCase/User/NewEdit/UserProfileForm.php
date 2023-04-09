@@ -52,6 +52,8 @@ final class UserProfileForm extends AbstractType
 	public function buildForm(FormBuilderInterface $builder, array $options) : void
 	{
 		
+		
+		
 		$builder->add('sort', IntegerType::class);
 		
 		$builder->add('personal', Personal\PersonalForm::class);

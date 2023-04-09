@@ -45,6 +45,10 @@ final class InfoDTO implements UserProfileInfoInterface
 	private bool $active = false;
 	
 	
+	/** Персональная скидка профиля */
+	private ?int $discount = null;
+	
+	
 	public function __construct() { $this->status = new UserProfileStatus(UserProfileStatusEnum::MODERATION); }
 	
 	
@@ -117,6 +121,19 @@ final class InfoDTO implements UserProfileInfoInterface
 	public function updateUrlUniq() : void
 	{
 		$this->url = uniqid($this->url.'_', false);
+	}
+	
+	
+
+	public function getDiscount() : ?int
+	{
+		return $this->discount;
+	}
+	
+
+	public function setDiscount(?int $discount) : void
+	{
+		$this->discount = $discount;
 	}
 	
 }

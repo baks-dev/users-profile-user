@@ -58,6 +58,10 @@ class UserProfileInfo extends EntityState
 	#[ORM\Column(name: 'user_id', type: UserUid::TYPE)]
 	private UserUid $user;
 	
+	/** Персональная скидка профиля */
+	#[ORM\Column(type: Types::SMALLINT, nullable: true)]
+	private ?int $discount = null;
+	
 	/** Текущий активный профиль, выбранный пользователем */
 	#[ORM\Column(type: Types::BOOLEAN)]
 	private bool $active = false;

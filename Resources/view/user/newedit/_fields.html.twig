@@ -5,6 +5,7 @@
 {% for value in form.value %}
 	
 	
+
 	{% if section != value.vars.data.section %}
 		{% set section = value.vars.data.section %}
 		
@@ -30,12 +31,11 @@
 	
 	{% endif %}
 	
-	
-	
 	{# РЕНДЕР ПОЛЕЙ #}
 	{# {{ render_field(value.vars.data.type, value.value) }} #}
-	{{ render_field(value.vars.data.type, value.value) }}
+	{#{{ render_field(value.vars.data.type, value.value) }}#}
 	
+	{{ form_widget(value) }}
 	
 	{# Закрываем секцию, eсли цикл последний #}
 	{% if loop.last %}</div></div>{% endif %}

@@ -27,6 +27,7 @@ namespace BaksDev\Users\Profile\UserProfile\Repository\CurrentUserProfile;
 
 use BaksDev\Users\Profile\UserProfile\Entity\Avatar\UserProfileAvatar;
 use BaksDev\Users\Profile\UserProfile\Repository\CurrentAllUserProfiles\CurrentAllUserProfilesByUserInterface;
+use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use BaksDev\Users\User\Repository\UserProfile\UserProfileInterface;
 use BaksDev\Users\User\Type\Id\UserUid;
 
@@ -34,6 +35,8 @@ final class UserProfileDecorator implements UserProfileInterface
 {
 	
 	public ?UserUid $user;
+	
+	public ?UserProfileUid $id;
 	
 	/** Массив текущего профиля пользовтаеля */
 	public bool|array $current;
@@ -66,9 +69,13 @@ final class UserProfileDecorator implements UserProfileInterface
 		$this->allProfiles = $allProfiles->fetchUserProfilesAllAssociative($this->user);
 		
 		$UserProfile = $current->fetchProfileAssociative($this->user);
+		
+		
+		
 		$this->username = $UserProfile ? $UserProfile['profile_username'] : $profile->getUsername();
 		$this->type = $UserProfile ? $UserProfile['profile_type'] : $profile->getType();
 		$this->personal = $UserProfile ? $UserProfile['profile_url'] : null;
+		$this->id = $UserProfile ? new UserProfileUid($UserProfile['user_profile_id']) : null;
 		
 		/* Файл аватарки профиля */
 		$avatar = null;
@@ -133,4 +140,12 @@ final class UserProfileDecorator implements UserProfileInterface
 		return $this->allProfiles;
 	}
 	
+	
+	/** Идентификатор профиля	 */
+	public function getId() : ?UserProfileUid
+	{
+		return $this->id;
+	}
+	
+
 }

@@ -34,19 +34,23 @@ final class FieldValueForm implements FieldValueFormInterface
 {
 	private EntityManagerInterface $entityManager;
 	
-	private Locale $locale;
+	private TranslatorInterface $translator;
 	
 	
 	public function __construct(EntityManagerInterface $entityManager, TranslatorInterface $translator)
 	{
 		$this->entityManager = $entityManager;
-		$this->locale = new Locale($translator->getLocale());
+		$this->translator = $translator;
 	}
 	
 	
 	public function get(TypeProfileUid $profile)
 	{
 		$qb = $this->entityManager->createQueryBuilder();
+		
+		/** ЛОКАЛЬ */
+		$locale = new Locale($this->translator->getLocale());
+		$qb->setParameter('local', $locale, Locale::TYPE);
 		
 		//$qb->select('profile, event');
 		
@@ -90,7 +94,7 @@ final class FieldValueForm implements FieldValueFormInterface
 			Entity\Section\Trans\TypeProfileSectionTrans::class,
 			'section_trans',
 			'WITH',
-			'section_trans.section = section.id AND section_trans.local = :locale'
+			'section_trans.section = section.id AND section_trans.local = :local'
 		);
 		
 		//$qb->join(Entity\Section\Fields\Field::class, 'field', 'WITH', 'field.section = section.id');
@@ -99,13 +103,93 @@ final class FieldValueForm implements FieldValueFormInterface
 			Entity\Section\Fields\Trans\TypeProfileSectionFieldTrans::class,
 			'field_trans',
 			'WITH',
-			'field_trans.field = field.id AND field_trans.local = :locale'
+			'field_trans.field = field.id AND field_trans.local = :local'
 		);
-		
-		$qb->setParameter('locale', $this->locale, Locale::TYPE);
 		
 		//$qb->where('profile.id = :profile');
 		$qb->setParameter('profile', $profile, TypeProfileUid::TYPE);
+		
+		$qb->orderBy('section.sort');
+		$qb->addOrderBy('field.sort');
+		
+		return $qb->getQuery()->getResult();
+		
+	}
+	
+	
+	public function fetchAllFieldValue()
+	{
+		$qb = $this->entityManager->createQueryBuilder();
+		
+		/** ЛОКАЛЬ */
+		$locale = new Locale($this->translator->getLocale());
+		$qb->setParameter('local', $locale, Locale::TYPE);
+		
+		//$qb->select('profile, event');
+		
+		$select = sprintf(
+			
+			'
+          
+          new %s(
+            section.id,
+            section_trans.name,
+            section_trans.description,
+            
+            field.id,
+            
+            field_trans.name,
+            field_trans.description,
+            
+            field.type,
+            field.required
+            
+        )',
+			FieldValueFormDTO::class
+		);
+		
+		//$qb->select('field');
+		$qb->select($select);
+		
+		$qb->addSelect('field.id');
+		
+		
+		/* FIELD */
+		$qb->from(Entity\Section\Fields\TypeProfileSectionField::class, 'field', 'field.id');
+		
+		$qb->leftJoin(
+			Entity\Section\Fields\Trans\TypeProfileSectionFieldTrans::class,
+			'field_trans',
+			'WITH',
+			'field_trans.field = field.id AND field_trans.local = :local'
+		);
+		
+		/* SECTION */
+		
+		$qb->join(Entity\Section\TypeProfileSection::class,
+			'section',
+			'WITH',
+			'section.id = field.section'
+		);
+		
+		$qb->leftJoin(
+			Entity\Section\Trans\TypeProfileSectionTrans::class,
+			'section_trans',
+			'WITH',
+			'section_trans.section = section.id AND section_trans.local = :local'
+		);
+		
+		
+		$qb->join(Entity\Event\TypeProfileEvent::class, 'event', 'WITH', 'event.id = section.event');
+		
+		
+		
+		$qb->join(Entity\TypeProfile::class, 'profile', 'WITH', 'profile.id =  event.profile');
+	
+		
+		
+		//$qb->where('profile.id = :profile');
+		//$qb->setParameter('profile', $profile, TypeProfileUid::TYPE);
 		
 		$qb->orderBy('section.sort');
 		$qb->addOrderBy('field.sort');

@@ -33,8 +33,10 @@
 	
 	
 	{# РЕНДЕР ПОЛЕЙ #}
-	{# {{ render_field(value.vars.data.type, value.value) }} #}
-	{{ render_field(value.vars.data.type, value.value) }}
+	{#{{ render_field(value.vars.data.type, value.value) }}#}
+	
+	{{ form_widget(value) }}
+	
 	
 	
 	{# Закрываем секцию, eсли цикл последний #}

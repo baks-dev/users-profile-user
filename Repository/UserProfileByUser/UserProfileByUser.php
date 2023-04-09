@@ -48,15 +48,13 @@ final class UserProfileByUser implements UserProfileByUserInterface
 {
 	private Connection $connection;
 	
-	private Locale $local;
-	
 	private Switcher $switcher;
-	
-	private ?UserInterface $user;
 	
 	private PaginatorInterface $paginator;
 	
 	private Security $security;
+	
+	private TranslatorInterface $translator;
 	
 	
 	public function __construct(
@@ -68,11 +66,10 @@ final class UserProfileByUser implements UserProfileByUserInterface
 	)
 	{
 		$this->connection = $connection;
-		$this->local = new Locale($translator->getLocale());
-		//$this->user = $security->getUser();
 		$this->switcher = $switcher;
 		$this->paginator = $paginator;
 		$this->security = $security;
+		$this->translator = $translator;
 	}
 	
 	
@@ -185,7 +182,7 @@ final class UserProfileByUser implements UserProfileByUserInterface
 			'type_trans.event = type_event.id AND type_trans.local = :local'
 		);
 		
-		$qb->setParameter('local', $this->local, Locale::TYPE);
+		$qb->setParameter('local', new Locale($this->translator->getLocale()), Locale::TYPE);
 		
 		/* Поиск */
 		if($search?->query)

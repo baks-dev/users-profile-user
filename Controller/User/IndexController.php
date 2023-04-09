@@ -38,6 +38,7 @@ use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted("ROLE_USER")]
@@ -45,6 +46,7 @@ final class IndexController extends AbstractController
 {
 	#[Route('/user/profiles/{page<\d+>}', name: 'user.index', methods: ['GET', 'POST'])]
 	public function index(
+		CsrfTokenManagerInterface $csrfTokenManager,
 		Request $request,
 		UserProfileByUserInterface $userProfileByUser,
 		AllProfileTypeInterface $allProfileType, /* Типы профилей */
@@ -59,6 +61,13 @@ final class IndexController extends AbstractController
 		$search = new SearchDTO();
 		$searchForm = $this->createForm(SearchForm::class, $search);
 		$searchForm->handleRequest($request);
+		
+		if($searchForm->isSubmitted())
+		{
+			//dd($csrfTokenManager->isTokenValid('search'));
+		}
+		
+		
 		
 		/* Получаем список */
 		$status = !$request->get('status') ? null : new UserProfileStatus($request->get('status'));

@@ -23,6 +23,7 @@
 
 namespace BaksDev\Users\Profile\UserProfile\Repository\FieldValueForm;
 
+use BaksDev\Core\Type\Field\InputField;
 use BaksDev\Users\Profile\TypeProfile\Type\Section\Field\Id\TypeProfileSectionFieldUid;
 use BaksDev\Users\Profile\TypeProfile\Type\Section\Id\TypeProfileSectionUid;
 
@@ -40,7 +41,7 @@ final class FieldValueFormDTO
 	
 	private ?string $fieldDescription;
 	
-	private string $type;
+	private InputField $type;
 	
 	private bool $required;
 	
@@ -52,7 +53,7 @@ final class FieldValueFormDTO
 		$field,
 		string $fieldName,
 		?string $fieldDescription,
-		string $type,
+		InputField $type,
 		bool $required,
 	)
 	{
@@ -103,7 +104,7 @@ final class FieldValueFormDTO
 	}
 	
 	
-	public function getType() : string
+	public function getType() : InputField
 	{
 		return $this->type;
 	}

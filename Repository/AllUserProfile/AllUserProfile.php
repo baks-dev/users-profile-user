@@ -42,11 +42,11 @@ final class AllUserProfile implements AllUserProfileInterface
 {
 	private Connection $connection;
 	
-	private Locale $local;
-	
 	private Switcher $switcher;
 	
 	private Paginator $paginator;
+	
+	private TranslatorInterface $translator;
 	
 	
 	public function __construct(
@@ -57,10 +57,9 @@ final class AllUserProfile implements AllUserProfileInterface
 	)
 	{
 		$this->connection = $connection;
-		
-		$this->local = new Locale($translator->getLocale());
 		$this->switcher = $switcher;
 		$this->paginator = $paginator;
+		$this->translator = $translator;
 	}
 	
 	
@@ -172,7 +171,7 @@ final class AllUserProfile implements AllUserProfileInterface
 		);
 		$qb->addSelect('profiletype_trans.name as user_profile_type');
 		
-		$qb->setParameter('local', $this->local, Locale::TYPE);
+		$qb->setParameter('local', new Locale($this->translator->getLocale()), Locale::TYPE);
 		
 		/* Поиск */
 		if($search?->query)

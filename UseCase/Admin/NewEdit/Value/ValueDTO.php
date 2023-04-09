@@ -23,8 +23,6 @@
 
 namespace BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Value;
 
-use BaksDev\Reference\Field\Type\FieldEnum;
-use BaksDev\Reference\Field\Type\InputField;
 use BaksDev\Users\Profile\TypeProfile\Type\Section\Field\Id\TypeProfileSectionFieldUid;
 use BaksDev\Users\Profile\TypeProfile\Type\Section\Id\TypeProfileSectionUid;
 use BaksDev\Users\Profile\UserProfile\Entity\Value\UserProfileValueInterface;
@@ -48,13 +46,6 @@ final class ValueDTO implements UserProfileValueInterface
 	private ?string $sectionDescription = null;
 	
 	private string $type;
-	
-	
-	public function __construct()
-	{
-		
-		$this->type = new InputField(FieldEnum::INPUT);
-	}
 	
 	
 	/** Связь на поле */

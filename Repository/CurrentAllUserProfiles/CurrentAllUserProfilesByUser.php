@@ -103,8 +103,10 @@ final class CurrentAllUserProfilesByUser implements CurrentAllUserProfilesByUser
 			$qb->getSQL(),
 			$qb->getParameters(),
 			$qb->getParameterTypes(),
-			new QueryCacheProfile((60 * 60 * 30), (string) 'choice_user_profiles'.$user)
+			new QueryCacheProfile((60 * 60 * 30))
 		)->fetchAllAssociative();
+		
+		
 	}
 	
 }

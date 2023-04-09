@@ -26,14 +26,17 @@ namespace BaksDev\Users\Profile\UserProfile\UseCase\User\Delete;
 use BaksDev\Files\Resources\Upload\Image\ImageUploadInterface;
 use BaksDev\Users\Profile\UserProfile\Entity as EntityUserProfile;
 
+use BaksDev\Users\Profile\UserProfile\Messenger\UserProfileMessage;
 use BaksDev\Users\Profile\UserProfile\Repository\UniqProfileUrl\UniqProfileUrlInterface;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 
 use BaksDev\Core\Type\Modify\ModifyActionEnum;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Cache\Adapter\ApcuAdapter;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -42,9 +45,9 @@ final class DeleteUserProfileHandler
 {
 	private EntityManagerInterface $entityManager;
 	
-	private ImageUploadInterface $imageUpload;
-	
-	private UniqProfileUrlInterface $uniqProfileUrl;
+//	private ImageUploadInterface $imageUpload;
+//
+//	private UniqProfileUrlInterface $uniqProfileUrl;
 	
 	private TranslatorInterface $translator;
 	
@@ -52,23 +55,26 @@ final class DeleteUserProfileHandler
 	
 	private LoggerInterface $logger;
 	
+	private MessageBusInterface $bus;
+	
 	
 	public function __construct(
 		EntityManagerInterface $entityManager,
-		ImageUploadInterface $imageUpload,
-		UniqProfileUrlInterface $uniqProfileUrl,
+//		ImageUploadInterface $imageUpload,
+//		UniqProfileUrlInterface $uniqProfileUrl,
 		TranslatorInterface $translator,
 		ValidatorInterface $validator,
 		LoggerInterface $logger,
+		MessageBusInterface $bus
 	)
 	{
 		$this->entityManager = $entityManager;
-		$this->imageUpload = $imageUpload;
-		
-		$this->uniqProfileUrl = $uniqProfileUrl;
+//		$this->imageUpload = $imageUpload;
+//		$this->uniqProfileUrl = $uniqProfileUrl;
 		$this->translator = $translator;
 		$this->validator = $validator;
 		$this->logger = $logger;
+		$this->bus = $bus;
 	}
 	
 	
@@ -185,10 +191,8 @@ final class DeleteUserProfileHandler
 		
 		$this->entityManager->flush();
 		
-		/* Чистим кеш профиля */
-		$cache = new FilesystemAdapter();
-		$locale = $this->translator->getLocale();
-		$cache->delete('profile-'.$locale.'-'.$infoDTO->getUser()->getValue());
+		/* Отправляем собыие в шину  */
+		$this->bus->dispatch(new UserProfileMessage($UserProfile->getId(), $UserProfile->getEvent(), $command->getEvent()));
 		
 		return $UserProfile;
 	}

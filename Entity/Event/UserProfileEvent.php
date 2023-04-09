@@ -79,7 +79,7 @@ class UserProfileEvent extends EntityEvent
 	
 	/** Персональные данные */
 	#[ORM\OneToOne(mappedBy: 'event', targetEntity: UserProfilePersonal::class, cascade: ['all'])]
-	private UserProfilePersonal $personal;
+	private ?UserProfilePersonal $personal = null;
 	
 	/** Модификатор */
 	#[ORM\OneToOne(mappedBy: 'event', targetEntity: UserProfileModify::class, cascade: ['all'])]
@@ -93,8 +93,8 @@ class UserProfileEvent extends EntityEvent
 	public function __construct()
 	{
 		$this->id = new UserProfileEventUid();
-		$this->personal = new UserProfilePersonal($this);
-		$this->avatar = new UserProfileAvatar($this);
+		//$this->personal = new UserProfilePersonal($this);
+		//$this->avatar = new UserProfileAvatar($this);
 		
 		$this->modify = new UserProfileModify($this);
 		
@@ -119,6 +119,14 @@ class UserProfileEvent extends EntityEvent
 	{
 		return $this->profile;
 	}
+	
+	
+	public function getType() : TypeProfileUid
+	{
+		return $this->type;
+	}
+	
+	
 	
 	
 	public function setProfile(UserProfileUid|UserProfile $profile) : void

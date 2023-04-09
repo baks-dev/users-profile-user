@@ -28,15 +28,18 @@ use BaksDev\Users\Profile\UserProfile\Entity;
 
 use BaksDev\Users\Profile\UserProfile\Entity\Avatar\UserProfileAvatar;
 use BaksDev\Users\Profile\UserProfile\Message\ModerationUserProfile\ModerationUserProfileDTO;
+use BaksDev\Users\Profile\UserProfile\Messenger\UserProfileMessage;
 use BaksDev\Users\Profile\UserProfile\Repository\UniqProfileUrl\UniqProfileUrlInterface;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 
 use BaksDev\Core\Type\Modify\ModifyActionEnum;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Cache\Adapter\ApcuAdapter;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -55,7 +58,8 @@ final class UserProfileHandler
 	
 	private LoggerInterface $logger;
 	
-	private RequestStack $request;
+	//private RequestStack $request;
+	private MessageBusInterface $bus;
 	
 	
 	public function __construct(
@@ -66,7 +70,8 @@ final class UserProfileHandler
 		
 		ValidatorInterface $validator,
 		LoggerInterface $logger,
-		RequestStack $request,
+		//RequestStack $request,
+		MessageBusInterface $bus,
 	
 	)
 	{
@@ -77,7 +82,8 @@ final class UserProfileHandler
 		$this->translator = $translator;
 		$this->validator = $validator;
 		$this->logger = $logger;
-		$this->request = $request;
+		//$this->request = $request;
+		$this->bus = $bus;
 	}
 	
 	
@@ -192,26 +198,31 @@ final class UserProfileHandler
 		$Event->setEntity($command);
 		$this->entityManager->persist($Event);
 		
-		/* Загружаем файл аватарки профиля */
 		
-		/** @var Avatar\AvatarDTO $Avatar */
-		$Avatar = $command->getAvatar();
-		if($Avatar->file !== null)
+		/* Загружаем файл аватарки профиля */
+		if(method_exists( $command, 'getAvatar'))
 		{
-			$UserProfileAvatar = $Event->getUploadAvatar();
-			$this->imageUpload->upload($Avatar->file, $UserProfileAvatar);
+			/** @var Avatar\AvatarDTO $Avatar */
+			$Avatar = $command->getAvatar();
+			
+			if($Avatar && $Avatar->file !== null)
+			{
+				$UserProfileAvatar = $Event->getUploadAvatar();
+				$this->imageUpload->upload($Avatar->file, $UserProfileAvatar);
+			}
 		}
+		
 		
 		/* Присваиваем событие INFO */
 		$UserProfileInfo->setEntity($infoDTO);
 		/* присваиваем событие корню */
 		$UserProfile->setEvent($Event);
+	
 		$this->entityManager->flush();
 		
-		/* Чистим кеш профиля */
-		$cache = new FilesystemAdapter('CacheUserProfile');
-		$locale = $this->translator->getLocale();
-		$cache->delete('current_user_profile'.$infoDTO->getUser()->getValue().$locale);
+		/* Отправляем собыие в шину  */
+		$this->bus->dispatch(new UserProfileMessage($UserProfile->getId(), $UserProfile->getEvent(), $command->getEvent()));
+		
 		
 		return $UserProfile;
 	}

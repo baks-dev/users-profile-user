@@ -50,6 +50,8 @@ return static function(ContainerConfigurator $configurator) {
 		->exclude('../../UseCase/**/*DTO.php')
 	;
 	
+	$services->load($namespace.'\Event\\', __DIR__.'/../../Event');
+	
 	$services->set(UserProfileDecorator::class)
 		->decorate(\BaksDev\Users\User\Repository\UserProfile\UserProfileInterface::class, null, 20)
 		->arg('$profile', service('.inner'))

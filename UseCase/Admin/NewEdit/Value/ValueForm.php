@@ -23,6 +23,7 @@
 
 namespace BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Value;
 
+use BaksDev\Core\Services\Fields\FieldsChoice;
 use BaksDev\Users\Profile\UserProfile\Repository\FieldValueForm\FieldValueFormInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -39,10 +40,16 @@ final class ValueForm extends AbstractType
 	
 	private FieldValueFormInterface $fieldValue;
 	
+	private FieldsChoice $fieldsChoice;
 	
-	public function __construct(FieldValueFormInterface $fieldValue)
+	
+	public function __construct(
+		FieldValueFormInterface $fieldValue,
+		FieldsChoice $fieldsChoice,
+	)
 	{
 		$this->fieldValue = $fieldValue;
+		$this->fieldsChoice = $fieldsChoice;
 	}
 	
 	
@@ -66,80 +73,19 @@ final class ValueForm extends AbstractType
 					
 					/** @var \BaksDev\Users\Profile\UserProfile\Repository\FieldValueForm\FieldValueFormDTO $field */
 					$field = end($fields[(string) $data->getField()]);
+					$fieldType = $this->fieldsChoice->getChoice($field->getType());
 					
-					match ($field->getType())
-					{
-						/* INTEGER */
-						'integer' => $form->add
-						(
-							'value',
-							IntegerType::class,
-							[
-								'label' => $field->getFieldName(),
-								'required' => $field->isRequired(),
-							]
-						),
-						
-						/* MAIL */
-						'mail' => $form->add
-						(
-							'value',
-							EmailType::class,
-							[
-								'label' => $field->getFieldName(),
-								'required' => $field->isRequired(),
-								'help' => $field->getFieldDescription(),
-							]
-						),
-						
-						/* PHONE */
-						'phone' => $form->add
-						(
-							'value',
-							TextType::class,
-							[
-								'label' => $field->getFieldName(),
-								'required' => $field->isRequired(),
-								'attr' =>
-									[
-										'placeholder' => $field->getFieldDescription(),
-									],
-							]
-						),
-						//
-						//                      /* SELECT */
-						//                      'select' => $form->add
-						//                      (
-						//                        'value',
-						//                        ChoiceType::class,
-						//                        [
-						//                          'label' => $propCat->fieldTrans,
-						//                          'required' => $propCat->fieldRequired,
-						//                          'placeholder' => $propCat->fieldDesc,
-						//                        ]),
-						//
-						/* TEXTAREA */
-						'textarea' => $form->add(
-							'value',
-							TextareaType::class,
-							[
-								'label' => $field->getFieldName(),
-								'required' => $field->isRequired(),
-								'help' => $field->getFieldDescription(),
-							]
-						),
-						
-						default => $form->add
-						(
-							'value',
-							TextType::class,
-							[
-								'label' => $field->getFieldName(),
-								'required' => $field->isRequired(),
-							]
-						)
-						
-					};
+					
+					$form->add
+					(
+						'value',
+						$fieldType->form(),
+						[
+							'label' => $field->getFieldName(),
+							'required' => $field->isRequired(),
+						]
+					);
+					
 				}
 				
 			}

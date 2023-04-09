@@ -1,36 +1,33 @@
 user:
   page:
-    index: 'Профили'
-    new: 'Добавить профиль'
-    edit: 'Редактировать профиль'
-    delete: 'Удалить профиль'
+    index: 'Profiles'
+    new: 'Add profile'
+    edit: 'Edit profile'
+    delete: 'Delete profile'
   breadcrumb:
-    index: 'Профили пользователя'
-    new: 'Добавить профили пользователя'
-    edit: 'Редактировать профили пользователя'
-    delete: 'Удалить профили пользователя'
+    index: 'User profiles'
+    new: 'Add user profiles'
+    edit: 'Edit user profiles'
+    delete: 'Delete user profiles'
   form:
     label:
-      username: 'Имя профиля'
-      url: 'URL Адрес профиля'
-      sort: 'Сортировка'
+      username: 'Profile name'
+      url: 'Profile URL'
+      sort: 'Sort'
     header:
-      basic: 'Основные настройки'
-      personal: 'Личные данные'
+      basic: 'Basic settings'
+      personal: 'Personal data'
     delete:
-      header: 'Удалить профиль'
-      h4: 'Вы действительно желаете удалить профиль "%name%"?'
+      header: 'Delete profile'
+      h4: 'Are you sure you want to delete the profile "%name%"?'
 
   success:
-    new: 'Профиль успешно добавлен'
-    update: 'Профиль успешно обновлен'
-    delete: 'Профиль успешно удален'
-    activate: 'Профиль успешно применен'
+    new: 'Profile added successfully'
+    update: 'Profile updated successfully'
+    delete: 'Profile deleted successfully'
+    activate: 'Profile applied successfully'
   danger:
-    new: '%s: Ошибка при добавлении профиля'
-    update: '%s: Ошибка при обновлении профиля'
-    delete: '%s: Ошибка при удалении профиля'
-    activate: '%s: Ошибка при применении профиля'
-
-
-
+    new: '%s: Error adding profile'
+    update: '%s: Error updating profile'
+    delete: '%s: Error deleting profile'
+    activate: '%s: Error applying profile'

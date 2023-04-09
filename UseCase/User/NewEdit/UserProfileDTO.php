@@ -44,7 +44,7 @@ final class UserProfileDTO implements UserProfileEventInterface
 	#[Assert\Valid]
 	private ?Avatar\AvatarDTO $avatar;
 	
-	/** Тип профиля */
+	/** Информация профиля */
 	#[Assert\Valid]
 	private Info\InfoDTO $info;
 	

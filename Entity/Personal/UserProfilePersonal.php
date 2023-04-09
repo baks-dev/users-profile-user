@@ -63,10 +63,6 @@ class UserProfilePersonal extends EntityEvent
 	#[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
 	private ?string $location = null;
 	
-	//    /** ID чата телеграмм */
-	//    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
-	//    protected ?string $telegramm = null;
-	
 	public function __construct(UserProfileEvent $event)
 	{
 		$this->event = $event;
