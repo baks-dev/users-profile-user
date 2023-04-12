@@ -24,6 +24,7 @@
 namespace BaksDev\Users\Profile\UserProfile\Type\Event;
 
 use BaksDev\Core\Type\UidType\UidType;
+use Doctrine\DBAL\Types\Types;
 
 final class UserProfileEventType extends UidType
 {
@@ -36,7 +37,7 @@ final class UserProfileEventType extends UidType
 	
 	public function getName() : string
 	{
-		return UserProfileEventUid::TYPE;
+        return UserProfileEventUid::TYPE;
 	}
 	
 }

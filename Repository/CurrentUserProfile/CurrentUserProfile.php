@@ -130,10 +130,7 @@ final class CurrentUserProfile implements CurrentUserProfileInterface
 		);
 		
 		$qb->addSelect('profile_personal.username AS profile_username'); /* Username */
-		//$qb->addSelect('profile_personal.gender'); /* Пол */
-		//$qb->addSelect('profile_personal.birthday'); /* Дата рождения */
-		//$qb->addSelect('profile_personal.location'); /* Местоположение */
-		
+
 		$qb->join(
 			'profile',
 			UserProfileEntity\Personal\UserProfilePersonal::TABLE,
@@ -145,7 +142,17 @@ final class CurrentUserProfile implements CurrentUserProfileInterface
 		$qb->addSelect('profile_avatar.dir AS profile_avatar_dir');
 		$qb->addSelect('profile_avatar.ext AS profile_avatar_ext');
 		$qb->addSelect('profile_avatar.cdn AS profile_avatar_cdn');
-		
+
+
+        $qb->addSelect("
+			CASE
+			   WHEN profile_avatar.name IS NOT NULL THEN CONCAT ( '/upload/".UserProfileEntity\Avatar\UserProfileAvatar::TABLE."' , '/', profile_avatar.dir, '/', profile_avatar.name, '.')
+			   ELSE NULL
+			END AS profile_avatar_file
+		"
+        );
+
+
 		$qb->leftJoin(
 			'profile_event',
 			UserProfileEntity\Avatar\UserProfileAvatar::TABLE,
@@ -197,15 +204,13 @@ final class CurrentUserProfile implements CurrentUserProfileInterface
 	
 	
 	
-	public function getCurrentUserProfile(UserUid $user) : CurrentUserProfileDTO
+	public function getCurrentUserProfile(UserUid $user) : ?CurrentUserProfileDTO
 	{
 		
 		$qb = $this->entityManager->createQueryBuilder();
 		/** ЛОКАЛЬ */
 		$locale = new Locale($this->translator->getLocale());
-		
-		
-		
+
 		$sealect = sprintf("new %s(
 			profile.id,
 			profile.event,

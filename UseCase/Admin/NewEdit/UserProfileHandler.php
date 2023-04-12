@@ -202,13 +202,10 @@ final class UserProfileHandler
 		/* присваиваем событие корню */
 		$UserProfile->setEvent($Event);
 		$this->entityManager->flush();
-		
-		
+
 		/* Отправляем собыие в шину  */
 		$this->bus->dispatch(new UserProfileMessage($UserProfile->getId(), $UserProfile->getEvent(), $command->getEvent()));
-		
-		
-		
+
 		return $UserProfile;
 	}
 	

@@ -26,6 +26,7 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 use BaksDev\Users\Profile\UserProfile\Repository\CurrentAllUserProfiles\CurrentAllUserProfilesByUserInterface;
 use BaksDev\Users\Profile\UserProfile\Repository\CurrentUserProfile\CurrentUserProfileInterface;
 use BaksDev\Users\Profile\UserProfile\Repository\CurrentUserProfile\UserProfileDecorator;
+use BaksDev\Users\User\Repository\UserProfile\UserProfileInterface;
 
 return static function(ContainerConfigurator $configurator) {
 	$services = $configurator->services()
@@ -53,7 +54,7 @@ return static function(ContainerConfigurator $configurator) {
 	$services->load($namespace.'\Event\\', __DIR__.'/../../Event');
 	
 	$services->set(UserProfileDecorator::class)
-		->decorate(\BaksDev\Users\User\Repository\UserProfile\UserProfileInterface::class, null, 20)
+		->decorate(UserProfileInterface::class, null, 10)
 		->arg('$profile', service('.inner'))
 		->arg('$current', service(CurrentUserProfileInterface::class))
 		->arg('$allProfiles', service(CurrentAllUserProfilesByUserInterface::class))

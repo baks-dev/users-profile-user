@@ -69,9 +69,7 @@ final class UserProfileDecorator implements UserProfileInterface
 		$this->allProfiles = $allProfiles->fetchUserProfilesAllAssociative($this->user);
 		
 		$UserProfile = $current->fetchProfileAssociative($this->user);
-		
-		
-		
+
 		$this->username = $UserProfile ? $UserProfile['profile_username'] : $profile->getUsername();
 		$this->type = $UserProfile ? $UserProfile['profile_type'] : $profile->getType();
 		$this->personal = $UserProfile ? $UserProfile['profile_url'] : null;

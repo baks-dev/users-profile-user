@@ -24,6 +24,7 @@
 namespace BaksDev\Users\Profile\UserProfile\Type\Id;
 
 use BaksDev\Core\Type\UidType\UidType;
+use Doctrine\DBAL\Types\Types;
 
 final class UserProfileUidType extends UidType
 {
@@ -36,7 +37,7 @@ final class UserProfileUidType extends UidType
 	
 	public function getName() : string
 	{
-		return UserProfileUid::TYPE;
+        return UserProfileUid::TYPE;
 	}
 	
 }

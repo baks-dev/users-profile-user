@@ -54,5 +54,9 @@ final class UserProfileCacheClear
 			$cache = new ApcuAdapter((string) $message->getLast()->getValue());
 			$cache->clear();
 		}
+
+
+
+
 	}
 }

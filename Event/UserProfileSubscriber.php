@@ -28,6 +28,7 @@ namespace BaksDev\Users\Profile\UserProfile\Event;
 use BaksDev\Products\Category\Repository\AllCategory\AllCategoryInterface;
 use BaksDev\Products\Category\Repository\AllCategoryByMenu\AllCategoryByMenuInterface;
 use BaksDev\Users\Profile\UserProfile\Repository\CurrentUserProfile\CurrentUserProfileInterface;
+use Symfony\Bridge\Twig\AppVariable;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
@@ -74,25 +75,13 @@ final class UserProfileSubscriber implements EventSubscriberInterface
 	/** Событие определяет профиль пользователя */
 	public function onRequestEvent(RequestEvent $event) : void
 	{
-		
-		//$User = $this->user->getToken()?->getUser();
-		
-		
 		$globals = $this->twig->getGlobals();
 		$baks_profile = $globals['baks_profile'] ?? [];
 		$Userprofile = null;
-		
-		
-		/** @var \Symfony\Bridge\Twig\AppVariable $app */
+
+		/** @var AppVariable $app */
 		$app = $globals['app'];
-		
-//		dump($app->getUser()?->getId());
-//
-//		if($User)
-//		{
-//			$Userprofile = $this->currentUserProfile->fetchProfileAssociative($User->getId());
-//		}
-		
+
 		
 		if($app->getUser())
 		{
