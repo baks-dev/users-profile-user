@@ -21,31 +21,11 @@
  *  THE SOFTWARE.
  */
 
-namespace BaksDev\Users\Profile\UserProfile\Type\Id;
+namespace BaksDev\Users\Profile\UserProfile\Repository\UserProfileChoice;
 
-use BaksDev\Core\Type\UidType\Uid;
-use Symfony\Component\Uid\AbstractUid;
-
-final class UserProfileUid extends Uid
+interface UserProfileChoiceInterface
 {
-	public const TYPE = 'user_profile_id';
+    /** Метод возвращает список идентификтаоров профилей с username профиля в качестве атрибута */
 
-    private mixed $attr;
-
-    public function __construct(AbstractUid|string|null $value = null, mixed $attr = null)
-    {
-        parent::__construct($value);
-        $this->attr = $attr;
-    }
-
-    public function getAttr(): mixed
-    {
-        return $this->attr;
-    }
-
-    /*public function getName(): mixed
-    {
-        return $this->attr;
-    }*/
-
+    public function getActiveUserProfile(): iterable;
 }
