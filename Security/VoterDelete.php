@@ -21,35 +21,26 @@
  *  THE SOFTWARE.
  */
 
-namespace BaksDev\Users\Profile\UserProfile\DataFixtures\Security\Check\Voter;
+declare(strict_types=1);
 
-use BaksDev\Users\Groups\Group\Entity\CheckRole\CheckVoter\CheckVoterInterface;
-use BaksDev\Users\Groups\Role\Type\VoterPrefix\VoterPrefix;
-use Symfony\Component\Validator\Constraints as Assert;
+namespace BaksDev\Users\Profile\UserProfile\Security;
 
-final class CheckVoterDTO implements CheckVoterInterface
+use BaksDev\Users\Groups\Group\DataFixtures\Security\RoleFixturesInterface;
+use BaksDev\Users\Groups\Group\DataFixtures\Security\VoterFixturesInterface;
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
+
+#[AutoconfigureTag('baks.security.voter')]
+class VoterDelete implements VoterFixturesInterface
 {
-	/** Префикс правила */
-	#[Assert\NotBlank]
-	private VoterPrefix $voter;
-	
-	
-	/**
-	 * @return VoterPrefix
-	 */
-	public function getVoter() : VoterPrefix
-	{
-		return $this->voter;
-	}
-	
-	
-	/**
-	 * @param VoterPrefix $voter
-	 */
-	public function setVoter(VoterPrefix $voter) : void
-	{
-		$this->voter = $voter;
-	}
-	
-}
+    public const VOTER = 'DELETE';
 
+    public function getVoter(): string
+    {
+        return Role::ROLE.'_'.self::VOTER;
+    }
+
+    public function equals(RoleFixturesInterface $role): bool
+    {
+        return Role::ROLE === $role->getRole();
+    }
+}

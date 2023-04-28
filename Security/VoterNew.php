@@ -21,55 +21,26 @@
  *  THE SOFTWARE.
  */
 
-namespace BaksDev\Users\Profile\UserProfile\DataFixtures\Security\Role\Voter\Trans;
+declare(strict_types=1);
 
-use BaksDev\Users\Groups\Role\Entity\Voters\Trans\VoterTransInterface;
-use BaksDev\Core\Type\Locale\Locale;
+namespace BaksDev\Users\Profile\UserProfile\Security;
 
-final class VoterTransDTO implements VoterTransInterface
+use BaksDev\Users\Groups\Group\DataFixtures\Security\RoleFixturesInterface;
+use BaksDev\Users\Groups\Group\DataFixtures\Security\VoterFixturesInterface;
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
+
+#[AutoconfigureTag('baks.security.voter')]
+class VoterNew implements VoterFixturesInterface
 {
-	
-	/** Локаль */
-	private Locale $local;
-	
-	/** Название */
-	private string $name;
-	
-	
-	/**
-	 * @return Locale
-	 */
-	public function getLocal() : Locale
-	{
-		return $this->local;
-	}
-	
-	
-	/**
-	 * @param Locale $local
-	 */
-	public function setLocal(Locale $local) : void
-	{
-		$this->local = $local;
-	}
-	
-	
-	/**
-	 * @return string
-	 */
-	public function getName() : string
-	{
-		return $this->name;
-	}
-	
-	
-	/**
-	 * @param string $name
-	 */
-	public function setName(string $name) : void
-	{
-		$this->name = $name;
-	}
-	
-}
+    public const VOTER = 'NEW';
 
+    public function getVoter(): string
+    {
+        return Role::ROLE.'_'.self::VOTER;
+    }
+
+    public function equals(RoleFixturesInterface $role): bool
+    {
+        return Role::ROLE === $role->getRole();
+    }
+}
