@@ -23,7 +23,8 @@
 
 namespace BaksDev\Users\Profile\UserProfile\Twig\UserProfile;
 
-use Symfony\Component\Form\FormView;
+use BaksDev\Users\Profile\UserProfile\Repository\UserProfileByEvent\UserProfileByEventInterface;
+use BaksDev\Users\Profile\UserProfile\Type\Event\UserProfileEventUid;
 use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Extension\AbstractExtension;
@@ -31,19 +32,69 @@ use Twig\TwigFunction;
 
 final class UserProfileExtension extends AbstractExtension
 {
-	public function getFunctions() : array
-	{
-		return [
-			new TwigFunction(
-				'render_user_profile',
-				[$this, 'userProfile'],
-				['needs_environment' => true, 'is_safe' => ['html']]
-			),
-		];
-	}
-	
-	
-	public function userProfile(Environment $twig, $profile) : string
+    private UserProfileByEventInterface $profileByEvent;
+
+    public function __construct(UserProfileByEventInterface $profileByEvent)
+    {
+        $this->profileByEvent = $profileByEvent;
+    }
+
+    /*public function getFunctions() : array
+    {
+    	return [
+    		new TwigFunction(
+    			'render_user_profile',
+    			[$this, 'userProfile'],
+    			['needs_environment' => true, 'is_safe' => ['html']]
+    		),
+    	];
+    }*/
+
+    public function getFunctions() : array
+    {
+        return [
+            new TwigFunction('user_profile', [$this, 'content'], ['needs_environment' => true, 'is_safe' => ['html']]),
+            new TwigFunction('user_profile_render', [$this, 'render'], ['needs_environment' => true, 'is_safe' => ['html']]),
+            new TwigFunction('user_profile_template', [$this, 'template'], ['needs_environment' => true, 'is_safe' => ['html']]),
+        ];
+    }
+
+    public function content(Environment $twig, string $value) : string
+    {
+        $data = $this->profileByEvent->fetchUserProfileAssociative(new UserProfileEventUid($value));
+        
+        try
+        {
+            return $twig->render('@Template/UserProfile/user_profile/content.html.twig', ['value' => $data]);
+        } catch(LoaderError $loaderError)
+        {
+            return $twig->render('@UserProfile/twig/user_profile/content.html.twig', ['value' => $data]);
+        }
+    }
+
+    public function render(Environment $twig, $value) : string
+    {
+        try
+        {
+            return $twig->render('@Template/UserProfile/user_profile/render.html.twig', ['value' => $value]);
+        } catch(LoaderError $loaderError)
+        {
+            return $twig->render('@UserProfile/twig/user_profile/render.html.twig', ['value' => $value]);
+        }
+    }
+
+    public function template(Environment $twig, $value) : string
+    {
+        try
+        {
+            return $twig->render('@Template/UserProfile/user_profile/template.html.twig', ['value' => $value]);
+        } catch(LoaderError $loaderError)
+        {
+            return $twig->render('@UserProfile/twig/user_profile/template.html.twig', ['value' => $value]);
+        }
+    }
+
+	/*public function userProfile(Environment $twig, $profile) : string
 	{
 		try
 		{
@@ -53,6 +104,5 @@ final class UserProfileExtension extends AbstractExtension
 		{
 			return $twig->render('@TwigUserProfile/User/UserProfile/user.profile.html.twig', ['profile' => $profile]);
 		}
-	}
-	
+	}*/
 }

@@ -36,7 +36,7 @@ final class UserProfileCacheClear
 	public function __invoke(UserProfileMessage $message)
 	{
 		/* Чистим кеш модуля */
-		$cache = new FilesystemAdapter('CacheUserProfile');
+		$cache = new FilesystemAdapter('UserProfile');
 		$cache->clear();
 		
 		/* Сбрасываем индивидуальный кеш */

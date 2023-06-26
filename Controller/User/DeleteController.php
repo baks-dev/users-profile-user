@@ -25,7 +25,7 @@ namespace BaksDev\Users\Profile\UserProfile\Controller\User;
 
 use BaksDev\Core\Controller\AbstractController;
 
-use BaksDev\Core\Services\Security\RoleSecurity;
+use BaksDev\Core\Listeners\Event\Security\RoleSecurity;
 use BaksDev\Users\Profile\UserProfile\Entity as EntityUserProfile;
 use BaksDev\Users\Profile\UserProfile\UseCase\User\Delete\DeleteUserProfileDTO;
 use BaksDev\Users\Profile\UserProfile\UseCase\User\Delete\DeleteUserProfileForm;

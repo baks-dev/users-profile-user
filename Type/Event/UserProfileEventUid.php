@@ -29,6 +29,8 @@ use Symfony\Component\Uid\UuidV7;
 
 final class UserProfileEventUid
 {
+    public const TEST = '0188a9a8-54c9-716f-9297-94a6348291a5';
+    
 	public const TYPE = 'user_profile_event';
 	
 	private Uuid $value;

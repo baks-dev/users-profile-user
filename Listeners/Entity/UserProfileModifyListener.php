@@ -21,49 +21,47 @@
  *  THE SOFTWARE.
  */
 
-namespace BaksDev\Users\Profile\UserProfile\EntityListeners;
+namespace BaksDev\Users\Profile\UserProfile\Listeners\Entity;
 
-use BaksDev\Users\Profile\UserProfile\Entity\Modify\UserProfileModify;
 use BaksDev\Core\Type\Ip\IpAddress;
+use BaksDev\Users\Profile\UserProfile\Entity\Modify\UserProfileModify;
+use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
+use Doctrine\ORM\Events;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
+#[AsEntityListener(event: Events::prePersist, method: 'prePersist', entity: UserProfileModify::class)]
 final class UserProfileModifyListener
 {
-	private RequestStack $request;
-	
-	private TokenStorageInterface $token;
-	
-	
-	public function __construct(
-		RequestStack $request,
-		TokenStorageInterface $token,
-	)
-	{
-		$this->request = $request;
-		$this->token = $token;
-	}
-	
-	
-	public function prePersist(UserProfileModify $data, LifecycleEventArgs $event) : void
-	{
-		$token = $this->token->getToken();
-		
-		if($token)
-		{
-			$data->setUser($token->getUser());
-		}
-		
-		/* Если пользователь не из консоли */
-		if($this->request->getCurrentRequest())
-		{
-			
-			$data->upModifyAgent(
-				new IpAddress($this->request->getCurrentRequest()->getClientIp()), /* Ip */
-				$this->request->getCurrentRequest()->headers->get('User-Agent') /* User-Agent */
-			);
-		}
-	}
-	
+    private RequestStack $request;
+
+    private TokenStorageInterface $token;
+
+    public function __construct(
+        RequestStack $request,
+        TokenStorageInterface $token,
+    ) {
+        $this->request = $request;
+        $this->token = $token;
+    }
+
+    public function prePersist(UserProfileModify $data, LifecycleEventArgs $event): void
+    {
+        $token = $this->token->getToken();
+
+        if ($token)
+        {
+            $data->setUser($token->getUser());
+        }
+
+        /* Если пользователь не из консоли */
+        if ($this->request->getCurrentRequest())
+        {
+            $data->upModifyAgent(
+                new IpAddress($this->request->getCurrentRequest()->getClientIp()), /* Ip */
+                $this->request->getCurrentRequest()->headers->get('User-Agent') /* User-Agent */
+            );
+        }
+    }
 }

@@ -24,7 +24,7 @@
 namespace BaksDev\Users\Profile\UserProfile\Controller\Admin;
 
 use BaksDev\Core\Controller\AbstractController;
-use BaksDev\Core\Services\Security\RoleSecurity;
+use BaksDev\Core\Listeners\Event\Security\RoleSecurity;
 use BaksDev\Users\Profile\TypeProfile\Entity\TypeProfile;
 use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\UserProfileDTO;
 use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\UserProfileForm;

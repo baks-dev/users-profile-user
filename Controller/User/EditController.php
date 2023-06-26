@@ -24,7 +24,7 @@
 namespace BaksDev\Users\Profile\UserProfile\Controller\User;
 
 use BaksDev\Core\Controller\AbstractController;
-use BaksDev\Core\Services\Security\RoleSecurity;
+use BaksDev\Core\Listeners\Event\Security\RoleSecurity;
 use BaksDev\Users\Profile\UserProfile\Entity;
 use BaksDev\Users\Profile\UserProfile\Message\ModerationUserProfile\ModerationUserProfileDTO;
 use BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\UserProfileDTO;
@@ -75,6 +75,7 @@ final class EditController extends AbstractController
             // Отправляем уведомление о модерации в телегу
             // $telega = new ModerationUserProfileDTO($UserProfile->getEvent());
             // $bus->dispatch($telega);
+                
             } else {
                 $this->addFlash('danger', 'user.danger.update', 'user.user.profile', $UserProfile);
             }

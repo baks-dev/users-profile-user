@@ -26,7 +26,7 @@ namespace BaksDev\Users\Profile\UserProfile\Controller\Admin;
 use BaksDev\Core\Controller\AbstractController;
 use BaksDev\Core\Form\Search\SearchDTO;
 use BaksDev\Core\Form\Search\SearchForm;
-use BaksDev\Core\Services\Security\RoleSecurity;
+use BaksDev\Core\Listeners\Event\Security\RoleSecurity;
 use BaksDev\Users\Profile\TypeProfile\Repository\AllProfileType\AllProfileTypeInterface;
 use BaksDev\Users\Profile\UserProfile\Repository\AllUserProfile\AllUserProfileInterface;
 use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatus;

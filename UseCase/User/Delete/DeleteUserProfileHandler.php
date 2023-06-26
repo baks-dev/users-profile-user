@@ -23,21 +23,13 @@
 
 namespace BaksDev\Users\Profile\UserProfile\UseCase\User\Delete;
 
-use BaksDev\Files\Resources\Upload\Image\ImageUploadInterface;
-use BaksDev\Users\Profile\UserProfile\Entity as EntityUserProfile;
-
-use BaksDev\Users\Profile\UserProfile\Messenger\UserProfileMessage;
-use BaksDev\Users\Profile\UserProfile\Repository\UniqProfileUrl\UniqProfileUrlInterface;
-use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
-
+use BaksDev\Core\Services\Messenger\MessageDispatchInterface;
 use BaksDev\Core\Type\Modify\ModifyActionEnum;
+use BaksDev\Users\Profile\UserProfile\Entity as EntityUserProfile;
+use BaksDev\Users\Profile\UserProfile\Messenger\UserProfileMessage;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Cache\Adapter\ApcuAdapter;
-use Symfony\Component\Cache\Adapter\FilesystemAdapter;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Messenger\MessageBusInterface;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -56,26 +48,24 @@ final class DeleteUserProfileHandler
 	private LoggerInterface $logger;
 	
 	private MessageBusInterface $bus;
-	
-	
-	public function __construct(
+    private MessageDispatchInterface $messageDispatch;
+
+
+    public function __construct(
 		EntityManagerInterface $entityManager,
-//		ImageUploadInterface $imageUpload,
-//		UniqProfileUrlInterface $uniqProfileUrl,
 		TranslatorInterface $translator,
 		ValidatorInterface $validator,
 		LoggerInterface $logger,
-		MessageBusInterface $bus
+        MessageDispatchInterface $messageDispatch
+
 	)
 	{
 		$this->entityManager = $entityManager;
-//		$this->imageUpload = $imageUpload;
-//		$this->uniqProfileUrl = $uniqProfileUrl;
 		$this->translator = $translator;
 		$this->validator = $validator;
 		$this->logger = $logger;
-		$this->bus = $bus;
-	}
+        $this->messageDispatch = $messageDispatch;
+    }
 	
 	
 	public function handle(
@@ -166,7 +156,7 @@ final class DeleteUserProfileHandler
 		{
 			$uniqid = uniqid('', false);
 			$errorsString = sprintf(
-				'%s: Модификатор не соотвтетствует: %s',
+				'%s: Модификатор не соответствует: %s',
 				self::class,
 				(ModifyActionEnum::DELETE)->name
 			);
@@ -190,9 +180,11 @@ final class DeleteUserProfileHandler
 		$this->entityManager->remove($UserProfile);
 		
 		$this->entityManager->flush();
-		
-		/* Отправляем собыие в шину  */
-		$this->bus->dispatch(new UserProfileMessage($UserProfile->getId(), $UserProfile->getEvent(), $command->getEvent()));
+
+        $this->messageDispatch->dispatch(
+            message: new UserProfileMessage($UserProfile->getId(), $UserProfile->getEvent(), $command->getEvent()),
+            transport: 'users_profile_user'
+        );
 		
 		return $UserProfile;
 	}

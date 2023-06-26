@@ -23,9 +23,7 @@
 
 namespace BaksDev\Users\Profile\UserProfile\Twig;
 
-use Symfony\Component\Form\FormView;
 use Twig\Environment;
-use Twig\Error\LoaderError;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -39,7 +37,7 @@ final class UserProfileDiscountExtension extends AbstractExtension
 		];
 	}
 	
-	
+	/** Пользовательская скидка */
 	public function discount(Environment $twig, $number) : mixed
 	{
 		$globals = $twig->getGlobals();

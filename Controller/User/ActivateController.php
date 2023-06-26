@@ -24,7 +24,7 @@
 namespace BaksDev\Users\Profile\UserProfile\Controller\User;
 
 use BaksDev\Core\Controller\AbstractController;
-use BaksDev\Core\Services\Security\RoleSecurity;
+use BaksDev\Core\Listeners\Event\Security\RoleSecurity;
 use BaksDev\Users\Profile\UserProfile\Entity as EntityUserProfile;
 use BaksDev\Users\Profile\UserProfile\UseCase\User\Activate\ActivateUserProfileDTO;
 use BaksDev\Users\Profile\UserProfile\UseCase\User\Activate\ActivateUserProfilehandler;
@@ -36,7 +36,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[RoleSecurity('ROLE_USER')]
 final class ActivateController extends AbstractController
@@ -78,7 +77,7 @@ final class ActivateController extends AbstractController
         }
 
         // Чистим кеш профиля
-        $cache = new FilesystemAdapter('CacheUserProfile');
+        $cache = new FilesystemAdapter('UserProfile');
         $cache->delete('current_user_profile'.$this->getUser()?->getId().$request->getLocale());
 
         return $this->redirectToReferer();

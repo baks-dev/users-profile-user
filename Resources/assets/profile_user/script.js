@@ -46,12 +46,17 @@ function changeProfileStaus($status) {
     }
 }
 
+
+
 let $idLocation = 'user_profile_form_personal_location';
 let $idLocationHelp = 'user_profile_form_personal_location_help';
 
 if (readGeoMaps) {
     readGeoMaps($idLocation, $idLocationHelp);
 }
+
+console.log(readGeoMaps);
+
 
 /* Определяем поле ввода Username */
 let $name = document.getElementById('user_profile_form_personal_username');

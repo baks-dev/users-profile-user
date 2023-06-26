@@ -91,12 +91,13 @@
 				</tr>
 				</thead>
 				<tbody>
-				
+
 				{% for item in query.data %}
+
 					{{ include(_self|replace({ "content.html.twig": "card.html.twig" })) }}
 				{% endfor %}
-				
-				
+
+
 				</tbody>
 			</table>
 			
@@ -107,6 +108,8 @@
 	</section>
 
 </main>
+
+
 
 
 {# Тюлбар #}

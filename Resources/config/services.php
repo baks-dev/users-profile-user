@@ -23,10 +23,7 @@
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use BaksDev\Users\Profile\UserProfile\Repository\CurrentAllUserProfiles\CurrentAllUserProfilesByUserInterface;
-use BaksDev\Users\Profile\UserProfile\Repository\CurrentUserProfile\CurrentUserProfileInterface;
 use BaksDev\Users\Profile\UserProfile\Repository\CurrentUserProfile\UserProfileDecorator;
-use BaksDev\Users\User\Repository\UserProfile\UserProfileInterface;
 
 return static function (ContainerConfigurator $configurator) {
     $services = $configurator->services()
@@ -37,26 +34,20 @@ return static function (ContainerConfigurator $configurator) {
 
     $namespace = 'BaksDev\Users\Profile\UserProfile';
 
+    $services->load($namespace.'\\', __DIR__.'/../../')
+        ->exclude(__DIR__.'/../../{Controller,Entity,Resources,Type,Tests,*DTO.php,*Message.php}');
+
     $services->load($namespace.'\Controller\\', __DIR__.'/../../Controller')
         ->tag('controller.service_arguments')
-    ;
+        ->exclude(__DIR__.'/../../Controller/**/*Test.php');
 
-    $services->load($namespace.'\Repository\\', __DIR__.'/../../Repository');
 
-    $services->load($namespace.'\Security\\', __DIR__.'/../../Security');
-
-    $services->load($namespace.'\UseCase\\', __DIR__.'/../../UseCase')
-        ->exclude('../../UseCase/**/*DTO.php')
-    ;
-
-    $services->load($namespace.'\Event\\', __DIR__.'/../../Event');
-
-    $services->set(UserProfileDecorator::class)
+/*    $services->set(UserProfileDecorator::class)
         ->decorate(UserProfileInterface::class, null, 10)
         ->arg('$profile', service('.inner'))
         ->arg('$current', service(CurrentUserProfileInterface::class))
         ->arg('$allProfiles', service(CurrentAllUserProfilesByUserInterface::class))
         ->arg('$cdn', env('CDN_HOST'))
         ->autowire()
-    ;
+    ;*/
 };

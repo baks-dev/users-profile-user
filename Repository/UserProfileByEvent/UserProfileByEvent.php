@@ -25,33 +25,65 @@ declare(strict_types=1);
 
 namespace BaksDev\Users\Profile\UserProfile\Repository\UserProfileByEvent;
 
-
+use BaksDev\Core\Type\Locale\Locale;
+use BaksDev\Users\Profile\TypeProfile\Entity\Section\Fields\Trans\TypeProfileSectionFieldTrans;
+use BaksDev\Users\Profile\TypeProfile\Entity\Section\Fields\TypeProfileSectionField;
 use BaksDev\Users\Profile\UserProfile\Entity\Event\UserProfileEvent;
+use BaksDev\Users\Profile\UserProfile\Entity\Value\UserProfileValue;
 use BaksDev\Users\Profile\UserProfile\Type\Event\UserProfileEventUid;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class UserProfileByEvent implements UserProfileByEventInterface
 {
-	private EntityManagerInterface $entityManager;
-	
-	
-	public function __construct(EntityManagerInterface $entityManager)
-	{
-		$this->entityManager = $entityManager;
-	}
-	
-	
-	public function findUserProfileEvent(UserProfileEventUid $event) : ?UserProfileEvent
-	{
-		$qb = $this->entityManager->createQueryBuilder();
-		
-		$qb->select('event');
-		$qb->from(UserProfileEvent::class, 'event');
-		
-		$qb->where('event.id = :event');
-		$qb->setParameter('event', $event, UserProfileEventUid::TYPE);
-		
-		return $qb->getQuery()->getOneOrNullResult();
-	}
-	
+    private EntityManagerInterface $entityManager;
+    private TranslatorInterface $translator;
+
+    public function __construct(EntityManagerInterface $entityManager, TranslatorInterface $translator)
+    {
+        $this->entityManager = $entityManager;
+        $this->translator = $translator;
+    }
+
+    public function findUserProfileEvent(UserProfileEventUid $event): ?UserProfileEvent
+    {
+        $qb = $this->entityManager->createQueryBuilder();
+
+        $qb->select('event');
+        $qb->from(UserProfileEvent::class, 'event');
+
+        $qb->where('event.id = :event');
+        $qb->setParameter('event', $event, UserProfileEventUid::TYPE);
+
+        return $qb->getQuery()->getOneOrNullResult();
+    }
+
+    public function fetchUserProfileAssociative(UserProfileEventUid $event): ?array
+    {
+        $qb = $this->entityManager->getConnection()->createQueryBuilder();
+
+        $qb->select('event.sort');
+        $qb->from(UserProfileEvent::TABLE, 'event');
+
+        $qb->addSelect('value.value AS profile_value');
+        $qb->leftJoin('event', UserProfileValue::TABLE, 'value', 'value.event = event.id');
+
+        $qb->addSelect('type.type AS profile_type');
+        $qb->join('value', TypeProfileSectionField::TABLE, 'type', 'type.id = value.field AND type.card = true');
+        
+        $qb->addSelect('type_trans.name');
+        $qb->leftJoin(
+            'type',
+            TypeProfileSectionFieldTrans::TABLE,
+            'type_trans',
+            'type_trans.field = type.id AND type_trans.local = :local'
+        );
+
+        $qb->setParameter('local', new Locale($this->translator->getLocale()), Locale::TYPE);
+
+        $qb->where('event.id = :event');
+        $qb->setParameter('event', $event, UserProfileEventUid::TYPE);
+
+        return $qb->fetchAllAssociative();
+    }
 }

@@ -33,11 +33,11 @@
 #}
 
 {% block javascript %}
-<script src="/js/util.min.js"></script>
-<script src="/plugins/inputmask/inputmask.min.js"></script>
-<script async src="/plugins/nice-select2/nice-select2.min.js"></script>
-<script src="/plugins/datepicker/datepicker.min.js"></script>
-<script src="/plugins/datepicker/datepicker.lang.min.js"></script>
+<script src="/js/util.min.js?v={{ version }}"></script>
+<script src="/plugins/inputmask/inputmask.min.js?v={{ version }}"></script>
+<script async src="/plugins/nice-select2/nice-select2.min.js?v={{ version }}"></script>
+<script src="/plugins/datepicker/datepicker.min.js?v={{ version }}"></script>
+<script src="/plugins/datepicker/datepicker.lang.min.js?v={{ version }}"></script>
 <script defer src="https://api-maps.yandex.ru/2.1/?apikey={{ MAPS_YANDEX_API }}&lang={{ app.request.locale|lower }}"></script>
 
 

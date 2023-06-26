@@ -28,7 +28,9 @@ use Symfony\Component\Uid\AbstractUid;
 
 final class UserProfileUid extends Uid
 {
-	public const TYPE = 'user_profile_id';
+    public const TEST = '0188a9a8-7508-7b3e-a0a1-312e03f7bdd9';
+    
+    public const TYPE = 'user_profile_id';
 
     private mixed $attr;
 
@@ -47,5 +49,4 @@ final class UserProfileUid extends Uid
     {
         return $this->attr;
     }*/
-
 }

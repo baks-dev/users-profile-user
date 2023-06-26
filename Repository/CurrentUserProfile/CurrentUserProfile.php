@@ -23,20 +23,15 @@
 
 namespace BaksDev\Users\Profile\UserProfile\Repository\CurrentUserProfile;
 
-use BaksDev\Auth\Email\Entity as AccountEntity;
-
 use BaksDev\Auth\Email\Type\Status\AccountStatus;
 use BaksDev\Auth\Email\Type\Status\AccountStatusEnum;
+use BaksDev\Core\Type\Locale\Locale;
 use BaksDev\Users\Profile\TypeProfile\Entity as TypeProfileEntity;
 use BaksDev\Users\Profile\UserProfile\Entity as UserProfileEntity;
-use BaksDev\Users\Groups\Users\Entity as EntityCheckUsers;
-use BaksDev\Users\Groups\Group\Entity as EntityGroup;
-
 use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatus;
 use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatusEnum;
 use BaksDev\Users\User\Entity\User;
 use BaksDev\Users\User\Type\Id\UserUid;
-use BaksDev\Core\Type\Locale\Locale;
 use Doctrine\DBAL\Cache\QueryCacheProfile;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
@@ -188,7 +183,7 @@ final class CurrentUserProfile implements CurrentUserProfileInterface
 		$qb->setParameter('user', $user, UserUid::TYPE);
 		
 		/* Кешируем результат DBAL */
-		$cacheFilesystem = new FilesystemAdapter('CacheUserProfile');
+		$cacheFilesystem = new FilesystemAdapter('UserProfile');
 		
 		$config = $this->connection->getConfiguration();
 		$config?->setResultCache($cacheFilesystem);
