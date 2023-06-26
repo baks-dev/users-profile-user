@@ -201,8 +201,14 @@ final class CurrentUserProfile implements CurrentUserProfileInterface
 	
 	public function getCurrentUserProfile(UserUid $user) : ?CurrentUserProfileDTO
 	{
-		
+
+
+
+
 		$qb = $this->entityManager->createQueryBuilder();
+
+        
+
 		/** ЛОКАЛЬ */
 		$locale = new Locale($this->translator->getLocale());
 
