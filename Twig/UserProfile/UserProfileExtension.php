@@ -50,7 +50,7 @@ final class UserProfileExtension extends AbstractExtension
     	];
     }*/
 
-    public function getFunctions() : array
+    public function getFunctions(): array
     {
         return [
             new TwigFunction('user_profile', [$this, 'content'], ['needs_environment' => true, 'is_safe' => ['html']]),
@@ -59,10 +59,10 @@ final class UserProfileExtension extends AbstractExtension
         ];
     }
 
-    public function content(Environment $twig, string $value) : string
+    public function content(Environment $twig, string $value): string
     {
         $data = $this->profileByEvent->fetchUserProfileAssociative(new UserProfileEventUid($value));
-        
+
         try
         {
             return $twig->render('@Template/UserProfile/user_profile/content.html.twig', ['value' => $data]);
@@ -72,7 +72,7 @@ final class UserProfileExtension extends AbstractExtension
         }
     }
 
-    public function render(Environment $twig, $value) : string
+    public function render(Environment $twig, $value): string
     {
         try
         {
@@ -83,7 +83,7 @@ final class UserProfileExtension extends AbstractExtension
         }
     }
 
-    public function template(Environment $twig, $value) : string
+    public function template(Environment $twig, $value): string
     {
         try
         {
@@ -94,15 +94,15 @@ final class UserProfileExtension extends AbstractExtension
         }
     }
 
-	/*public function userProfile(Environment $twig, $profile) : string
-	{
-		try
-		{
-			return $twig->render('@Template/twig/render_user_profile/user.profile.html.twig', ['profile' => $profile]);
-		}
-		catch(LoaderError $error)
-		{
-			return $twig->render('@TwigUserProfile/User/UserProfile/user.profile.html.twig', ['profile' => $profile]);
-		}
-	}*/
+    /*public function userProfile(Environment $twig, $profile) : string
+    {
+        try
+        {
+            return $twig->render('@Template/twig/render_user_profile/user.profile.html.twig', ['profile' => $profile]);
+        }
+        catch(LoaderError $error)
+        {
+            return $twig->render('@TwigUserProfile/User/UserProfile/user.profile.html.twig', ['profile' => $profile]);
+        }
+    }*/
 }

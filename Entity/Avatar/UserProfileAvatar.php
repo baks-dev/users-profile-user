@@ -23,14 +23,13 @@
 
 namespace BaksDev\Users\Profile\UserProfile\Entity\Avatar;
 
+use BaksDev\Core\Entity\EntityEvent;
 use BaksDev\Files\Resources\Upload\UploadEntityInterface;
 use BaksDev\Users\Profile\UserProfile\Entity\Event\Event;
 use BaksDev\Users\Profile\UserProfile\Entity\Event\UserProfileEvent;
 use BaksDev\Users\Profile\UserProfile\Type\Event\UserProfileEventUid;
-use BaksDev\Core\Entity\EntityEvent;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Exception;
 use InvalidArgumentException;
 
 /* Обложка раздела */
@@ -140,5 +139,12 @@ class UserProfileAvatar extends EntityEvent implements UploadEntityInterface
 	{
 		return $this->event->getId();
 	}
+
+
+    public static function getDirName(): string
+    {
+        return  UserProfileEventUid::class;
+    }
+
 	
 }

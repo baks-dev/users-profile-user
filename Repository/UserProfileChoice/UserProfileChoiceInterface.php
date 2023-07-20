@@ -25,7 +25,8 @@ namespace BaksDev\Users\Profile\UserProfile\Repository\UserProfileChoice;
 
 interface UserProfileChoiceInterface
 {
-    /** Метод возвращает список идентификтаоров профилей с username профиля в качестве атрибута */
-
-    public function getActiveUserProfile(): iterable;
+    /**
+     * Метод возвращает список идентификаторов профилей с username профиля в качестве атрибута
+     */
+    public function getActiveUserProfile(): ?array;
 }

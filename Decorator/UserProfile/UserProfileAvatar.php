@@ -45,14 +45,14 @@ final class UserProfileAvatar implements UserProfileInterface
 
     private bool|string $value = false;
 
-    private string $cdn;
+    private string $CDN_HOST;
 
     public function __construct(
         CurrentUserProfileInterface $currentUserProfile,
-        #[Autowire(env: 'CDN_HOST')] string $cdn
+        #[Autowire(env: 'CDN_HOST')] string $CDN_HOST
     ) {
         $this->currentUserProfile = $currentUserProfile;
-        $this->cdn = $cdn;
+        $this->CDN_HOST = $CDN_HOST;
     }
 
     public function postLoad(User $data, LifecycleEventArgs $event): void
@@ -66,7 +66,7 @@ final class UserProfileAvatar implements UserProfileInterface
 //            $avatar .= '/' . $UserProfile['profile_avatar_name'];
 //            $avatar .= '.' . $UserProfile['profile_avatar_ext'];
 
-            $this->value = ($current['profile_avatar_cdn'] ? $this->cdn : '').$current['profile_avatar_file'].($current['profile_avatar_cdn'] ? 'small.' : '').$current['profile_avatar_ext'];
+            $this->value = ($current['profile_avatar_cdn'] ? 'https://'.$this->CDN_HOST : '').$current['profile_avatar_file'].($current['profile_avatar_cdn'] ? 'small.' : '').$current['profile_avatar_ext'];
         }
 
 

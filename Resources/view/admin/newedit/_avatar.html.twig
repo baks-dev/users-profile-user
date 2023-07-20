@@ -3,7 +3,7 @@
 
 <div class="card-body text-center pt-0">
 	
-	{% set img_path = form.avatar.vars.data.cdn is defined and form.avatar.vars.data.cdn == true ? cdn_host : '' %}
+	{% set img_path = form.avatar.vars.data.cdn is defined and form.avatar.vars.data.cdn == true ? CDN_HOST : '' %}
 	
 	<label class="icon rounded-circle bg-contain lazy position-relative image-input"
 			style="width: 150px; height: 150px;"

@@ -26,14 +26,15 @@ declare(strict_types=1);
 namespace BaksDev\Users\Profile\UserProfile\Repository\UserProfileChoice;
 
 
-use BaksDev\Auth\Email\Entity AS AccountEntity;
+use BaksDev\Auth\Email\Entity as AccountEntity;
 use BaksDev\Auth\Email\Type\Status\AccountStatus;
 use BaksDev\Auth\Email\Type\Status\AccountStatusEnum;
-use BaksDev\Users\Profile\UserProfile\Entity AS UserProfileEntity;
+use BaksDev\Users\Profile\UserProfile\Entity as UserProfileEntity;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatus;
 use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatusEnum;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
 final class UserProfileChoice implements UserProfileChoiceInterface
 {
@@ -44,8 +45,10 @@ final class UserProfileChoice implements UserProfileChoiceInterface
         $this->entityManager = $entityManager;
     }
 
-    /** Метод возвращает список идентификтаоров профилей с username профиля в качестве атрибута */
-    public function getActiveUserProfile(): iterable
+    /**
+     * Метод возвращает список идентификаторов профилей с username профиля в качестве атрибута
+     */
+    public function getActiveUserProfile(): ?array
     {
         $select = sprintf('new %s(user_profile.id, personal.username)', UserProfileUid::class);
 
@@ -89,6 +92,17 @@ final class UserProfileChoice implements UserProfileChoiceInterface
 
         $qb->setParameter('account_status', new AccountStatus(AccountStatusEnum::ACTIVE), AccountStatus::TYPE);
 
-        return $qb->getQuery()->toIterable();
+
+        // Кешируем результат ORM
+        $cacheQueries = new FilesystemAdapter('UserProfile');
+
+        $query = $this->entityManager->createQuery($qb->getDQL());
+        $query->setQueryCache($cacheQueries);
+        $query->setResultCache($cacheQueries);
+        $query->enableResultCache();
+        $query->setLifetime(60 * 60 * 24);
+        $query->setParameters($qb->getParameters());
+
+        return $query->getResult();
     }
 }

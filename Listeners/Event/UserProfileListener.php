@@ -41,7 +41,8 @@ final class UserProfileListener
     public function __construct(
         Environment $twig,
         CurrentUserProfileInterface $currentUserProfile,
-    ) {
+    )
+    {
         $this->twig = $twig;
         $this->currentUserProfile = $currentUserProfile;
     }
@@ -50,20 +51,24 @@ final class UserProfileListener
     public function onKernelRequest(RequestEvent $event): void
     {
         $globals = $this->twig->getGlobals();
-        $baks_profile = $globals['baks_profile'] ?? [];
-        $Userprofile = null;
 
-        /** @var AppVariable $app */
-        $app = $globals['app'];
-
-        if ($app->getUser())
+        if(isset($globals['app']))
         {
-            $Userprofile = $this->currentUserProfile->fetchProfileAssociative($app->getUser()->getId());
-        }
+            $baks_profile = $globals['baks_profile'] ?? [];
+            $Userprofile = null;
 
-        if ($Userprofile)
-        {
-            $this->twig->addGlobal('baks_profile', array_replace_recursive($baks_profile, $Userprofile));
+            /** @var AppVariable $app */
+            $app = $globals['app'];
+
+            if($app->getUser())
+            {
+                $Userprofile = $this->currentUserProfile->fetchProfileAssociative($app->getUser()->getId());
+            }
+
+            if($Userprofile)
+            {
+                $this->twig->addGlobal('baks_profile', array_replace_recursive($baks_profile, $Userprofile));
+            }
         }
     }
 }
