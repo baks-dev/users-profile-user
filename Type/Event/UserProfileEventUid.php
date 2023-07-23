@@ -23,44 +23,12 @@
 
 namespace BaksDev\Users\Profile\UserProfile\Type\Event;
 
-use Symfony\Component\Uid\AbstractUid;
-use Symfony\Component\Uid\Uuid;
-use Symfony\Component\Uid\UuidV7;
+use BaksDev\Core\Type\UidType\Uid;
 
-final class UserProfileEventUid
+final class UserProfileEventUid extends Uid
 {
     public const TEST = '0188a9a8-54c9-716f-9297-94a6348291a5';
     
 	public const TYPE = 'user_profile_event';
-	
-	private Uuid $value;
-	
-	
-	public function __construct(AbstractUid|string|null $value = null)
-	{
-		if($value === null)
-		{
-			$value = Uuid::v7();
-		}
-		
-		else if(is_string($value))
-		{
-			$value = new UuidV7($value);
-		}
-		
-		$this->value = $value;
-	}
-	
-	
-	public function __toString() : string
-	{
-		return $this->value;
-	}
-	
-	
-	public function getValue() : AbstractUid
-	{
-		return $this->value;
-	}
 	
 }

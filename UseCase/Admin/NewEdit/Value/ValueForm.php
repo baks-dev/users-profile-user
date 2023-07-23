@@ -24,11 +24,9 @@
 namespace BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Value;
 
 use BaksDev\Core\Services\Fields\FieldsChoice;
+use BaksDev\Users\Profile\UserProfile\Repository\FieldValueForm\FieldValueFormDTO;
 use BaksDev\Users\Profile\UserProfile\Repository\FieldValueForm\FieldValueFormInterface;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -37,72 +35,85 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class ValueForm extends AbstractType
 {
-	
-	private FieldValueFormInterface $fieldValue;
-	
-	private FieldsChoice $fieldsChoice;
-	
-	
-	public function __construct(
-		FieldValueFormInterface $fieldValue,
-		FieldsChoice $fieldsChoice,
-	)
-	{
-		$this->fieldValue = $fieldValue;
-		$this->fieldsChoice = $fieldsChoice;
-	}
-	
-	
-	public function buildForm(FormBuilderInterface $builder, array $options)
-	{
-		
-		/* TextType */
-		$builder->add('value', TextType::class);
-		
-		$builder->addEventListener(
-			FormEvents::PRE_SET_DATA,
-			function(FormEvent $event) use ($options) {
-				/* @var ValueDTO $data */
-				$data = $event->getData();
-				$form = $event->getForm();
-				
-				if($data)
-				{
-					
-					$fields = $options['fields'];
-					
-					/** @var \BaksDev\Users\Profile\UserProfile\Repository\FieldValueForm\FieldValueFormDTO $field */
-					$field = end($fields[(string) $data->getField()]);
-					$fieldType = $this->fieldsChoice->getChoice($field->getType());
-					
-					
-					$form->add
-					(
-						'value',
-						$fieldType->form(),
-						[
-							'label' => $field->getFieldName(),
-							'required' => $field->isRequired(),
-						]
-					);
-					
-				}
-				
-			}
-		);
-		
-	}
-	
-	
-	public function configureOptions(OptionsResolver $resolver)
-	{
-		$resolver->setDefaults
-		(
-			[
-				'data_class' => ValueDTO::class,
-				'fields' => null,
-			]
-		);
-	}
-	
+
+    private FieldValueFormInterface $fieldValue;
+
+    private FieldsChoice $fieldsChoice;
+
+
+    public function __construct(
+        FieldValueFormInterface $fieldValue,
+        FieldsChoice $fieldsChoice,
+    )
+    {
+        $this->fieldValue = $fieldValue;
+        $this->fieldsChoice = $fieldsChoice;
+    }
+
+
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+
+        /* TextType */
+        $builder->add('value', TextType::class);
+
+        $builder->addEventListener(
+            FormEvents::PRE_SET_DATA,
+            function(FormEvent $event) use ($options) {
+                /* @var ValueDTO $data */
+                $data = $event->getData();
+                $form = $event->getForm();
+
+                if($data)
+                {
+
+                    $fields = $options['fields'];
+
+                    /** @var FieldValueFormDTO $field */
+                    $field = end($fields[(string) $data->getField()]);
+                    $fieldType = $this->fieldsChoice->getChoice($field->getType());
+
+                    if($fieldType)
+                    {
+                        $form->add
+                        (
+                            'value',
+                            $fieldType->form(),
+                            [
+                                'label' => $field->getFieldName(),
+                                'required' => $field->isRequired(),
+                            ]
+                        );
+                    }
+                    else
+                    {
+                        $form->add
+                        (
+                            'value',
+                            TextType::class,
+                            [
+                                'label' => $field->getFieldName(),
+                                'required' => $field->isRequired(),
+                            ]
+                        );
+                    }
+                }
+
+            }
+        );
+
+    }
+
+
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults
+        (
+            [
+                'data_class' => ValueDTO::class,
+                'fields' => null,
+            ]
+        );
+    }
+
 }

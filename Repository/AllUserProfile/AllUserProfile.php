@@ -27,16 +27,24 @@ namespace BaksDev\Users\Profile\UserProfile\Repository\AllUserProfile;
 
 use BaksDev\Auth\Email\Entity\Account;
 use BaksDev\Auth\Email\Entity\Event\AccountEvent;
-use BaksDev\Users\Profile\TypeProfile\Entity as TypeProfileEntity;
-use BaksDev\Users\Profile\UserProfile\Entity as UserProfileEntity;
-
 use BaksDev\Core\Form\Search\SearchDTO;
 use BaksDev\Core\Services\Paginator\Paginator;
 use BaksDev\Core\Services\Switcher\Switcher;
 use BaksDev\Core\Type\Locale\Locale;
+use BaksDev\Users\Profile\TypeProfile\Entity\Event\TypeProfileEvent;
+use BaksDev\Users\Profile\TypeProfile\Entity\Trans\TypeProfileTrans;
+use BaksDev\Users\Profile\TypeProfile\Entity\TypeProfile;
+use BaksDev\Users\Profile\UserProfile\Entity\Avatar\UserProfileAvatar;
+use BaksDev\Users\Profile\UserProfile\Entity\Event\UserProfileEvent;
+use BaksDev\Users\Profile\UserProfile\Entity\Info\UserProfileInfo;
+use BaksDev\Users\Profile\UserProfile\Entity\Personal\UserProfilePersonal;
+use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
 use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatus;
 use Doctrine\DBAL\Connection;
 use Symfony\Contracts\Translation\TranslatorInterface;
+
+//use BaksDev\Users\Profile\TypeProfile\Entity as TypeProfileEntity;
+//use BaksDev\Users\Profile\UserProfile\Entity as UserProfileEntity;
 
 final class AllUserProfile implements AllUserProfileInterface
 {
@@ -91,12 +99,12 @@ final class AllUserProfile implements AllUserProfileInterface
 		
 		$qb->addSelect('userprofile.id');
 		$qb->addSelect('userprofile.event');
-		$qb->from(UserProfileEntity\UserProfile::TABLE, 'userprofile');
+		$qb->from(UserProfile::TABLE, 'userprofile');
 		
 		/* INFO */
 		$qb->join(
 			'userprofile',
-			UserProfileEntity\Info\UserProfileInfo::TABLE,
+			UserProfileInfo::TABLE,
 			'userprofile_info',
 			'userprofile_info.profile = userprofile.id '.($status ? 'AND userprofile_info.status = :status' : '')
 		);
@@ -105,7 +113,7 @@ final class AllUserProfile implements AllUserProfileInterface
 		{
 			$qb->setParameter('status', $status, UserProfileStatus::TYPE);
 		}
-		
+
 		$qb->addSelect('userprofile_info.url AS user_profile_url');
 		$qb->addSelect('userprofile_info.user_id');
 		$qb->addSelect('userprofile_info.status AS user_profile_status');
@@ -113,7 +121,7 @@ final class AllUserProfile implements AllUserProfileInterface
 		
 		$qb->join(
 			'userprofile',
-			UserProfileEntity\Event\UserProfileEvent::TABLE,
+			UserProfileEvent::TABLE,
 			'userprofile_event',
 			'userprofile_event.id = userprofile.event'
 		);
@@ -121,10 +129,11 @@ final class AllUserProfile implements AllUserProfileInterface
 		/* Профиль */
 		$qb->join(
 			'userprofile',
-			UserProfileEntity\Personal\UserProfilePersonal::TABLE,
+			UserProfilePersonal::TABLE,
 			'userprofile_profile',
 			'userprofile_profile.event = userprofile.event'
 		);
+
 		$qb->addSelect('userprofile_profile.username AS user_profile_username');
 		$qb->addSelect('userprofile_profile.location AS user_profile_location');
 		
@@ -135,11 +144,11 @@ final class AllUserProfile implements AllUserProfileInterface
 		
 		$qb->leftJoin(
 			'userprofile_event',
-			UserProfileEntity\Avatar\UserProfileAvatar::TABLE,
+			UserProfileAvatar::TABLE,
 			'userprofile_avatar',
 			'userprofile_avatar.event = userprofile_event.id'
 		);
-		
+
 		/* Аккаунт пользователя */
 		/** Пользователь User */
 		$qb->join('userprofile_info', Account::TABLE, 'account', 'account.id = userprofile_info.user_id');
@@ -150,25 +159,28 @@ final class AllUserProfile implements AllUserProfileInterface
 		$qb->leftJoin('account', AccountEvent::TABLE, 'account_event', 'account_event.id = account.event');
 		
 		/* Тип профиля */
-		
-		$qb->join(
+
+		$qb->leftJoin(
 			'userprofile_event',
-			TypeProfileEntity\TypeProfile::TABLE,
+			TypeProfile::TABLE,
 			'profiletype',
 			'profiletype.id = userprofile_event.type'
 		);
-		$qb->join(
+
+		$qb->leftJoin(
 			'profiletype',
-			TypeProfileEntity\Event\TypeProfileEvent::TABLE,
+			TypeProfileEvent::TABLE,
 			'profiletype_event',
 			'profiletype_event.id = profiletype.event'
 		);
-		$qb->join(
+
+		$qb->leftJoin(
 			'profiletype_event',
-			TypeProfileEntity\Trans\TypeProfileTrans::TABLE,
+			TypeProfileTrans::TABLE,
 			'profiletype_trans',
 			'profiletype_trans.event = profiletype_event.id AND profiletype_trans.local = :local'
 		);
+
 		$qb->addSelect('profiletype_trans.name as user_profile_type');
 		
 		$qb->setParameter('local', new Locale($this->translator->getLocale()), Locale::TYPE);
@@ -195,6 +207,8 @@ final class AllUserProfile implements AllUserProfileInterface
 		}
 		
 		$qb->orderBy('userprofile.event', 'ASC');
+
+
 		
 		return $this->paginator->fetchAllAssociative($qb);
 		
