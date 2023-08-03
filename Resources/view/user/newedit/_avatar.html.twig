@@ -14,7 +14,7 @@
 			style="width: 150px; height: 150px;"
 			
 			data-bg="{{ form.avatar.vars.data.name is defined and form.avatar.vars.data.name is not null ?
-			img_path ~ users_profile_avatar ~ form.avatar.vars.data.dir ~'/'~ form.avatar.vars.data.name~'.'~form.avatar.vars.data.ext  : '/assets/img/blank.svg' }}"
+			img_path ~ '/upload/' ~ constant('BaksDev\\Users\\Profile\\UserProfile\\Entity\\Avatar\\UserProfileAvatar::TABLE') ~'/' ~ form.avatar.vars.data.dir ~'/'~ form.avatar.vars.data.name~'.'~form.avatar.vars.data.ext  : '/assets/img/blank.svg' }}"
 	>
 		
 		<div class="position-absolute top-0 start-100 rounded-circle border p-2 d-flex align-items-center justify-content-center"

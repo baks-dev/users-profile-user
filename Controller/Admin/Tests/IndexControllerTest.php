@@ -20,10 +20,10 @@ namespace BaksDev\Users\Profile\UserProfile\Controller\Admin\Tests;
 
 use BaksDev\Users\User\Tests\TestUserAccount;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\DependencyInjection\Attribute\When;
 
-/**
- * @group users-profile-user
- */
+/** @group users-profile-user */
+#[When(env: 'test')]
 final class IndexControllerTest extends WebTestCase
 {
     private const URL = '/admin/users/profiles';

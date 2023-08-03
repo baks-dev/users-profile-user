@@ -23,28 +23,23 @@
 
 namespace BaksDev\Users\Profile\UserProfile\Repository\CurrentAllUserProfiles;
 
+use BaksDev\Core\Doctrine\DBALQueryBuilder;
 use BaksDev\Users\Profile\UserProfile\Entity;
 use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatus;
 use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatusEnum;
 use BaksDev\Users\User\Type\Id\UserUid;
-use Doctrine\DBAL\Cache\QueryCacheProfile;
-use Doctrine\DBAL\Connection;
-use Symfony\Component\Cache\Adapter\ApcuAdapter;
 
 final class CurrentAllUserProfilesByUser implements CurrentAllUserProfilesByUserInterface
 {
-    public const LIFETIME = 60 * 60 * 30;
 
-    private Connection $connection;
-
-    // private Security $security;
+    private DBALQueryBuilder $DBALQueryBuilder;
 
     public function __construct(
-        Connection $connection,
-        // Security $security
-    ) {
-        $this->connection = $connection;
-        // $this->security = $security;
+        DBALQueryBuilder $DBALQueryBuilder,
+    )
+    {
+
+        $this->DBALQueryBuilder = $DBALQueryBuilder;
     }
 
     /** Список профилей пользователя в меню.
@@ -55,7 +50,7 @@ final class CurrentAllUserProfilesByUser implements CurrentAllUserProfilesByUser
      */
     public function fetchUserProfilesAllAssociative(UserUid $user): ?array
     {
-        $qb = $this->connection->createQueryBuilder();
+        $qb = $this->DBALQueryBuilder->createQueryBuilder(self::class);
 
         $qb->addSelect('userprofile.event AS user_profile_event');
 
@@ -91,16 +86,9 @@ final class CurrentAllUserProfilesByUser implements CurrentAllUserProfilesByUser
 
         $qb->orderBy('userprofile_event.sort', 'ASC');
 
-        $cacheFilesystem = new ApcuAdapter('UserProfile');
 
-        $config = $this->connection->getConfiguration();
-        $config?->setResultCache($cacheFilesystem);
+        /* Кешируем результат DBAL */
+        return $qb->enableCache('UserProfile', 86400)->fetchAllAssociative();
 
-        return $this->connection->executeCacheQuery(
-            $qb->getSQL(),
-            $qb->getParameters(),
-            $qb->getParameterTypes(),
-            new QueryCacheProfile(60 * 60 * 30)
-        )->fetchAllAssociative();
     }
 }

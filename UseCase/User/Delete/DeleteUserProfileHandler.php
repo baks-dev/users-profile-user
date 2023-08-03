@@ -183,7 +183,7 @@ final class DeleteUserProfileHandler
 
         $this->messageDispatch->dispatch(
             message: new UserProfileMessage($UserProfile->getId(), $UserProfile->getEvent(), $command->getEvent()),
-            transport: 'users_profile_user'
+            transport: 'users-profile-user'
         );
 		
 		return $UserProfile;

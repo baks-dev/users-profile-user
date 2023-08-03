@@ -32,9 +32,11 @@ use BaksDev\Users\Profile\UserProfile\Repository\UserProfileByUser\UserProfileBy
 use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatus;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
+#[AsController]
 #[RoleSecurity('ROLE_USER')]
 final class IndexController extends AbstractController
 {

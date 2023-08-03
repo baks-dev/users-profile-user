@@ -27,42 +27,31 @@ namespace BaksDev\Users\Profile\UserProfile\Decorator\UserProfile;
 
 use BaksDev\Auth\Email\Repository\CurrentUserAccount\CurrentUserAccountInterface;
 use BaksDev\Users\User\Decorator\UserProfile\UserProfileInterface;
-use BaksDev\Users\User\Entity\User;
-use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
-use Doctrine\ORM\Events;
-use Doctrine\Persistence\Event\LifecycleEventArgs;
+use BaksDev\Users\User\Type\Id\UserUid;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /** Контактные данные профиля пользователя */
 #[AutoconfigureTag('baks.user.profile')]
-#[AsEntityListener(event: Events::postLoad, method: 'postLoad', entity: User::class, priority: 99)]
 final class UserProfileContact implements UserProfileInterface
 {
     public const KEY = 'user_profile_contact';
 
     private CurrentUserAccountInterface $currentUserAccount;
 
-    private bool|string $value;
-
     public function __construct(CurrentUserAccountInterface $currentUserProfile)
     {
         $this->currentUserAccount = $currentUserProfile;
     }
 
-    public function postLoad(User $data, LifecycleEventArgs $event): void
-    {
-        $current = $this->currentUserAccount->fetchAccountAssociative($data->getId());
-        $this->value = $current ? $current['account_email'] : false;
-    }
-
     /** Возвращает значение (value) */
-    public function getValue(): bool|string
+    public function getValue(UserUid $user): bool|string
     {
-        return $this->value;
+        $current = $this->currentUserAccount->fetchAccountAssociative($user);
+        return $current['account_email'] ?? false;
     }
 
     public static function priority(): int
     {
-        return 8;
+        return 700;
     }
 }

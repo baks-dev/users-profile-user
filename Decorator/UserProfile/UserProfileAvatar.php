@@ -27,23 +27,17 @@ namespace BaksDev\Users\Profile\UserProfile\Decorator\UserProfile;
 
 use BaksDev\Users\Profile\UserProfile\Repository\CurrentUserProfile\CurrentUserProfileInterface;
 use BaksDev\Users\User\Decorator\UserProfile\UserProfileInterface;
-use BaksDev\Users\User\Entity\User;
-use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
-use Doctrine\ORM\Events;
-use Doctrine\Persistence\Event\LifecycleEventArgs;
+use BaksDev\Users\User\Type\Id\UserUid;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 /** Адрес персональной страницы профиля */
 #[AutoconfigureTag('baks.user.profile')]
-#[AsEntityListener(event: Events::postLoad, method: 'postLoad', entity: User::class, priority: 99)]
 final class UserProfileAvatar implements UserProfileInterface
 {
     public const KEY = 'user_profile_avatar';
 
     private CurrentUserProfileInterface $currentUserProfile;
-
-    private bool|string $value = false;
 
     private string $CDN_HOST;
 
@@ -55,31 +49,22 @@ final class UserProfileAvatar implements UserProfileInterface
         $this->CDN_HOST = $CDN_HOST;
     }
 
-    public function postLoad(User $data, LifecycleEventArgs $event): void
-    {
-        $current = $this->currentUserProfile->fetchProfileAssociative($data->getId());
-
-        if ($current && !empty($current['profile_avatar_name']))
-        {
-//            $avatar .= '/upload/' . UserProfileAvatar::TABLE;
-//            $avatar .= '/' . $UserProfile['profile_avatar_dir'];
-//            $avatar .= '/' . $UserProfile['profile_avatar_name'];
-//            $avatar .= '.' . $UserProfile['profile_avatar_ext'];
-
-            $this->value = ($current['profile_avatar_cdn'] ? 'https://'.$this->CDN_HOST : '').$current['profile_avatar_file'].($current['profile_avatar_cdn'] ? 'small.' : '').$current['profile_avatar_ext'];
-        }
-
-
-    }
 
     /** Возвращает значение (value) */
-    public function getValue(): bool|string
+    public function getValue(UserUid $user): bool|string
     {
-        return $this->value;
+        $current = $this->currentUserProfile->fetchProfileAssociative($user);
+        
+        if ($current && !empty($current['profile_avatar_file']))
+        {
+            return ($current['profile_avatar_cdn'] ? 'https://'.$this->CDN_HOST : '').$current['profile_avatar_file'].($current['profile_avatar_cdn'] ? 'small.' : '').$current['profile_avatar_ext'];
+        }
+
+        return false;
     }
 
     public static function priority(): int
     {
-        return 9;
+        return 700;
     }
 }

@@ -210,7 +210,7 @@ final class UserProfileHandler
         /* Отправляем событие в шину  */
         $this->messageDispatch->dispatch(
             message: new UserProfileMessage($UserProfile->getId(), $UserProfile->getEvent(), $command->getEvent()),
-            transport: 'users_profile_user'
+            transport: 'users-profile-user'
         );
 
 		return $UserProfile;

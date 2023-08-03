@@ -25,22 +25,19 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use Symfony\Config\FrameworkConfig;
 
-return static function (FrameworkConfig $framework) {
+return static function(FrameworkConfig $framework) {
 
-
-    /** Транспорт отправки сообщений */
     $messenger = $framework->messenger();
 
     $messenger
-        ->transport('users_profile_user')
+        ->transport('users-profile-user')
         ->dsn('%env(MESSENGER_TRANSPORT_DSN)%')
-        ->options(['queue_name' => 'users_profile_user'])
+        ->options(['queue_name' => 'users-profile-user'])
         ->retryStrategy()
         ->maxRetries(5)
         ->delay(1000)
         ->maxDelay(0)
         ->multiplier(3) // увеличиваем задержку перед каждой повторной попыткой
-        ->service(null)
-    ;
+        ->service(null);
 
 };

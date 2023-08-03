@@ -23,120 +23,108 @@
 
 namespace BaksDev\Users\Profile\UserProfile\Repository\CurrentUserProfile;
 
-use BaksDev\Auth\Email\Type\Status\AccountStatus;
-use BaksDev\Auth\Email\Type\Status\AccountStatusEnum;
-use BaksDev\Core\Type\Locale\Locale;
+use BaksDev\Core\Doctrine\DBALQueryBuilder;
+use BaksDev\Core\Doctrine\ORMQueryBuilder;
 use BaksDev\Users\Profile\TypeProfile\Entity as TypeProfileEntity;
 use BaksDev\Users\Profile\UserProfile\Entity as UserProfileEntity;
 use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatus;
 use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatusEnum;
 use BaksDev\Users\User\Entity\User;
 use BaksDev\Users\User\Type\Id\UserUid;
-use Doctrine\DBAL\Cache\QueryCacheProfile;
-use Doctrine\DBAL\Connection;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Cache\Adapter\ApcuAdapter;
-use Symfony\Component\Cache\Adapter\FilesystemAdapter;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 final class CurrentUserProfile implements CurrentUserProfileInterface
 {
-	private Connection $connection;
-	
-	private AccountStatus $status;
-	
-	private UserProfileStatus $statusProfile;
-	
-	private ParameterBagInterface $parameter;
-	
-	private TranslatorInterface $translator;
-	
-	private EntityManagerInterface $entityManager;
-	
-	
-	public function __construct(
-		TranslatorInterface $translator,
-		ParameterBagInterface $parameter,
-		EntityManagerInterface $entityManager,
-	)
-	{
-		$this->connection = $entityManager->getConnection();
-		$this->status = new AccountStatus(AccountStatusEnum::ACTIVE);
-		$this->statusProfile = new UserProfileStatus(UserProfileStatusEnum::ACTIVE);
-		$this->parameter = $parameter;
-		$this->translator = $translator;
-		$this->entityManager = $entityManager;
-	}
-	
-	
-	/** Активный профиль пользователя
-	 *
-	 * Возвращает массив с ключами:
-	 *
-	 * profile_url - адрес персональной страницы <br>
-	 * profile_username - username провфиля <br>
-	 * profile_type - Тип провфиля <br>
-	 * profile_avatar_name - название файла аватарки профиля <br>
-	 * profile_avatar_dir - директория файла аватарки <br>
-	 * profile_avatar_ext - расширение файла <br>
-	 * profile_avatar_cdn - фгаг загрузки файла на CDN
-	 */
-	
-	public function fetchProfileAssociative(UserUid $user) : bool|array
-	{
-		
-		$qb = $this->connection->createQueryBuilder();
-		
-		/** ЛОКАЛЬ */
-		$locale = new Locale($this->translator->getLocale());
-		$qb->setParameter('local', $locale, Locale::TYPE);
-		
-		/* Пользователь */
-		$qb->from(User::TABLE, 'users');
-		
-		/* PROFILE */
-		$qb->addSelect('profile_info.url AS profile_url');  /* URL профиля */
-		$qb->addSelect('profile_info.discount AS profile_discount');  /* URL профиля */
-		$qb->join(
-			'users',
-			UserProfileEntity\Info\UserProfileInfo::TABLE,
-			'profile_info',
-			'profile_info.user_id = users.user_id AND profile_info.status = :profile_status AND profile_info.active = true'
-		);
-		
-		$qb->setParameter('profile_status', $this->statusProfile, UserProfileStatus::TYPE);
-		
-		$qb->addSelect('profile.id AS user_profile_id'); /* ID профиля */
-		$qb->addSelect('profile.event AS user_profile_event'); /* ID события профиля */
-		$qb->join(
-			'profile_info',
-			UserProfileEntity\UserProfile::TABLE,
-			'profile',
-			'profile.id = profile_info.profile'
-		);
-		
-		//$qb->addSelect('profile_event.type'); /* ID типа профиля */
-		$qb->join(
-			'profile',
-			UserProfileEntity\Event\UserProfileEvent::TABLE,
-			'profile_event',
-			'profile_event.id = profile.event'
-		);
-		
-		$qb->addSelect('profile_personal.username AS profile_username'); /* Username */
 
-		$qb->join(
-			'profile',
-			UserProfileEntity\Personal\UserProfilePersonal::TABLE,
-			'profile_personal',
-			'profile_personal.event = profile.event'
-		);
-		
-		$qb->addSelect('profile_avatar.name AS profile_avatar_name');
-		$qb->addSelect('profile_avatar.dir AS profile_avatar_dir');
-		$qb->addSelect('profile_avatar.ext AS profile_avatar_ext');
-		$qb->addSelect('profile_avatar.cdn AS profile_avatar_cdn');
+    private ORMQueryBuilder $ORMQueryBuilder;
+
+    private DBALQueryBuilder $DBALQueryBuilder;
+    private string $CDN_HOST;
+
+
+    public function __construct(
+        #[Autowire(env: 'CDN_HOST')] string $CDN_HOST,
+        ORMQueryBuilder $ORMQueryBuilder,
+        DBALQueryBuilder $DBALQueryBuilder
+    )
+    {
+
+        $this->ORMQueryBuilder = $ORMQueryBuilder;
+        $this->DBALQueryBuilder = $DBALQueryBuilder;
+        $this->CDN_HOST = $CDN_HOST;
+    }
+
+
+    /** Активный профиль пользователя
+     *
+     * Возвращает массив с ключами:
+     *
+     * profile_url - адрес персональной страницы <br>
+     * profile_username - username провфиля <br>
+     * profile_type - Тип провфиля <br>
+     * profile_avatar_name - название файла аватарки профиля <br>
+     * profile_avatar_dir - директория файла аватарки <br>
+     * profile_avatar_ext - расширение файла <br>
+     * profile_avatar_cdn - фгаг загрузки файла на CDN
+     */
+
+    public function fetchProfileAssociative(UserUid $user): ?array
+    {
+        $qb = $this->DBALQueryBuilder->createQueryBuilder(self::class);
+
+        /* Пользователь */
+        $qb->from(User::TABLE, 'users');
+
+        $qb->where('users.user_id = :user');
+        $qb->setParameter('user', $user, UserUid::TYPE);
+
+
+        /* PROFILE */
+        $qb->addSelect('profile_info.url AS profile_url');  /* URL профиля */
+        $qb->addSelect('profile_info.discount AS profile_discount');  /* URL профиля */
+        $qb->join(
+            'users',
+            UserProfileEntity\Info\UserProfileInfo::TABLE,
+            'profile_info',
+            'profile_info.user_id = users.user_id AND profile_info.status = :profile_status AND profile_info.active = true'
+        );
+
+
+        $qb->setParameter('profile_status', new UserProfileStatus(UserProfileStatusEnum::ACTIVE), UserProfileStatus::TYPE);
+
+
+        $qb->addSelect('profile.id AS user_profile_id'); /* ID профиля */
+        $qb->addSelect('profile.event AS user_profile_event'); /* ID события профиля */
+        $qb->join(
+            'profile_info',
+            UserProfileEntity\UserProfile::TABLE,
+            'profile',
+            'profile.id = profile_info.profile'
+        );
+
+
+        /* Тип профиля */
+        $qb->addSelect('profile_event.type as profile_type_id');
+        $qb->join(
+            'profile',
+            UserProfileEntity\Event\UserProfileEvent::TABLE,
+            'profile_event',
+            'profile_event.id = profile.event'
+        );
+
+        $qb->addSelect('profile_personal.username AS profile_username'); /* Username */
+
+        $qb->join(
+            'profile',
+            UserProfileEntity\Personal\UserProfilePersonal::TABLE,
+            'profile_personal',
+            'profile_personal.event = profile.event'
+        );
+
+        $qb->addSelect('profile_avatar.name AS profile_avatar_name');
+        $qb->addSelect('profile_avatar.dir AS profile_avatar_dir');
+        $qb->addSelect('profile_avatar.ext AS profile_avatar_ext');
+        $qb->addSelect('profile_avatar.cdn AS profile_avatar_cdn');
 
 
         $qb->addSelect("
@@ -148,71 +136,48 @@ final class CurrentUserProfile implements CurrentUserProfileInterface
         );
 
 
-		$qb->leftJoin(
-			'profile_event',
-			UserProfileEntity\Avatar\UserProfileAvatar::TABLE,
-			'profile_avatar',
-			'profile_avatar.event = profile_event.id'
-		);
-		
-		/* Тип профиля */
-		$qb->addSelect('profiletype.id as profile_type_id');
-		$qb->join(
-			'profile_event',
-			TypeProfileEntity\TypeProfile::TABLE,
-			'profiletype',
-			'profiletype.id = profile_event.type'
-		);
-		
-		$qb->join(
-			'profiletype',
-			TypeProfileEntity\Event\TypeProfileEvent::TABLE,
-			'profiletype_event',
-			'profiletype_event.id = profiletype.event'
-		);
-		
-		$qb->join(
-			'profiletype_event',
-			TypeProfileEntity\Trans\TypeProfileTrans::TABLE,
-			'profiletype_trans',
-			'profiletype_trans.event = profiletype_event.id AND profiletype_trans.local = :local'
-		);
-		$qb->addSelect('profiletype_trans.name as profile_type');
-		
-		$qb->where('users.user_id = :user');
-		$qb->setParameter('user', $user, UserUid::TYPE);
-		
-		/* Кешируем результат DBAL */
-		$cacheFilesystem = new FilesystemAdapter('UserProfile');
-		
-		$config = $this->connection->getConfiguration();
-		$config?->setResultCache($cacheFilesystem);
-		
-		return $this->connection->executeCacheQuery(
-			$qb->getSQL(),
-			$qb->getParameters(),
-			$qb->getParameterTypes(),
-			new QueryCacheProfile((60 * 60 * 30))
-		)->fetchAssociative();
-	}
-	
-	
-	
-	
-	public function getCurrentUserProfile(UserUid $user) : ?CurrentUserProfileDTO
-	{
+        $qb->leftJoin(
+            'profile_event',
+            UserProfileEntity\Avatar\UserProfileAvatar::TABLE,
+            'profile_avatar',
+            'profile_avatar.event = profile_event.id'
+        );
 
 
 
+        $qb->join(
+            'profile_event',
+            TypeProfileEntity\TypeProfile::TABLE,
+            'profiletype',
+            'profiletype.id = profile_event.type'
+        );
 
-		$qb = $this->entityManager->createQueryBuilder();
+        $qb->join(
+            'profiletype',
+            TypeProfileEntity\Event\TypeProfileEvent::TABLE,
+            'profiletype_event',
+            'profiletype_event.id = profiletype.event'
+        );
 
-        
+        $qb->addSelect('profiletype_trans.name as profile_type');
+        $qb->join(
+            'profiletype_event',
+            TypeProfileEntity\Trans\TypeProfileTrans::TABLE,
+            'profiletype_trans',
+            'profiletype_trans.event = profiletype_event.id AND profiletype_trans.local = :local'
+        )->bindLocal();
 
-		/** ЛОКАЛЬ */
-		$locale = new Locale($this->translator->getLocale());
+        /* Кешируем результат DBAL */
+        return $qb->enableCache('UserProfile', 3600)->fetchAssociative();
+    }
 
-		$sealect = sprintf("new %s(
+
+
+    public function getCurrentUserProfile(UserUid $user): ?CurrentUserProfileDTO
+    {
+        $qb = $this->ORMQueryBuilder->createQueryBuilder(self::class);
+
+        $sealect = sprintf("new %s(
 			profile.id,
 			profile.event,
 			
@@ -233,114 +198,94 @@ final class CurrentUserProfile implements CurrentUserProfileInterface
 			profiletype.id,
 			profiletype_trans.name
 		)",
-			CurrentUserProfileDTO::class,
-			$this->parameter->get('cdn.host')
-		);
-		
-		$qb->select($sealect);
-		
-		/* Пользователь */
-		$qb->from(User::class, 'users');
-		
-		/* PROFILE */
+            CurrentUserProfileDTO::class,
+            $this->CDN_HOST
+        );
 
-		$qb->join(
-			
-			UserProfileEntity\Info\UserProfileInfo::class,
-			'profile_info',
-			'WITH',
-			'
+        $qb->select($sealect);
+
+        /* Пользователь */
+        $qb->from(User::class, 'users');
+
+        /* PROFILE */
+
+        $qb->join(
+
+            UserProfileEntity\Info\UserProfileInfo::class,
+            'profile_info',
+            'WITH',
+            '
 				profile_info.user = users.id AND
 				profile_info.status = :profile_status AND
 				profile_info.active = true
 		');
-		
-		
-		
-		//$qb->addSelect('profile.id AS user_profile_id'); /* ID профиля */
-		//$qb->addSelect('profile.event AS user_profile_event'); /* ID события профиля */
-		$qb->join(
-			
-			UserProfileEntity\UserProfile::class,
-			'profile',
-			'WITH',
-			'profile.id = profile_info.profile'
-		);
-		
-		//$qb->addSelect('profile_event.type'); /* ID типа профиля */
-		$qb->join(
 
-			UserProfileEntity\Event\UserProfileEvent::class,
-			'profile_event',
-			'WITH',
-			'profile_event.id = profile.event'
-		);
+        $qb->setParameter('profile_status', new UserProfileStatus(UserProfileStatusEnum::ACTIVE), UserProfileStatus::TYPE);
 
-		$qb->join(
-		
-			UserProfileEntity\Personal\UserProfilePersonal::class,
-			'profile_personal',
-			'WITH',
-			'profile_personal.event = profile.event'
-		);
-		
+        $qb->join(
 
-		$qb->leftJoin(
-			UserProfileEntity\Avatar\UserProfileAvatar::class,
-			'profile_avatar',
-			'WITH',
-			'profile_avatar.event = profile_event.id'
-		);
-		
-		/* Тип профиля */
-	
-		$qb->join(
-			TypeProfileEntity\TypeProfile::class,
-			'profiletype',
-			'WITH',
-			'profiletype.id = profile_event.type'
-		);
-		
-		$qb->join(
+            UserProfileEntity\UserProfile::class,
+            'profile',
+            'WITH',
+            'profile.id = profile_info.profile'
+        );
 
-			TypeProfileEntity\Event\TypeProfileEvent::class,
-			'profiletype_event',
-			'WITH',
-			'profiletype_event.id = profiletype.event'
-		);
-		
-		$qb->leftJoin(
-			
-			TypeProfileEntity\Trans\TypeProfileTrans::class,
-			'profiletype_trans',
-			'WITH',
-			'profiletype_trans.event = profiletype_event.id AND profiletype_trans.local = :local'
-		);
-		
+        $qb->join(
 
-		$qb->where('users.id = :user');
-		
-		/* Кешируем результат ORM */
-		
-		//$cacheFilesystem = new FilesystemAdapter($user->getValue());
-		$cacheQueries = new ApcuAdapter($user);
-		
-		
-		$query = $this->entityManager->createQuery($qb->getDQL());
-		$query->setQueryCache($cacheQueries);
-		$query->setResultCache($cacheQueries);
-		$query->enableResultCache();
-		$query->setLifetime(3600);
-		
-		
-		
-		
-		$query->setParameter('local', $locale, Locale::TYPE);
-		$query->setParameter('user', $user, UserUid::TYPE);
-		$query->setParameter('profile_status', $this->statusProfile, UserProfileStatus::TYPE);
-		
-		
-		return $query->getOneOrNullResult();
-	}
-	
+            UserProfileEntity\Event\UserProfileEvent::class,
+            'profile_event',
+            'WITH',
+            'profile_event.id = profile.event'
+        );
+
+        $qb->join(
+
+            UserProfileEntity\Personal\UserProfilePersonal::class,
+            'profile_personal',
+            'WITH',
+            'profile_personal.event = profile.event'
+        );
+
+
+        $qb->leftJoin(
+            UserProfileEntity\Avatar\UserProfileAvatar::class,
+            'profile_avatar',
+            'WITH',
+            'profile_avatar.event = profile_event.id'
+        );
+
+        /* Тип профиля */
+
+        $qb->join(
+            TypeProfileEntity\TypeProfile::class,
+            'profiletype',
+            'WITH',
+            'profiletype.id = profile_event.type'
+        );
+
+        $qb->join(
+
+            TypeProfileEntity\Event\TypeProfileEvent::class,
+            'profiletype_event',
+            'WITH',
+            'profiletype_event.id = profiletype.event'
+        );
+
+        $qb->leftJoin(
+
+            TypeProfileEntity\Trans\TypeProfileTrans::class,
+            'profiletype_trans',
+            'WITH',
+            'profiletype_trans.event = profiletype_event.id AND profiletype_trans.local = :local'
+        )
+            ->bindLocal();
+
+
+        $qb->where('users.id = :user');
+        $qb->setParameter('user', $user, UserUid::TYPE);
+
+        /* Кешируем результат ORM */
+        return $qb->enableCache('UserProfile', 3600)->getOneOrNullResult();
+
+    }
 }

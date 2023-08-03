@@ -33,42 +33,44 @@ use Doctrine\ORM\EntityManagerInterface;
 
 final class UsersChoiceOptionalAccountEmail implements UsersChoiceOptionalAccountEmailInterface
 {
-	private EntityManagerInterface $entityManager;
-	
-	
-	public function __construct(EntityManagerInterface $entityManager)
-	{
-		$this->entityManager = $entityManager;
-		$this->status = new \BaksDev\Auth\Email\Type\Status\AccountStatus(AccountStatusEnum::ACTIVE);
-	}
-	
-	
-	/** Список объектов UserUid аккаунтов с опциональным Account Email  */
+    private EntityManagerInterface $entityManager;
 
-	public function getChoice() : mixed
-	{
-		$qb = $this->entityManager->createQueryBuilder();
-		
-		$select = sprintf('new %s(users.id, account_event.email)', UserUid::class);
-		
-		$qb->select($select);
-		
-		$qb->from(User::class, 'users', 'users.id');
-		
-		$qb->join(Account::class, 'account', 'WITH', 'account.id = users.id');
-		
-		$qb->join(AccountEvent::class, 'account_event', 'WITH', 'account_event.id = account.event');
-		
-		$qb->join(
-			AccountStatus::class,
-			'account_status',
-			'WITH',
-			'account_status.event = account_event.id AND account_status.status = :status'
-		);
-		
-		$qb->setParameter('status', $this->status, \BaksDev\Auth\Email\Type\Status\AccountStatus::TYPE);
-		
-		return $qb->getQuery()->getResult();
-	}
-	
+    private \BaksDev\Auth\Email\Type\Status\AccountStatus $status;
+
+
+    public function __construct(EntityManagerInterface $entityManager)
+    {
+        $this->entityManager = $entityManager;
+        $this->status = new \BaksDev\Auth\Email\Type\Status\AccountStatus(AccountStatusEnum::ACTIVE);
+    }
+
+
+    /** Список объектов UserUid аккаунтов с опциональным Account Email  */
+
+    public function getChoice() : mixed
+    {
+        $qb = $this->entityManager->createQueryBuilder();
+
+        $select = sprintf('new %s(users.id, account_event.email)', UserUid::class);
+
+        $qb->select($select);
+
+        $qb->from(User::class, 'users', 'users.id');
+
+        $qb->join(Account::class, 'account', 'WITH', 'account.id = users.id');
+
+        $qb->join(AccountEvent::class, 'account_event', 'WITH', 'account_event.id = account.event');
+
+        $qb->join(
+            AccountStatus::class,
+            'account_status',
+            'WITH',
+            'account_status.event = account_event.id AND account_status.status = :status'
+        );
+
+        $qb->setParameter('status', $this->status, \BaksDev\Auth\Email\Type\Status\AccountStatus::TYPE);
+
+        return $qb->getQuery()->getResult();
+    }
+
 }

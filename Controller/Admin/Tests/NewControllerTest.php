@@ -23,10 +23,10 @@ use BaksDev\Users\Profile\TypeProfile\Type\Id\TypeProfileUid;
 use BaksDev\Users\User\Tests\TestUserAccount;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\DependencyInjection\Attribute\When;
 
-/**
- * @group users-profile-user
- */
+/** @group users-profile-user */
+#[When(env: 'test')]
 final class NewControllerTest extends WebTestCase
 {
     private const URL = '/admin/users/profile/new/%s';

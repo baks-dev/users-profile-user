@@ -26,49 +26,57 @@ declare(strict_types=1);
 namespace BaksDev\Users\Profile\UserProfile\Listeners\Event;
 
 use BaksDev\Users\Profile\UserProfile\Repository\CurrentUserProfile\CurrentUserProfileInterface;
-use Symfony\Bridge\Twig\AppVariable;
+use BaksDev\Users\User\Entity\User;
+use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
-use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\Event\ControllerEvent;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Twig\Environment;
 
-#[AsEventListener(event: RequestEvent::class, priority: 7)] /* <- больше 7 не срабатывает TokenStorageInterface */
+/**
+ * Слушатель инициирует профиль профиль пользователя для Environment
+ */
+#[AsEventListener(event: ControllerEvent::class)]
 final class UserProfileListener
 {
-    private $twig;
-
+    private TokenStorageInterface $tokenStorage;
+    private Environment $twig;
     private CurrentUserProfileInterface $currentUserProfile;
+    private iterable $profiles;
 
     public function __construct(
+        #[TaggedIterator('baks.user.profile', defaultPriorityMethod: 'priority')] iterable $profiles,
+        TokenStorageInterface $tokenStorage,
         Environment $twig,
         CurrentUserProfileInterface $currentUserProfile,
+
     )
     {
+        $this->tokenStorage = $tokenStorage;
         $this->twig = $twig;
         $this->currentUserProfile = $currentUserProfile;
+        $this->profiles = $profiles;
     }
 
-    /** Событие определяет профиль пользователя */
-    public function onKernelRequest(RequestEvent $event): void
+    public function onKernelController(ControllerEvent $event): void
     {
-        $globals = $this->twig->getGlobals();
+        /** @var User $user */
+        $user = $this->tokenStorage->getToken()?->getUser();
 
-        if(isset($globals['app']))
+        if($user)
         {
-            $baks_profile = $globals['baks_profile'] ?? [];
-            $Userprofile = null;
+            $data = null;
 
-            /** @var AppVariable $app */
-            $app = $globals['app'];
-
-            if($app->getUser())
+            foreach ($this->profiles as $profile)
             {
-                $Userprofile = $this->currentUserProfile->fetchProfileAssociative($app->getUser()->getId());
+                if($profile->getvalue($user->getId()))
+                {
+                    $data[$profile::KEY] = $profile->getValue($user->getId());
+                }
             }
-
-            if($Userprofile)
-            {
-                $this->twig->addGlobal('baks_profile', array_replace_recursive($baks_profile, $Userprofile));
-            }
+            
+            $this->twig->addGlobal('baks_profile', $data);
         }
     }
 }
+

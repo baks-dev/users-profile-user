@@ -28,17 +28,13 @@ namespace BaksDev\Users\Profile\UserProfile\Decorator\UserProfile;
 use BaksDev\Users\Profile\UserProfile\Repository\CurrentUserProfile\CurrentUserProfileInterface;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use BaksDev\Users\User\Decorator\UserProfile\UserProfileInterface;
-use BaksDev\Users\User\Entity\User;
-use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
-use Doctrine\ORM\Events;
-use Doctrine\Persistence\Event\LifecycleEventArgs;
+use BaksDev\Users\User\Type\Id\UserUid;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /** Идентификатор профиля пользователя */
 
 /** Адрес персональной страницы профиля */
 #[AutoconfigureTag('baks.user.profile')]
-#[AsEntityListener(event: Events::postLoad, method: 'postLoad', entity: User::class, priority: 99)]
 final class UserProfileId implements UserProfileInterface
 {
     public const KEY = 'id';
@@ -51,21 +47,16 @@ final class UserProfileId implements UserProfileInterface
     {
         $this->currentUserProfile = $currentUserProfile;
     }
-
-    public function postLoad(User $data, LifecycleEventArgs $event): void
-    {
-        $current = $this->currentUserProfile->fetchProfileAssociative($data->getId());
-        $this->value = $current ? new UserProfileUid($current['user_profile_id']) : false;
-    }
-
+    
     /** Возвращает значение (value) */
-    public function getValue(): bool|UserProfileUid
+    public function getValue(UserUid $user): bool|string
     {
-        return $this->value;
+        $current = $this->currentUserProfile->fetchProfileAssociative($user);
+        return $current['user_profile_id'] ?? false;
     }
 
     public static function priority(): int
     {
-        return 8;
+        return 700;
     }
 }

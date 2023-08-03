@@ -23,22 +23,13 @@
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use BaksDev\Users\Profile\UserProfile\Entity\Avatar\UserProfileAvatar;
 use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatusExtension;
 use Symfony\Config\TwigConfig;
 
 return static function(TwigConfig $config, ContainerConfigurator $configurator) {
 	
 	$config->path(__DIR__.'/../view', 'UserProfile');
-	
-	/** Абсолютный Путь для загрузки аватарок профилей пользователя */
-	$configurator->parameters()
-		->set(UserProfileAvatar::TABLE, '%kernel.project_dir%/public/upload/'.UserProfileAvatar::TABLE.'/')
-	;
-	
-	/** Относительный путь аватарок профилей пользователя */
-	$config->global(UserProfileAvatar::TABLE)->value('/upload/'.UserProfileAvatar::TABLE.'/');
-	
+
 	$services = $configurator->services()
 		->defaults()
 		->autowire()
@@ -48,20 +39,11 @@ return static function(TwigConfig $config, ContainerConfigurator $configurator) 
 	/* AccountStatusExtension */
 	$config->path(__DIR__.'/../../Type/Status', 'UserProfileStatus');
     
-	$services->set('app.user.profile.status.twig.extension')
+	$services->set('baks_profile.status.twig.extension')
 		->class(UserProfileStatusExtension::class)
 		->tag('twig.extension')
 	;
-//
-//	$services->set('app.user.profile.discount.twig.extension')
-//		->class(UserProfileDiscountExtension::class)
-//		->tag('twig.extension')
-//	;
-//
-//    $services->set('app.user.profile.twig.extension')
-//        ->class(UserProfileExtension::class)
-//        ->tag('twig.extension')
-//    ;
+
 };
 
 

@@ -27,48 +27,36 @@ namespace BaksDev\Users\Profile\UserProfile\Repository\AllUserProfile;
 
 use BaksDev\Auth\Email\Entity\Account;
 use BaksDev\Auth\Email\Entity\Event\AccountEvent;
+use BaksDev\Core\Doctrine\DBALQueryBuilder;
 use BaksDev\Core\Form\Search\SearchDTO;
 use BaksDev\Core\Services\Paginator\Paginator;
-use BaksDev\Core\Services\Switcher\Switcher;
-use BaksDev\Core\Type\Locale\Locale;
 use BaksDev\Users\Profile\TypeProfile\Entity\Event\TypeProfileEvent;
 use BaksDev\Users\Profile\TypeProfile\Entity\Trans\TypeProfileTrans;
 use BaksDev\Users\Profile\TypeProfile\Entity\TypeProfile;
 use BaksDev\Users\Profile\UserProfile\Entity\Avatar\UserProfileAvatar;
 use BaksDev\Users\Profile\UserProfile\Entity\Event\UserProfileEvent;
 use BaksDev\Users\Profile\UserProfile\Entity\Info\UserProfileInfo;
+use BaksDev\Users\Profile\UserProfile\Entity\Modify\UserProfileModify;
 use BaksDev\Users\Profile\UserProfile\Entity\Personal\UserProfilePersonal;
 use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
 use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatus;
-use Doctrine\DBAL\Connection;
-use Symfony\Contracts\Translation\TranslatorInterface;
-
-//use BaksDev\Users\Profile\TypeProfile\Entity as TypeProfileEntity;
-//use BaksDev\Users\Profile\UserProfile\Entity as UserProfileEntity;
 
 final class AllUserProfile implements AllUserProfileInterface
 {
-	private Connection $connection;
-	
-	private Switcher $switcher;
-	
+
 	private Paginator $paginator;
-	
-	private TranslatorInterface $translator;
-	
-	
-	public function __construct(
-		Connection $connection,
-		TranslatorInterface $translator,
-		Switcher $switcher,
+
+    private DBALQueryBuilder $DBALQueryBuilder;
+
+
+    public function __construct(
+		DBALQueryBuilder $DBALQueryBuilder,
 		Paginator $paginator,
 	)
 	{
-		$this->connection = $connection;
-		$this->switcher = $switcher;
 		$this->paginator = $paginator;
-		$this->translator = $translator;
-	}
+        $this->DBALQueryBuilder = $DBALQueryBuilder;
+    }
 	
 	
 	/**
@@ -95,7 +83,10 @@ final class AllUserProfile implements AllUserProfileInterface
 	
 	public function fetchUserProfileAllAssociative(SearchDTO $search, ?UserProfileStatus $status) : Paginator
 	{
-		$qb = $this->connection->createQueryBuilder();
+		$qb = $this->DBALQueryBuilder
+            ->createQueryBuilder(self::class)
+            ->bindLocal()
+        ;
 		
 		$qb->addSelect('userprofile.id');
 		$qb->addSelect('userprofile.event');
@@ -125,6 +116,15 @@ final class AllUserProfile implements AllUserProfileInterface
 			'userprofile_event',
 			'userprofile_event.id = userprofile.event'
 		);
+
+        /* Модификатор */
+        $qb->leftJoin(
+            'userprofile',
+            UserProfileModify::TABLE,
+            'userprofile_modify',
+            'userprofile_modify.event = userprofile.event'
+        );
+
 		
 		/* Профиль */
 		$qb->join(
@@ -183,35 +183,25 @@ final class AllUserProfile implements AllUserProfileInterface
 
 		$qb->addSelect('profiletype_trans.name as user_profile_type');
 		
-		$qb->setParameter('local', new Locale($this->translator->getLocale()), Locale::TYPE);
-		
+
 		/* Поиск */
-		if($search?->query)
+		if($search->getQuery())
 		{
-			$search->query = mb_strtolower($search->query);
-			
-			$searcher = $this->connection->createQueryBuilder();
-			
-			$searcher->orWhere('LOWER(userprofile_profile.username) LIKE :query');
-			$searcher->orWhere('LOWER(userprofile_profile.username) LIKE :switcher');
-			
-			$searcher->orWhere('LOWER(account_event.user_email) LIKE :query');
-			$searcher->orWhere('LOWER(account_event.user_email) LIKE :switcher');
-			
-			$searcher->orWhere('LOWER(userprofile_profile.location) LIKE :query');
-			$searcher->orWhere('LOWER(userprofile_profile.location) LIKE :switcher');
-			
-			$qb->andWhere('('.$searcher->getQueryPart('where').')');
-			$qb->setParameter('query', '%'.$this->switcher->toRus($search->query).'%');
-			$qb->setParameter('switcher', '%'.$this->switcher->toEng($search->query).'%');
+            $qb
+                ->createSearchQueryBuilder($search)
+
+                ->addSearchLike('userprofile_profile.username')
+                ->addSearchLike('account_event.email')
+                ->addSearchLike('userprofile_profile.location')
+            ;
 		}
-		
-		$qb->orderBy('userprofile.event', 'ASC');
 
 
-		
-		return $this->paginator->fetchAllAssociative($qb);
-		
+		//$qb->orderBy('userprofile.event', 'DESC');
+        $qb->addOrderBy('userprofile_modify.mod_date', 'DESC');
+
+        return $this->paginator->fetchAllAssociative($qb);
+
 	}
 	
 }

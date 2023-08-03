@@ -26,17 +26,14 @@ namespace BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit;
 use BaksDev\Users\Profile\UserProfile\Repository\FieldValueForm\FieldValueFormDTO;
 use BaksDev\Users\Profile\UserProfile\Repository\FieldValueForm\FieldValueFormInterface;
 use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Value\ValueDTO;
-use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\UserProfileDTO;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class UserProfileForm extends AbstractType
 {
@@ -107,16 +104,7 @@ final class UserProfileForm extends AbstractType
 						$data->addValue($value);
 					}
 				}
-				
-				//dd($data);
-				
-				//              dd($fields);
-				//
-				//
-				//              dump($form);
-				//              dump($data);
-				//              dd($options['profile_type']);
-				
+
 			}
 		);
 		

@@ -23,10 +23,10 @@ use BaksDev\Users\Profile\UserProfile\Type\Event\UserProfileEventUid;
 use BaksDev\Users\User\Tests\TestUserAccount;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\DependencyInjection\Attribute\When;
 
-/**
- * @group users-profile-user
- */
+/** @group users-profile-user */
+#[When(env: 'test')]
 final class DeleteControllerTest extends WebTestCase
 {
     private const URL = '/admin/users/profile/delete/%s';

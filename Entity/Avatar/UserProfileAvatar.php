@@ -146,5 +146,8 @@ class UserProfileAvatar extends EntityEvent implements UploadEntityInterface
         return  UserProfileEventUid::class;
     }
 
-	
+    public function getDir(): UserProfileEventUid
+    {
+        return $this->dir;
+    }
 }

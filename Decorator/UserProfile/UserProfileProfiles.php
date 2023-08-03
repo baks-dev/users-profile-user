@@ -27,42 +27,31 @@ namespace BaksDev\Users\Profile\UserProfile\Decorator\UserProfile;
 
 use BaksDev\Users\Profile\UserProfile\Repository\CurrentAllUserProfiles\CurrentAllUserProfilesByUserInterface;
 use BaksDev\Users\User\Decorator\UserProfile\UserProfileInterface;
-use BaksDev\Users\User\Entity\User;
-use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
-use Doctrine\ORM\Events;
-use Doctrine\Persistence\Event\LifecycleEventArgs;
+use BaksDev\Users\User\Type\Id\UserUid;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /** Массив добавленных профилей пользователя */
 #[AutoconfigureTag('baks.user.profile')]
-#[AsEntityListener(event: Events::postLoad, method: 'postLoad', entity: User::class, priority: 99)]
 final class UserProfileProfiles implements UserProfileInterface
 {
     public const KEY = 'user_profile_profiles';
 
     private CurrentAllUserProfilesByUserInterface $currentAllUserProfiles;
 
-    private bool|array $value = false;
-
     public function __construct(CurrentAllUserProfilesByUserInterface $currentAllUserProfiles)
     {
         $this->currentAllUserProfiles = $currentAllUserProfiles;
     }
 
-    public function postLoad(User $data, LifecycleEventArgs $event): void
-    {
-        $current = $this->currentAllUserProfiles->fetchUserProfilesAllAssociative($data->getId());
-        $this->value = count($current) > 1 ? $current : false;
-    }
-
     /** Возвращает значение (value) */
-    public function getValue(): bool|array
+    public function getValue(UserUid $user): bool|array
     {
-        return $this->value;
+        $current = $this->currentAllUserProfiles->fetchUserProfilesAllAssociative($user);
+        return count($current) > 1 ? $current : false;
     }
 
     public static function priority(): int
     {
-        return 9;
+        return 700;
     }
 }

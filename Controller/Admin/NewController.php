@@ -29,13 +29,13 @@ use BaksDev\Users\Profile\TypeProfile\Entity\TypeProfile;
 use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\UserProfileDTO;
 use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\UserProfileForm;
 use BaksDev\Users\Profile\UserProfile\UseCase\UserProfileAggregate;
-// use BaksDev\Core\Services\EntityClone;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
+#[AsController]
 #[RoleSecurity('ROLE_USERPROFILE_NEW')]
 final class NewController extends AbstractController
 {
@@ -43,12 +43,7 @@ final class NewController extends AbstractController
     public function new(
         Request $request,
         #[MapEntity] TypeProfile $TypeProfile,
-        // UserProfileAggregate $userProfileAggregate,
-        //      Event $eventUserProfile,
-        //      InfoRepository $getInfo,
-        //      TranslatorInterface $translator,
-        //      EntityClone $entityClone,
-        //      Handler $handler
+
     ): Response {
         return new Response('OK');
 

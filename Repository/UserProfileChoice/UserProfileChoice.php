@@ -29,20 +29,20 @@ namespace BaksDev\Users\Profile\UserProfile\Repository\UserProfileChoice;
 use BaksDev\Auth\Email\Entity as AccountEntity;
 use BaksDev\Auth\Email\Type\Status\AccountStatus;
 use BaksDev\Auth\Email\Type\Status\AccountStatusEnum;
+use BaksDev\Core\Doctrine\ORMQueryBuilder;
 use BaksDev\Users\Profile\UserProfile\Entity as UserProfileEntity;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatus;
 use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatusEnum;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
 final class UserProfileChoice implements UserProfileChoiceInterface
 {
-    private EntityManagerInterface $entityManager;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    private ORMQueryBuilder $ORMQueryBuilder;
+
+    public function __construct(ORMQueryBuilder $ORMQueryBuilder,)
     {
-        $this->entityManager = $entityManager;
+        $this->ORMQueryBuilder = $ORMQueryBuilder;
     }
 
     /**
@@ -52,7 +52,7 @@ final class UserProfileChoice implements UserProfileChoiceInterface
     {
         $select = sprintf('new %s(user_profile.id, personal.username)', UserProfileUid::class);
 
-        $qb = $this->entityManager->createQueryBuilder();
+        $qb = $this->ORMQueryBuilder->createQueryBuilder(self::class);
         $qb->select($select);
 
         $qb->from(UserProfileEntity\UserProfile::class, 'user_profile');
@@ -93,16 +93,8 @@ final class UserProfileChoice implements UserProfileChoiceInterface
         $qb->setParameter('account_status', new AccountStatus(AccountStatusEnum::ACTIVE), AccountStatus::TYPE);
 
 
-        // Кешируем результат ORM
-        $cacheQueries = new FilesystemAdapter('UserProfile');
+        /* Кешируем результат ORM */
+        return $qb->enableCache('UserProfile', 86400)->getResult();
 
-        $query = $this->entityManager->createQuery($qb->getDQL());
-        $query->setQueryCache($cacheQueries);
-        $query->setResultCache($cacheQueries);
-        $query->enableResultCache();
-        $query->setLifetime(60 * 60 * 24);
-        $query->setParameters($qb->getParameters());
-
-        return $query->getResult();
     }
 }
