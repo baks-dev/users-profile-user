@@ -39,35 +39,46 @@ use InvalidArgumentException;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'users_profile_info')]
-#[ORM\Index(columns: ['user_id'])]
-#[ORM\Index(columns: ['active'])]
-#[ORM\Index(columns: ['status'])]
+#[ORM\Index(columns: ['usr'])]
+#[ORM\Index(columns: ['status', 'active'])]
 class UserProfileInfo extends EntityState
 {
     public const TABLE = 'users_profile_info';
 
-    /** ID UserProfile */
+    /**
+     * ID UserProfile
+     */
     #[ORM\Id]
     #[ORM\Column(type: UserProfileUid::TYPE)]
     private ?UserProfileUid $profile;
 
-    /** Пользователь, кому принадлежит профиль */
-    #[ORM\Column(name: 'user_id', type: UserUid::TYPE)]
-    private UserUid $user;
+    /**
+     * Пользователь, кому принадлежит профиль
+     */
+    #[ORM\Column(type: UserUid::TYPE)]
+    private UserUid $usr;
 
-    /** Персональная скидка профиля */
+    /**
+     * Персональная скидка профиля
+     */
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
     private ?int $discount = null;
 
-    /** Текущий активный профиль, выбранный пользователем */
+    /**
+     * Текущий активный профиль, выбранный пользователем
+     */
     #[ORM\Column(type: Types::BOOLEAN)]
     private bool $active = false;
 
-    /** Статус профиля (модерация, активен, заблокирован) */
+    /**
+     * Статус профиля (модерация, активен, заблокирован)
+     */
     #[ORM\Column(type: UserProfileStatus::TYPE)]
     private UserProfileStatus $status;
 
-    /** Ссылка на профиль пользователя */
+    /**
+     * Ссылка на профиль пользователя
+     */
     #[ORM\Column(type: Types::STRING, unique: true)]
     private string $url;
 
@@ -82,11 +93,11 @@ class UserProfileInfo extends EntityState
         return $this->profile;
     }
 
-    public function isProfileOwnedUser(UserUid|User $user): bool
+    public function isProfileOwnedUser(UserUid|User $usr): bool
     {
-        $id = $user instanceof User ? $user->getId() : $user;
+        $id = $usr instanceof User ? $usr->getId() : $usr;
 
-        return $this->user->equals($id);
+        return $this->usr->equals($id);
     }
 
     public function isNotActiveProfile(): bool

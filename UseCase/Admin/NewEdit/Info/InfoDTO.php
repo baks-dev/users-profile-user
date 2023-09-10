@@ -26,14 +26,15 @@ namespace BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Info;
 use BaksDev\Users\Profile\UserProfile\Entity\Info\UserProfileInfoInterface;
 use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatus;
 use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatusEnum;
-
 use BaksDev\Users\User\Type\Id\UserUid;
-use Symfony\Component\Validator\Constraints as Assert;
 
+/** @see UserProfileInfo */
 final class InfoDTO implements UserProfileInfoInterface
 {
-	/** Пользователь, кому принадлежит профиль */
-	private UserUid $user;
+	/**
+     * Пользователь, кому принадлежит профиль
+     */
+	private UserUid $usr;
 	
 	/** Статус активности профиля */
 	private UserProfileStatus $status;
@@ -49,20 +50,22 @@ final class InfoDTO implements UserProfileInfoInterface
 	private ?int $discount = null;
 	
 	
-	public function __construct() { $this->status = new UserProfileStatus(UserProfileStatusEnum::MODERATION); }
+	public function __construct() {
+        $this->status = new UserProfileStatus(UserProfileStatusEnum::MODERATION);
+    }
 	
 	
 	/** Пользователь, кому принадлежит профиль */
 	
-	public function getUser() : UserUid
+	public function getUsr() : UserUid
 	{
-		return $this->user;
+		return $this->usr;
 	}
 	
 	
-	public function setUser(UserUid $user) : void
+	public function setUsr(UserUid $usr) : void
 	{
-		$this->user = $user;
+		$this->usr = $usr;
 	}
 	
 	

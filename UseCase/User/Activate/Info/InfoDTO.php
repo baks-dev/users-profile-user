@@ -32,7 +32,7 @@ final class InfoDTO implements UserProfileInfoInterface
 	
 	/** Пользователь, кому принадлежит профиль */
 	#[Assert\Uuid]
-	private readonly UserUid $user;
+	private readonly UserUid $usr;
 	
 	/** Текущий активный профиль, выбранный пользователем */
 	private readonly bool $active;
@@ -47,9 +47,9 @@ final class InfoDTO implements UserProfileInfoInterface
 	/**
 	 * @return UserUid
 	 */
-	public function getUser() : UserUid
+	public function getUsr() : UserUid
 	{
-		return $this->user;
+		return $this->usr;
 	}
 	
 	

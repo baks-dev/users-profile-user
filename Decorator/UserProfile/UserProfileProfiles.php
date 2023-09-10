@@ -44,9 +44,9 @@ final class UserProfileProfiles implements UserProfileInterface
     }
 
     /** Возвращает значение (value) */
-    public function getValue(UserUid $user): bool|array
+    public function getValue(UserUid $usr): bool|array
     {
-        $current = $this->currentAllUserProfiles->fetchUserProfilesAllAssociative($user);
+        $current = $this->currentAllUserProfiles->fetchUserProfilesAllAssociative($usr);
         return count($current) > 1 ? $current : false;
     }
 

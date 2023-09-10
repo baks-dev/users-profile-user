@@ -26,44 +26,41 @@ namespace BaksDev\Users\Profile\UserProfile\UseCase\Admin\Delete\Info;
 use BaksDev\Users\Profile\UserProfile\Entity\Info\InfoInterface;
 use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatus;
 use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatusEnum;
-use App\Module\Users\User\Type\Id\UserUid;
-use Symfony\Component\Validator\Constraints as Assert;
+use BaksDev\Users\User\Type\Id\UserUid;
 
 final class InfoDTO implements InfoInterface
 {
-	/** Пользователь, кому принадлежит профиль */
-	private UserUid $user;
-	
-	/** Статус активности профиля */
-	private UserProfileStatus $status;
-	
-	/** Ссылка на профиль пользователя */
-	private string $url;
-	
+	/**
+     * Пользователь, кому принадлежит профиль
+     */
+	private UserUid $usr;
 	
 	/**
-	 * @param UserProfileStatus $status
-	 */
-	public function __construct() { $this->status = new UserProfileStatus(UserProfileStatusEnum::MODERATION); }
+     * Статус активности профиля
+     */
+	private UserProfileStatus $status;
+	
+	/**
+     * Ссылка на профиль пользователя
+     */
+	private string $url;
+	
+
+	public function __construct() {
+        $this->status = new UserProfileStatus(UserProfileStatusEnum::MODERATION);
+    }
 	
 	
 	/* USER */
-	
-	/**
-	 * @return UserUid
-	 */
-	public function getUser() : UserUid
+
+	public function getUsr() : UserUid
 	{
-		return $this->user;
+		return $this->usr;
 	}
-	
-	
-	/**
-	 * @param UserUid $user
-	 */
-	public function setUser(UserUid $user) : void
+
+	public function setUsr(UserUid $usr) : void
 	{
-		$this->user = $user;
+		$this->usr = $usr;
 	}
 	
 	/* STATUS */
@@ -80,28 +77,17 @@ final class InfoDTO implements InfoInterface
 	
 	
 	/* URL */
-	
-	/**
-	 * @return string
-	 */
+
 	public function getUrl() : string
 	{
 		return $this->url;
 	}
-	
-	
-	/**
-	 * @param string $url
-	 */
+
 	public function setUrl(string $url) : void
 	{
 		$this->url = $url;
 	}
-	
-	
-	/**
-	 * @param string $url
-	 */
+
 	public function updateUrlUniq() : void
 	{
 		$this->url = uniqid($this->url.'_', false);

@@ -26,6 +26,7 @@ namespace BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit;
 use BaksDev\Users\Profile\TypeProfile\Type\Id\TypeProfileUid;
 use BaksDev\Users\Profile\UserProfile\Entity\Event\UserProfileEventInterface;
 use BaksDev\Users\Profile\UserProfile\Type\Event\UserProfileEventUid;
+use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatusEnum;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -81,6 +82,12 @@ final class UserProfileDTO implements UserProfileEventInterface
 	
 	public function getType() : TypeProfileUid
 	{
+        /** Если профиль пользовательский - делаем активным */
+        if($this->type->equals(TypeProfileUid::userProfileType()))
+        {
+            $this->info->setStatus(UserProfileStatusEnum::ACTIVE);
+        }
+
 		return $this->type;
 	}
 	

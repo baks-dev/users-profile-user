@@ -64,6 +64,8 @@ final class IndexController extends AbstractController
         $status = !$request->get('status') ? null : new UserProfileStatus($request->get('status'));
         $query = $userProfileByUser->get($search, $status);
 
+        
+
         return $this->render(
             [
                 'profiles' => $profile,

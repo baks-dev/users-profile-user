@@ -31,7 +31,6 @@ use BaksDev\Users\Profile\UserProfile\UseCase\User\Activate\ActivateUserProfileh
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\Cache\Adapter\ApcuAdapter;
-use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
@@ -48,39 +47,51 @@ final class ActivateController extends AbstractController
         #[MapEntity] EntityUserProfile\Event\UserProfileEvent $Event,
         ActivateUserProfilehandler $handler,
         EntityManagerInterface $entityManager,
-    ): Response {
+    ): Response
+    {
+
+        $ApcuAdapter = new ApcuAdapter('Authority');
+        $ApcuAdapter->delete((string) $this->getUsr()?->getId());
+
         $profile = new ActivateUserProfileDTO();
         $Event->getDto($profile);
 
         $Info = $entityManager->getRepository(EntityUserProfile\Info\UserProfileInfo::class)
-            ->findOneBy(['profile' => $Event->getProfile()])
-        ;
+            ->findOneBy(['profile' => $Event->getProfile()]);
 
-        if (
+        if(
             !$Info
-            || !$Info->isProfileOwnedUser($this->getUser()) // Профиль не принадлежит пользователю
             || $Info->isNotActiveProfile() // текущий профиль НЕ активен
             || $Info->isNotStatusActive() // профиль НЕ на модерации или заблокирован
-        ) {
+            || !$Info->isProfileOwnedUser($this->getUsr()) // Профиль не принадлежит пользователю
+        )
+        {
             throw new AccessDeniedException();
         }
 
         $Info->getDto($profile->getInfo());
         $UserProfile = $handler->handle($profile);
 
-        if ($UserProfile instanceof EntityUserProfile\UserProfile) {
+        if($UserProfile instanceof EntityUserProfile\UserProfile)
+        {
             $this->addFlash('success', 'user.success.activate', 'user.user.profile');
-
-            // Сбрасываем кеш пользователя
-            $cache = new ApcuAdapter($this->getUser()?->getUserIdentifier());
-            $cache->clear();
-        } else {
+        }
+        else
+        {
             $this->addFlash('danger', 'user.danger.delete', 'user.user.profile', $UserProfile);
         }
 
-        // Чистим кеш профиля
-        $cache = new FilesystemAdapter('UserProfile');
-        $cache->delete('current_user_profile'.$this->getUser()?->getId().$request->getLocale());
+
+
+
+
+//        // Сбрасываем кеш пользователя
+//        $cache = new ApcuAdapter($this->getUsr()?->getUserIdentifier());
+//        $cache->clear();
+//
+//        // Чистим кеш профиля
+//        $cache = new FilesystemAdapter('UserProfile');
+//        $cache->delete('current_user_profile'.$this->getUsr()?->getId().$request->getLocale());
 
         return $this->redirectToReferer();
     }

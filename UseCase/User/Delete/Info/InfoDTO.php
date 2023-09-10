@@ -36,7 +36,7 @@ final class InfoDTO implements UserProfileInfoInterface
 	private readonly UserProfileStatus $status;
 	
 	/** Пользователь, кому принадлежит профиль */
-	private readonly UserUid $user;
+	private readonly UserUid $usr;
 	
 	/** Ссылка на профиль пользователя */
 	private string $url;
@@ -82,9 +82,9 @@ final class InfoDTO implements UserProfileInfoInterface
 	}
 	
 	
-	public function getUser() : UserUid
+	public function getUsr() : UserUid
 	{
-		return $this->user;
+		return $this->usr;
 	}
 	
 	

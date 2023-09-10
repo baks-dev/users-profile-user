@@ -47,7 +47,7 @@ final class InfoForm extends AbstractType
 	public function buildForm(FormBuilderInterface $builder, array $options)
 	{
 		$builder
-			->add('user', ChoiceType::class, [
+			->add('usr', ChoiceType::class, [
 				'choices' => $this->usersChoice->getChoice(),
 				'choice_value' => function(?UserUid $status) {
 					return $status?->getValue();

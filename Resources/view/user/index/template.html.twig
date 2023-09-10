@@ -15,16 +15,6 @@
 	{# <link href="{{ path(app.request.attributes.get('_route')~'.css') }}" rel="stylesheet"> #}
 {% endblock %}
 
-{# ---- HEADER-БЛОК ------------------------------------------------------------ #}
-{# {% block header %}
-    {{ include(_self|replace({ "template.html.twig": "header.html.twig" })) }}
-{% endblock %} #}
-
-
-{# ---- LEFT-БЛОК ------------------------------------------------------------ #}
-{# {% block left %} #}
-{#   {% include '@Template/flowers/left.html.twig' %} #}
-{# {% endblock %} #}
 
 
 {# ---- КОНТЕНТ-БЛОК ------------------------------------------------------------ #}
@@ -34,13 +24,6 @@
 {% endblock %}
 
 
-{# ---- FOOTER-БЛОК ------------------------------------------------------------ #}
-{#
-{% block footer %}
-    {{ include(_self|replace({ "template.html.twig": "footer.html.twig" })) }}
-{% endblock %}
-#}
-
 {% block javascript %}
-{#<script defer src="{{ path(app.request.attributes.get('_route')~'.js') }}"></script>#}
+<script async nonce="{{ csp_nonce() }}" data-src="/assets/js/copy.min.js?v={{ version }}" class="lazy"></script>
 {% endblock %}

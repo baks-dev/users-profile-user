@@ -28,95 +28,108 @@ use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatus;
 use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatusEnum;
 use BaksDev\Users\User\Entity\User;
 use BaksDev\Users\User\Type\Id\UserUid;
-use Symfony\Component\Validator\Constraints as Assert;
 
+/** @see UserProfileInfo */
 final class InfoDTO implements UserProfileInfoInterface
 {
-	/** Пользователь, кому принадлежит профиль */
-	private readonly UserUid $user;
-	
-	/** Ссылка на профиль пользователя */
-	private string $url;
-	
-	/** Текущий активный профиль, выбранный пользователем */
-	private bool $active = false;
-	
-	/** Статус профиля (модерация, активен, заблокирован) */
-	private readonly UserProfileStatus $status;
-	
-	
-	public function __construct()
-	{
-		$this->status = new UserProfileStatus(UserProfileStatusEnum::MODERATION);
-	}
-	
-	/* USER */
-	
-	/**
-	 * @return UserUid
-	 */
-	public function getUser() : UserUid
-	{
-		return $this->user;
-	}
-	
-	
-	public function setUser(UserUid|User $user) : void
-	{
-		$this->user = $user instanceof User ? $user->getId() : $user;
-	}
-	
-	
-	/* STATUS */
-	/* Статус после обновления всегда На модерации */
-	
-	/**
-	 * @return UserProfileStatus
-	 */
-	public function getStatus() : UserProfileStatus
-	{
-		return $this->status;
-	}
-	
-	
-	/**
-	 * @return bool
-	 */
-	public function getActive() : bool
-	{
-		return $this->active;
-	}
-	
-	
-	/* URL */
-	
-	public function getUrl() : string
-	{
-		return $this->url;
-	}
-	
-	
-	public function setUrl(string $url) : void
-	{
-		$this->url = $url;
-	}
-	
-	
-	public function updateUrlUniq() : void
-	{
-		$this->url = uniqid($this->url.'_', false);
-	}
-	
-	
-	public function isModeration() : bool
-	{
-		return $this->status->equals(UserProfileStatusEnum::MODERATION);
-	}
-	
-	
-	public function isBlock() : bool
-	{
-		return $this->status->equals(UserProfileStatusEnum::BLOCK);
-	}
-	
+    /** Пользователь, кому принадлежит профиль */
+    private readonly UserUid $usr;
+
+    /** Ссылка на профиль пользователя */
+    private string $url;
+
+    /** Текущий активный профиль, выбранный пользователем */
+    private bool $active = false;
+
+    /** Статус профиля (модерация, активен, заблокирован) */
+    private UserProfileStatus $status;
+
+
+    public function __construct()
+    {
+        $this->status = new UserProfileStatus(UserProfileStatusEnum::MODERATION);
+    }
+
+    /* USER */
+
+    /**
+     * @return UserUid
+     */
+    public function getUsr(): UserUid
+    {
+        return $this->usr;
+    }
+
+
+    public function setUsr(UserUid|User $usr): void
+    {
+        $this->usr = $usr instanceof User ? $usr->getId() : $usr;
+    }
+
+
+    /* STATUS */
+    /* Статус после обновления всегда На модерации */
+
+    /**
+     * @return UserProfileStatus
+     */
+    public function getStatus(): UserProfileStatus
+    {
+        return $this->status;
+    }
+
+    public function setStatus(UserProfileStatus|UserProfileStatusEnum $status): self
+    {
+        $this->status = $status instanceof UserProfileStatus ?: new UserProfileStatus($status);
+
+        return $this;
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function getActive(): bool
+    {
+        return $this->active;
+    }
+
+    public function activate(): self
+    {
+        $this->active = true;
+        return $this;
+    }
+
+
+    /* URL */
+
+    public function getUrl(): string
+    {
+        return $this->url;
+    }
+
+
+    public function setUrl(string $url): void
+    {
+        $this->url = $url;
+    }
+
+
+    public function updateUrlUniq(): void
+    {
+        $this->url = uniqid($this->url.'_', false);
+    }
+
+
+    public function isModeration(): bool
+    {
+        return $this->status->equals(UserProfileStatusEnum::MODERATION);
+    }
+
+
+    public function isBlock(): bool
+    {
+        return $this->status->equals(UserProfileStatusEnum::BLOCK);
+    }
+
 }

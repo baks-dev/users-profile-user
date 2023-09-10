@@ -65,7 +65,7 @@ final class AllUserProfile implements AllUserProfileInterface
 	 * id - дентификатор профиля <br>
 	 * event - дентификатор события профиля,<br>
 	 * user_profile_url - адрес персональной страницы,<br>
-	 * user_id - идентификатор пользовтаеля,<br>
+	 * usr - идентификатор пользовтаеля,<br>
 	 *
 	 * user_profile_status - статус модерации пролфиля,<br>
 	 * user_profile_active - статус текущей активности профиля,<br>
@@ -106,7 +106,7 @@ final class AllUserProfile implements AllUserProfileInterface
 		}
 
 		$qb->addSelect('userprofile_info.url AS user_profile_url');
-		$qb->addSelect('userprofile_info.user_id');
+		$qb->addSelect('userprofile_info.usr');
 		$qb->addSelect('userprofile_info.status AS user_profile_status');
 		$qb->addSelect('userprofile_info.active AS user_profile_active');
 		
@@ -151,7 +151,7 @@ final class AllUserProfile implements AllUserProfileInterface
 
 		/* Аккаунт пользователя */
 		/** Пользователь User */
-		$qb->join('userprofile_info', Account::TABLE, 'account', 'account.id = userprofile_info.user_id');
+		$qb->join('userprofile_info', Account::TABLE, 'account', 'account.id = userprofile_info.usr');
 		
 		/** Событие пользователя User\Event */
 		$qb->addSelect('account_event.id AS account_id');

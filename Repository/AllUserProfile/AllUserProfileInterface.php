@@ -35,7 +35,7 @@ interface AllUserProfileInterface
 	 * id - дентификатор профиля <br>
 	 * event - дентификатор события профиля,<br>
 	 * user_profile_url - адрес персональной страницы,<br>
-	 * user_id - идентификатор пользовтаеля,<br>
+	 * usr - идентификатор пользовтаеля,<br>
 	 *
 	 * user_profile_status - статус модерации пролфиля,<br>
 	 * user_profile_active - статус текущей активности профиля,<br>

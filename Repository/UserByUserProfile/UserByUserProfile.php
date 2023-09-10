@@ -23,35 +23,35 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Users\Profile\UserProfile\Decorator\UserProfile;
+namespace BaksDev\Users\Profile\UserProfile\Repository\UserByUserProfile;
 
-use BaksDev\Users\Profile\UserProfile\Repository\CurrentUserProfile\CurrentUserProfileInterface;
-use BaksDev\Users\User\Decorator\UserProfile\UserProfileInterface;
-use BaksDev\Users\User\Type\Id\UserUid;
-use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
+use BaksDev\Core\Doctrine\ORMQueryBuilder;
+use BaksDev\Users\Profile\UserProfile\Entity\Info\UserProfileInfo;
+use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
+use BaksDev\Users\User\Entity\User;
 
-/** Адрес персональной страницы профиля */
-#[AutoconfigureTag('baks.user.profile')]
-final class UserProfileUrl implements UserProfileInterface
+final class UserByUserProfile implements UserByUserProfileInterface
 {
-    public const KEY = 'user_profile_url';
+    private ORMQueryBuilder $ORMQueryBuilder;
 
-    private CurrentUserProfileInterface $currentUserProfile;
-
-    public function __construct(CurrentUserProfileInterface $currentUserProfile)
+    public function __construct(ORMQueryBuilder $ORMQueryBuilder)
     {
-        $this->currentUserProfile = $currentUserProfile;
+        $this->ORMQueryBuilder = $ORMQueryBuilder;
     }
 
-    /** Возвращает значение (value) */
-    public function getValue(UserUid $usr): bool|string
+    /**
+     * Возвращает User профиля пользователя
+     */
+    public function findUserByProfile(UserProfileUid $profile): ?User
     {
-        $current = $this->currentUserProfile->fetchProfileAssociative($usr);
-        return $current['profile_url'] ?? false;
-    }
+        $qb = $this->ORMQueryBuilder->createQueryBuilder(self::class);
 
-    public static function priority(): int
-    {
-        return 700;
+        $qb->select('usr');
+        $qb->from(UserProfileInfo::class, 'info');
+        $qb->join(User::class, 'usr', 'WITH', 'usr.id = info.usr');
+        $qb->where('info.profile = :profile')
+            ->setParameter('profile', $profile, UserProfileUid::TYPE);
+
+        return $qb->getQuery()->getOneOrNullResult();
     }
 }

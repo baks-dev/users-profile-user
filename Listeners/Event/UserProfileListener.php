@@ -25,12 +25,12 @@ declare(strict_types=1);
 
 namespace BaksDev\Users\Profile\UserProfile\Listeners\Event;
 
-use BaksDev\Users\Profile\UserProfile\Repository\CurrentUserProfile\CurrentUserProfileInterface;
 use BaksDev\Users\User\Entity\User;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authentication\Token\SwitchUserToken;
 use Twig\Environment;
 
 /**
@@ -39,42 +39,46 @@ use Twig\Environment;
 #[AsEventListener(event: ControllerEvent::class)]
 final class UserProfileListener
 {
-    private TokenStorageInterface $tokenStorage;
+    //private TokenStorageInterface $tokenStorage;
     private Environment $twig;
-    private CurrentUserProfileInterface $currentUserProfile;
     private iterable $profiles;
+    private Security $security;
 
     public function __construct(
         #[TaggedIterator('baks.user.profile', defaultPriorityMethod: 'priority')] iterable $profiles,
-        TokenStorageInterface $tokenStorage,
+        //TokenStorageInterface $tokenStorage,
+        Security $security,
         Environment $twig,
-        CurrentUserProfileInterface $currentUserProfile,
-
     )
     {
-        $this->tokenStorage = $tokenStorage;
+        //$this->tokenStorage = $tokenStorage;
         $this->twig = $twig;
-        $this->currentUserProfile = $currentUserProfile;
         $this->profiles = $profiles;
+        $this->security = $security;
     }
 
     public function onKernelController(ControllerEvent $event): void
     {
-        /** @var User $user */
-        $user = $this->tokenStorage->getToken()?->getUser();
+        /** @var User $usr */
+        //$usr = $this->tokenStorage->getToken()?->getUser();
+        $token = $this->security->getToken();
+        $usr = $token instanceof SwitchUserToken ? $token->getOriginalToken()->getUser() : $token?->getUser();
 
-        if($user)
+
+
+
+        if($usr)
         {
             $data = null;
 
             foreach ($this->profiles as $profile)
             {
-                if($profile->getvalue($user->getId()))
+                if($profile->getvalue($usr->getId()))
                 {
-                    $data[$profile::KEY] = $profile->getValue($user->getId());
+                    $data[$profile::KEY] = $profile->getValue($usr->getId());
                 }
             }
-            
+
             $this->twig->addGlobal('baks_profile', $data);
         }
     }

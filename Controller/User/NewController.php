@@ -45,26 +45,30 @@ final class NewController extends AbstractController
         Request $request,
         #[MapEntity] TypeProfile $type,
         UserProfileHandler $handler,
-        //MessageBusInterface $bus,
-    ): Response {
+    ): Response
+    {
         $profile = new UserProfileDTO();
         $profile->setType($type->getId());
-        $profile->getInfo()->setUser($this->getUser());
+        $profile->getInfo()->setUsr($this->getUsr());
 
         // Форма
         $form = $this->createForm(UserProfileForm::class, $profile);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid() && $form->has('Save')) {
+        if($form->isSubmitted() && $form->isValid() && $form->has('Save'))
+        {
             $UserProfile = $handler->handle($profile);
 
-            if ($UserProfile instanceof UserProfile) {
+            if($UserProfile instanceof UserProfile)
+            {
                 $this->addFlash('success', 'user.success.new', 'user.user.profile');
 
                 // Отправляем уведомление о модерации в телегу
                 // $telega = new ModerationUserProfileDTO($UserProfile->getEvent());
                 // $bus->dispatch($telega);
-            } else {
+            }
+            else
+            {
                 $this->addFlash('danger', 'user.danger.new', 'user.user.profile');
             }
 

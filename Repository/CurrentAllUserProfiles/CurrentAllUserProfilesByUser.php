@@ -48,14 +48,15 @@ final class CurrentAllUserProfilesByUser implements CurrentAllUserProfilesByUser
      * user_profile_event - идентификатор события для активации профиля <br>
      * user_profile_username - username профиля <br>
      */
-    public function fetchUserProfilesAllAssociative(UserUid $user): ?array
+    public function fetchUserProfilesAllAssociative(UserUid $usr): ?array
     {
         $qb = $this->DBALQueryBuilder->createQueryBuilder(self::class);
 
+        $qb->addSelect('userprofile.id AS user_profile_id');
         $qb->addSelect('userprofile.event AS user_profile_event');
 
         $qb->from(Entity\Info\UserProfileInfo::TABLE, 'userprofile_info');
-        $qb->where('userprofile_info.user_id = :user_id AND userprofile_info.status = :status');
+        $qb->where('userprofile_info.usr = :usr AND userprofile_info.status = :status');
 
         $qb->join(
             'userprofile_info',
@@ -64,7 +65,7 @@ final class CurrentAllUserProfilesByUser implements CurrentAllUserProfilesByUser
             'userprofile.id = userprofile_info.profile'
         );
 
-        $qb->setParameter('user_id', $user, UserUid::TYPE);
+        $qb->setParameter('usr', $usr, UserUid::TYPE);
         $qb->setParameter('status', new UserProfileStatus(UserProfileStatusEnum::ACTIVE), UserProfileStatus::TYPE);
 
         $qb->join(

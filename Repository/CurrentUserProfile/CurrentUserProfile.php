@@ -27,31 +27,36 @@ use BaksDev\Core\Doctrine\DBALQueryBuilder;
 use BaksDev\Core\Doctrine\ORMQueryBuilder;
 use BaksDev\Users\Profile\TypeProfile\Entity as TypeProfileEntity;
 use BaksDev\Users\Profile\UserProfile\Entity as UserProfileEntity;
+use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatus;
 use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatusEnum;
 use BaksDev\Users\User\Entity\User;
 use BaksDev\Users\User\Type\Id\UserUid;
+use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\Cache\Adapter\ApcuAdapter;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 final class CurrentUserProfile implements CurrentUserProfileInterface
 {
-
     private ORMQueryBuilder $ORMQueryBuilder;
-
     private DBALQueryBuilder $DBALQueryBuilder;
     private string $CDN_HOST;
+    private Security $security;
 
 
     public function __construct(
         #[Autowire(env: 'CDN_HOST')] string $CDN_HOST,
         ORMQueryBuilder $ORMQueryBuilder,
-        DBALQueryBuilder $DBALQueryBuilder
+        DBALQueryBuilder $DBALQueryBuilder,
+        Security $security,
+
     )
     {
 
         $this->ORMQueryBuilder = $ORMQueryBuilder;
         $this->DBALQueryBuilder = $DBALQueryBuilder;
         $this->CDN_HOST = $CDN_HOST;
+        $this->security = $security;
     }
 
 
@@ -68,26 +73,58 @@ final class CurrentUserProfile implements CurrentUserProfileInterface
      * profile_avatar_cdn - фгаг загрузки файла на CDN
      */
 
-    public function fetchProfileAssociative(UserUid $user): ?array
+    public function fetchProfileAssociative(UserUid $usr, bool $authority = true): ?array
     {
         $qb = $this->DBALQueryBuilder->createQueryBuilder(self::class);
+        
+        if($authority)
+        {
+            /** Если пользовтаель олицетворен - подгружаем профиль самозванца */
+            $ApcuAdapter = new ApcuAdapter('Authority');
+            $authority = $ApcuAdapter->getItem((string) $usr)->get();
+        }
 
-        /* Пользователь */
-        $qb->from(User::TABLE, 'users');
+        //dump($authority );
 
-        $qb->where('users.user_id = :user');
-        $qb->setParameter('user', $user, UserUid::TYPE);
+        if($authority)
+        {
+
+            //dump((string) $authority);
+            
+            /* Пользователь */
+            $qb->from(User::TABLE, 'users');
+
+            /* PROFILE */
+            $qb->addSelect('profile_info.url AS profile_url');  /* URL профиля */
+            $qb->addSelect('profile_info.discount AS profile_discount');  /* URL профиля */
+            $qb->from(UserProfileEntity\Info\UserProfileInfo::TABLE, 'profile_info');
 
 
-        /* PROFILE */
-        $qb->addSelect('profile_info.url AS profile_url');  /* URL профиля */
-        $qb->addSelect('profile_info.discount AS profile_discount');  /* URL профиля */
-        $qb->join(
-            'users',
-            UserProfileEntity\Info\UserProfileInfo::TABLE,
-            'profile_info',
-            'profile_info.user_id = users.user_id AND profile_info.status = :profile_status AND profile_info.active = true'
-        );
+            $qb->andWhere('profile_info.profile = :authority')
+            ->setParameter('authority', $authority, UserProfileUid::TYPE);
+
+            $qb->andWhere('profile_info.status = :profile_status');
+
+        }
+        else
+        {
+            /* Пользователь */
+            $qb->from(User::TABLE, 'users');
+
+            $qb->where('users.usr = :usr');
+            $qb->setParameter('usr', $usr, UserUid::TYPE);
+
+
+            /* PROFILE */
+            $qb->addSelect('profile_info.url AS profile_url');  /* URL профиля */
+            $qb->addSelect('profile_info.discount AS profile_discount');  /* URL профиля */
+            $qb->join(
+                'users',
+                UserProfileEntity\Info\UserProfileInfo::TABLE,
+                'profile_info',
+                'profile_info.usr = users.usr AND profile_info.status = :profile_status AND profile_info.active = true'
+            );
+        }
 
 
         $qb->setParameter('profile_status', new UserProfileStatus(UserProfileStatusEnum::ACTIVE), UserProfileStatus::TYPE);
@@ -144,7 +181,6 @@ final class CurrentUserProfile implements CurrentUserProfileInterface
         );
 
 
-
         $qb->join(
             'profile_event',
             TypeProfileEntity\TypeProfile::TABLE,
@@ -172,8 +208,7 @@ final class CurrentUserProfile implements CurrentUserProfileInterface
     }
 
 
-
-    public function getCurrentUserProfile(UserUid $user): ?CurrentUserProfileDTO
+    public function getCurrentUserProfile(UserUid $usr): ?CurrentUserProfileDTO
     {
         $qb = $this->ORMQueryBuilder->createQueryBuilder(self::class);
 
@@ -215,7 +250,7 @@ final class CurrentUserProfile implements CurrentUserProfileInterface
             'profile_info',
             'WITH',
             '
-				profile_info.user = users.id AND
+				profile_info.usr = users.id AND
 				profile_info.status = :profile_status AND
 				profile_info.active = true
 		');
@@ -281,8 +316,8 @@ final class CurrentUserProfile implements CurrentUserProfileInterface
             ->bindLocal();
 
 
-        $qb->where('users.id = :user');
-        $qb->setParameter('user', $user, UserUid::TYPE);
+        $qb->where('users.id = :usr');
+        $qb->setParameter('usr', $usr, UserUid::TYPE);
 
         /* Кешируем результат ORM */
         return $qb->enableCache('UserProfile', 3600)->getOneOrNullResult();

@@ -44,9 +44,9 @@ final class UserProfileContact implements UserProfileInterface
     }
 
     /** Возвращает значение (value) */
-    public function getValue(UserUid $user): bool|string
+    public function getValue(UserUid $usr): bool|string
     {
-        $current = $this->currentUserAccount->fetchAccountAssociative($user);
+        $current = $this->currentUserAccount->fetchAccountAssociative($usr);
         return $current['account_email'] ?? false;
     }
 

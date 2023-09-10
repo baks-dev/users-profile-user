@@ -66,35 +66,46 @@ final class ValueForm extends AbstractType
 
                 if($data)
                 {
-
                     $fields = $options['fields'];
 
-                    /** @var FieldValueFormDTO $field */
-                    $field = end($fields[(string) $data->getField()]);
-                    $fieldType = $this->fieldsChoice->getChoice($field->getType());
-
-                    if($fieldType)
+                    if(isset($fields[(string) $data->getField()]))
                     {
-                        $form->add
-                        (
-                            'value',
-                            $fieldType->form(),
-                            [
-                                'label' => $field->getFieldName(),
-                                'required' => $field->isRequired(),
-                            ]
-                        );
+
+                        /** @var FieldValueFormDTO $field */
+                        $field = end($fields[(string) $data->getField()]);
+                        $fieldType = $this->fieldsChoice->getChoice($field->getType());
+
+                        if($fieldType)
+                        {
+                            $form->add
+                            (
+                                'value',
+                                $fieldType->form(),
+                                [
+                                    'label' => $field->getFieldName(),
+                                    'required' => $field->isRequired(),
+                                ]
+                            );
+                        }
+                        else
+                        {
+                            $form->add
+                            (
+                                'value',
+                                TextType::class,
+                                [
+                                    'label' => $field->getFieldName(),
+                                    'required' => $field->isRequired(),
+                                ]
+                            );
+                        }
                     }
                     else
                     {
                         $form->add
                         (
                             'value',
-                            TextType::class,
-                            [
-                                'label' => $field->getFieldName(),
-                                'required' => $field->isRequired(),
-                            ]
+                            TextType::class, ['label' => false]
                         );
                     }
                 }

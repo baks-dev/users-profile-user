@@ -89,7 +89,7 @@
 	{% if is_granted('ROLE_ADMIN') %}
 		<td class="ps-5">
 			{# Прейти в режим пользователя #}
-			<a href='{{ path('Pages:user.homepage', {'_switch_user' : item.user_id }) }}' class="badge badge-light">Авторизоваться</a>
+			<a href='{{ path('Pages:user.homepage', {'authority' : item.usr }) }}' class="badge badge-light">Авторизоваться</a>
 		</td>
 	{% endif %}
 

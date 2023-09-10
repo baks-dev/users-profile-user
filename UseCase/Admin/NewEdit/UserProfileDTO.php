@@ -34,28 +34,37 @@ use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Value\ValueDTO;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 
+/** @see UserProfileEvent */
 final class UserProfileDTO implements UserProfileEventInterface
 {
 	
 	/** Идентификатор события */
+    #[Assert\Uuid]
 	private ?UserProfileEventUid $id = null;
 	
 	/** Тип профиля */
 	private TypeProfileUid $type;
 	
 	/** Аватарка профиля */
+    #[Assert\Valid]
 	protected ?AvatarDTO $avatar;
 	
 	/** Постоянная информация профиля */
+    #[Assert\Valid]
 	private InfoDTO $info;
 	
 	/** Сортировка */
+    #[Assert\NotBlank]
+    #[Assert\Length(max: 3)]
+    #[Assert\Range(max: 999)]
 	private int $sort = 500;
 	
 	/** Персональные данные */
+    #[Assert\Valid]
 	private PersonalDTO $personal;
 	
 	/** Значения профиля */
+    #[Assert\Valid]
 	private ArrayCollection $value;
 	
 	

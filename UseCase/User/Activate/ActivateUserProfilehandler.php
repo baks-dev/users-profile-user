@@ -121,7 +121,7 @@ final class ActivateUserProfilehandler
 
         /* Если у текущего пользователя имеется активный профиль - деактивируем */
         $InfoActive = $this->entityManager->getRepository(Entity\Info\UserProfileInfo::class)
-            ->findOneBy(['user' => $infoDTO->getUser(), 'active' => true]);
+            ->findOneBy(['usr' => $infoDTO->getUsr(), 'active' => true]);
         if ($InfoActive)
         {
             $InfoActive->deactivate();

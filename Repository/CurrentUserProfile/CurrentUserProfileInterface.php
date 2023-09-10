@@ -39,6 +39,6 @@ interface CurrentUserProfileInterface
 	 * profile_avatar_ext - расширение файла <br>
 	 * profile_avatar_cdn - фгаг загрузки файла на CDN
 	 */
-	public function fetchProfileAssociative(UserUid $user);
+	public function fetchProfileAssociative(UserUid $usr);
 	
 }

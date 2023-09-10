@@ -21,37 +21,14 @@
  *  THE SOFTWARE.
  */
 
-declare(strict_types=1);
+namespace BaksDev\Users\Profile\UserProfile\Repository\ExistUserProfileByUser;
 
-namespace BaksDev\Users\Profile\UserProfile\Decorator\UserProfile;
-
-use BaksDev\Users\Profile\UserProfile\Repository\CurrentUserProfile\CurrentUserProfileInterface;
-use BaksDev\Users\User\Decorator\UserProfile\UserProfileInterface;
 use BaksDev\Users\User\Type\Id\UserUid;
-use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
-/** Адрес персональной страницы профиля */
-#[AutoconfigureTag('baks.user.profile')]
-final class UserProfileUrl implements UserProfileInterface
+interface ExistUserProfileByUserInterface
 {
-    public const KEY = 'user_profile_url';
-
-    private CurrentUserProfileInterface $currentUserProfile;
-
-    public function __construct(CurrentUserProfileInterface $currentUserProfile)
-    {
-        $this->currentUserProfile = $currentUserProfile;
-    }
-
-    /** Возвращает значение (value) */
-    public function getValue(UserUid $usr): bool|string
-    {
-        $current = $this->currentUserProfile->fetchProfileAssociative($usr);
-        return $current['profile_url'] ?? false;
-    }
-
-    public static function priority(): int
-    {
-        return 700;
-    }
+    /**
+     * Проверяет имеется ли профиль указанного пользователя
+     */
+    public function isExistsProfile(UserUid $usr): bool;
 }

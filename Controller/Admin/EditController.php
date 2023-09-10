@@ -49,7 +49,8 @@ final class EditController extends AbstractController
         #[MapEntity] UserProfileEvent $Event,
         EntityManagerInterface $entityManager,
         UserProfileHandler $handler,
-    ): Response {
+    ): Response
+    {
         $profile = new UserProfileDTO();
         $Event->getDto($profile);
 
@@ -62,10 +63,12 @@ final class EditController extends AbstractController
         $form = $this->createForm(UserProfileForm::class, $profile);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid() && $form->has('Save')) {
+        if($form->isSubmitted() && $form->isValid() && $form->has('Save'))
+        {
             $UserProfile = $handler->handle($profile);
 
-            if ($UserProfile instanceof UserProfile) {
+            if($UserProfile instanceof UserProfile)
+            {
                 $this->addFlash('success', 'admin.success.update', 'admin.user.profile');
 
                 return $this->redirectToRoute('UserProfile:admin.index');

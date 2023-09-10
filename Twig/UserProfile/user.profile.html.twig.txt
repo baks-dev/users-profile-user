@@ -18,7 +18,7 @@
 						{% if profile.avatar %}
 							<a href="{{ path('UserProfile:user.newedit.edit', { id : profile.user_profile_event }) }}">
 						<span class="symbol-label lazy"
-								data-bg="{{ user_avatar ~ profile.user_id ~ '/' ~ profile.avatar }}">
+								data-bg="{{ user_avatar ~ profile.usr ~ '/' ~ profile.avatar }}">
 						</span>
 							</a>
 						{% else %}
@@ -31,7 +31,7 @@
 						
 						{# Индикатор Онлайн #}
 						<div class="position-absolute translate-middle bottom-0 start-100">
-							{{ user_online(profile.user_id) }}
+							{{ user_online(profile.usr) }}
 						</div>
 					</div>
 				</div>
@@ -144,7 +144,7 @@
 							
 							
 							{# Выпадающее меню Бургер #}
-							{% if profile.user_id == app.user.id or is_granted('ROLE_ADMIN') %}
+							{% if profile.usr == app.user.id or is_granted('ROLE_ADMIN') %}
 								<div class="me-0">
 									{{ include(_self|replace({ "user.profile.html.twig": "_menu.list.html.twig" })) }}
 								</div>

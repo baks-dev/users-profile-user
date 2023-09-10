@@ -51,11 +51,18 @@ function changeProfileStaus($status) {
 let $idLocation = 'user_profile_form_personal_location';
 let $idLocationHelp = 'user_profile_form_personal_location_help';
 
-if (readGeoMaps) {
-    readGeoMaps($idLocation, $idLocationHelp);
-}
 
-console.log(readGeoMaps);
+// setTimeout(function GmRrLKUUEw() {
+//
+//     if (typeof readGeoMaps  === 'function') {
+//         readGeoMaps($idLocation, $idLocationHelp);
+//         return;
+//     }
+//
+//     setTimeout(GmRrLKUUEw, 100);
+//
+// }, 100);
+
 
 
 /* Определяем поле ввода Username */

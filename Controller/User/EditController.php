@@ -56,7 +56,7 @@ final class EditController extends AbstractController
         ;
 
         // НЕ является владельцем профиля
-        if (!$Info?->isProfileOwnedUser($this->getUser())) {
+        if (!$Info?->isProfileOwnedUser($this->getUsr())) {
             throw new AccessDeniedException();
         }
 

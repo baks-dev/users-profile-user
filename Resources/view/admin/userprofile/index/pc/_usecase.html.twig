@@ -36,7 +36,7 @@
 		
 		{# {% if is_granted('ROLE_ADMIN') %}
 			<li>
-				<a href="{{ path('Pages:user.homepage', {'_switch_user' : item.event }) }}" class="dropdown-item">
+				<a href="{{ path('Pages:user.homepage', {'authority' : item.event }) }}" class="dropdown-item">
 					Авторизоваться
 				</a>
 			</li>

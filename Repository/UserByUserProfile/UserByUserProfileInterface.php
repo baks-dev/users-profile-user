@@ -21,37 +21,15 @@
  *  THE SOFTWARE.
  */
 
-declare(strict_types=1);
+namespace BaksDev\Users\Profile\UserProfile\Repository\UserByUserProfile;
 
-namespace BaksDev\Users\Profile\UserProfile\Decorator\UserProfile;
+use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
+use BaksDev\Users\User\Entity\User;
 
-use BaksDev\Users\Profile\UserProfile\Repository\CurrentUserProfile\CurrentUserProfileInterface;
-use BaksDev\Users\User\Decorator\UserProfile\UserProfileInterface;
-use BaksDev\Users\User\Type\Id\UserUid;
-use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
-
-/** Адрес персональной страницы профиля */
-#[AutoconfigureTag('baks.user.profile')]
-final class UserProfileUrl implements UserProfileInterface
+interface UserByUserProfileInterface
 {
-    public const KEY = 'user_profile_url';
-
-    private CurrentUserProfileInterface $currentUserProfile;
-
-    public function __construct(CurrentUserProfileInterface $currentUserProfile)
-    {
-        $this->currentUserProfile = $currentUserProfile;
-    }
-
-    /** Возвращает значение (value) */
-    public function getValue(UserUid $usr): bool|string
-    {
-        $current = $this->currentUserProfile->fetchProfileAssociative($usr);
-        return $current['profile_url'] ?? false;
-    }
-
-    public static function priority(): int
-    {
-        return 700;
-    }
+    /**
+     * Возвращает User профиля пользователя
+     */
+    public function findUserByProfile(UserProfileUid $profile): ?User;
 }

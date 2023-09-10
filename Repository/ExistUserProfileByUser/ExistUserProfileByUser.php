@@ -23,35 +23,33 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Users\Profile\UserProfile\Decorator\UserProfile;
+namespace BaksDev\Users\Profile\UserProfile\Repository\ExistUserProfileByUser;
 
-use BaksDev\Users\Profile\UserProfile\Repository\CurrentUserProfile\CurrentUserProfileInterface;
-use BaksDev\Users\User\Decorator\UserProfile\UserProfileInterface;
+use BaksDev\Core\Doctrine\DBALQueryBuilder;
+use BaksDev\Users\Profile\UserProfile\Entity\Info\UserProfileInfo;
 use BaksDev\Users\User\Type\Id\UserUid;
-use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
-/** Адрес персональной страницы профиля */
-#[AutoconfigureTag('baks.user.profile')]
-final class UserProfileUrl implements UserProfileInterface
+final class ExistUserProfileByUser implements ExistUserProfileByUserInterface
 {
-    public const KEY = 'user_profile_url';
+    private DBALQueryBuilder $DBALQueryBuilder;
 
-    private CurrentUserProfileInterface $currentUserProfile;
-
-    public function __construct(CurrentUserProfileInterface $currentUserProfile)
+    public function __construct(DBALQueryBuilder $DBALQueryBuilder,)
     {
-        $this->currentUserProfile = $currentUserProfile;
+        $this->DBALQueryBuilder = $DBALQueryBuilder;
     }
 
-    /** Возвращает значение (value) */
-    public function getValue(UserUid $usr): bool|string
+    /**
+     * Проверяет имеется ли профиль указанного пользователя
+     */
+    public function isExistsProfile(UserUid $usr): bool
     {
-        $current = $this->currentUserProfile->fetchProfileAssociative($usr);
-        return $current['profile_url'] ?? false;
-    }
+        $qb = $this->DBALQueryBuilder->createQueryBuilder(self::class);
 
-    public static function priority(): int
-    {
-        return 700;
+        $qb
+            ->from(UserProfileInfo::TABLE, 'info')
+            ->where('info.usr = :usr')
+            ->setParameter('usr', $usr, UserUid::TYPE);
+
+        return $qb->fetchExist();
     }
 }

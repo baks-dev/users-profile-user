@@ -44,9 +44,9 @@ final class UserProfileType implements UserProfileInterface
     }
 
     /** Возвращает значение (value) */
-    public function getValue(UserUid $user): bool|string
+    public function getValue(UserUid $usr): bool|string
     {
-        $current = $this->currentUserProfile->fetchProfileAssociative($user);
+        $current = $this->currentUserProfile->fetchProfileAssociative($usr);
 
         return $current['profile_type'] ?? false;
     }

@@ -29,7 +29,6 @@ use BaksDev\Users\Profile\TypeProfile\Type\Id\TypeProfileUid;
 use BaksDev\Users\Profile\UserProfile\Type\Event\UserProfileEventUid;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use BaksDev\Users\User\Type\Id\UserUid;
-use Symfony\Component\Validator\Constraints as Assert;
 
 final class CurrentUserProfileDTO
 {
@@ -41,7 +40,7 @@ final class CurrentUserProfileDTO
 	private UserProfileEventUid $event;
 	
 	/** Идентификатор пользователя  */
-	private UserUid $user;
+	private UserUid $usr;
 	
 	/** Username профиля */
 	private string $username;
@@ -76,7 +75,7 @@ final class CurrentUserProfileDTO
 	public function __construct(
 		UserProfileUid $id,
 		UserProfileEventUid $event,
-		UserUid $user,
+		UserUid $usr,
 		
 		string $username,
 		string $location,
@@ -96,7 +95,7 @@ final class CurrentUserProfileDTO
 		
 		$this->id = $id;
 		$this->event = $event;
-		$this->user = $user;
+		$this->usr = $usr;
 		$this->username = $username;
 		$this->location = $location;
 		$this->avatar = $avatar;
@@ -128,9 +127,9 @@ final class CurrentUserProfileDTO
 	
 	/** Идентификатор пользователя  */
 	
-	public function getUser() : UserUid
+	public function getUsr() : UserUid
 	{
-		return $this->user;
+		return $this->usr;
 	}
 	
 	
@@ -211,5 +210,5 @@ final class CurrentUserProfileDTO
 	{
 		return $this->profileName;
 	}
-	
+
 }

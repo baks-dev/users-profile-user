@@ -82,7 +82,7 @@ final class UserProfileChoice implements UserProfileChoiceInterface
             AccountEntity\Account::class,
             'account',
             'WITH',
-            'account.id = info.user');
+            'account.id = info.usr');
 
         $qb->join(
             AccountEntity\Status\AccountStatus::class,

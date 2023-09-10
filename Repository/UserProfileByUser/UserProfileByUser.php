@@ -56,7 +56,7 @@ final class UserProfileByUser implements UserProfileByUserInterface
     public function get(SearchDTO $search, ?UserProfileStatus $status): PaginatorInterface
     {
 
-        $this->user = $this->security->getUser();
+        $usr = $this->security->getUser();
 
         $qb = $this->DBALQueryBuilder
             ->createQueryBuilder(self::class)
@@ -70,7 +70,7 @@ final class UserProfileByUser implements UserProfileByUserInterface
         /* INFO */
 
         $qb->addSelect('info.url');
-        $qb->addSelect('info.user_id');
+        $qb->addSelect('info.usr');
         $qb->addSelect('info.status');
         $qb->addSelect('info.active');
 
@@ -79,11 +79,11 @@ final class UserProfileByUser implements UserProfileByUserInterface
             EntityUserProfile\Info\UserProfileInfo::TABLE,
             'info',
             'info.profile = userprofile.id AND
-          info.user_id = :user_id
+          info.usr = :usr
           '.($status ? 'AND info.status = :status' : '')
         );
 
-        $qb->setParameter('user_id', $this?->user->getId(), UserUid::TYPE);
+        $qb->setParameter('usr', $usr?->getId(), UserUid::TYPE);
 
         if($status)
         {
@@ -126,7 +126,7 @@ final class UserProfileByUser implements UserProfileByUserInterface
         /** Аккаунт пользователя */
 
         /* ACCOUNT */
-        $qb->join('info', EntityAccountEmail\Account::TABLE, 'account', 'account.id = info.user_id');
+        $qb->join('info', EntityAccountEmail\Account::TABLE, 'account', 'account.id = info.usr');
 
         /* ACCOUNT EVENT */
         $qb->addSelect('account_event.id as account_id');

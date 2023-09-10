@@ -23,27 +23,23 @@
 
 namespace BaksDev\Users\Profile\UserProfile\Entity\Event;
 
+use BaksDev\Core\Entity\EntityEvent;
+use BaksDev\Core\Type\Modify\ModifyActionEnum;
 use BaksDev\Users\Profile\TypeProfile\Type\Id\TypeProfileUid;
 use BaksDev\Users\Profile\UserProfile\Entity\Avatar\UserProfileAvatar;
-
 use BaksDev\Users\Profile\UserProfile\Entity\Modify\UserProfileModify;
-
 use BaksDev\Users\Profile\UserProfile\Entity\Personal\UserProfilePersonal;
 use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
 use BaksDev\Users\Profile\UserProfile\Entity\Value\UserProfileValue;
-
 use BaksDev\Users\Profile\UserProfile\Type\Event\UserProfileEventUid;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
-use BaksDev\Core\Entity\EntityEvent;
-use BaksDev\Core\Type\Locale\Locale;
-use BaksDev\Core\Type\Modify\ModifyAction;
-use BaksDev\Core\Type\Modify\ModifyActionEnum;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Mapping as ORM;
 use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
 use Exception;
 use InvalidArgumentException;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /* События UserProfile */
 
@@ -56,48 +52,72 @@ class UserProfileEvent extends EntityEvent
 {
 	public const TABLE = 'users_profile_event';
 	
-	/** ID */
+	/**
+     * ID
+     */
+    #[Assert\NotBlank]
+    #[Assert\Uuid]
 	#[ORM\Id]
 	#[ORM\Column(type: UserProfileEventUid::TYPE)]
 	private UserProfileEventUid $id;
 	
-	/** ID профиля пользователя */
+	/**
+     * ID профиля пользователя
+     */
+    #[Assert\NotBlank]
+    #[Assert\Uuid]
 	#[ORM\Column(type: UserProfileUid::TYPE)]
 	private ?UserProfileUid $profile = null;
 	
-	/** Тип профиля */
+	/**
+     * Тип профиля
+     */
+    #[Assert\NotBlank]
+    #[Assert\Uuid]
 	#[ORM\Column(type: TypeProfileUid::TYPE)]
 	private TypeProfileUid $type;
 	
-	/** Сортировка */
-	#[ORM\Column(type: Types::SMALLINT, length: 3, options: ['default' => 500])]
+	/**
+     * Сортировка
+     */
+    #[Assert\NotBlank]
+    #[Assert\Length(max: 3)]
+    #[Assert\Range(max: 999)]
+	#[ORM\Column(type: Types::SMALLINT, options: ['default' => 500])]
 	private int $sort = 500;
 	
-	/** Аватарка профиля */
+	/**
+     * Аватарка профиля
+     */
+    #[Assert\Valid]
 	#[ORM\OneToOne(mappedBy: 'event', targetEntity: UserProfileAvatar::class, cascade: ['all'])]
 	private ?UserProfileAvatar $avatar = null;
 	
-	/** Персональные данные */
+	/**
+     * Персональные данные
+     */
+    #[Assert\Valid]
 	#[ORM\OneToOne(mappedBy: 'event', targetEntity: UserProfilePersonal::class, cascade: ['all'])]
 	private ?UserProfilePersonal $personal = null;
-	
-	/** Модификатор */
-	#[ORM\OneToOne(mappedBy: 'event', targetEntity: UserProfileModify::class, cascade: ['all'])]
-	private UserProfileModify $modify;
-	
-	/** Значения профиля */
+
+	/**
+     * Значения профиля
+     */
+    #[Assert\Valid]
 	#[ORM\OneToMany(mappedBy: 'event', targetEntity: UserProfileValue::class, cascade: ['all'])]
 	private Collection $value;
-	
-	
+
+    /**
+     * Модификатор
+     */
+    #[ORM\OneToOne(mappedBy: 'event', targetEntity: UserProfileModify::class, cascade: ['all'])]
+    private UserProfileModify $modify;
+
+
 	public function __construct()
 	{
 		$this->id = new UserProfileEventUid();
-		//$this->personal = new UserProfilePersonal($this);
-		//$this->avatar = new UserProfileAvatar($this);
-		
 		$this->modify = new UserProfileModify($this);
-		
 		$this->value = new ArrayCollection();
 		
 	}
@@ -126,9 +146,7 @@ class UserProfileEvent extends EntityEvent
 		return $this->type;
 	}
 	
-	
-	
-	
+
 	public function setProfile(UserProfileUid|UserProfile $profile) : void
 	{
 		$this->profile = $profile instanceof UserProfile ? $profile->getId() : $profile;
