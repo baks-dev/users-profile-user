@@ -2,12 +2,18 @@ ROLE_USERPROFILE:
   name: 'User profiles'
   desc: 'User profiles'
 
+ROLE_USERPROFILE_INDEX:
+  name: 'View'
+  desc: ''
 
 ROLE_USERPROFILE_NEW:
   name: 'Add'
+  desc: ''
 
 ROLE_USERPROFILE_EDIT:
   name: 'Edit'
+  desc: ''
 
 ROLE_USERPROFILE_DELETE:
   name: 'Delete'
+  desc: ''

@@ -33,7 +33,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 #[AutoconfigureTag('baks.security.role')]
 #[AutoconfigureTag('baks.menu.admin')]
-class Role implements RoleInterface, MenuAdminInterface
+final class Role implements RoleInterface, MenuAdminInterface
 {
     public const ROLE = 'ROLE_USERPROFILE';
 
@@ -41,6 +41,7 @@ class Role implements RoleInterface, MenuAdminInterface
     {
         return self::ROLE;
     }
+
 
     /**
      * Добавляем раздел в меню администрирования.
@@ -70,7 +71,6 @@ class Role implements RoleInterface, MenuAdminInterface
         return true;
     }
 
-
     /**
      * Метод возвращает флаг "Модальное окно".
      */
@@ -78,4 +78,5 @@ class Role implements RoleInterface, MenuAdminInterface
     {
         return false;
     }
+
 }

@@ -23,6 +23,7 @@
 
 namespace BaksDev\Users\Profile\UserProfile\Controller\User;
 
+use BaksDev\Core\Cache\AppCacheInterface;
 use BaksDev\Core\Controller\AbstractController;
 use BaksDev\Core\Listeners\Event\Security\RoleSecurity;
 use BaksDev\Users\Profile\UserProfile\Entity as EntityUserProfile;
@@ -30,8 +31,6 @@ use BaksDev\Users\Profile\UserProfile\UseCase\User\Activate\ActivateUserProfileD
 use BaksDev\Users\Profile\UserProfile\UseCase\User\Activate\ActivateUserProfilehandler;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
-use Symfony\Component\Cache\Adapter\ApcuAdapter;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -43,15 +42,15 @@ final class ActivateController extends AbstractController
 {
     #[Route('/user/profile/activate/{id}', name: 'user.activate', methods: ['GET'])]
     public function activate(
-        Request $request,
         #[MapEntity] EntityUserProfile\Event\UserProfileEvent $Event,
         ActivateUserProfilehandler $handler,
         EntityManagerInterface $entityManager,
+        AppCacheInterface $cache
     ): Response
     {
 
-        $ApcuAdapter = new ApcuAdapter('Authority');
-        $ApcuAdapter->delete((string) $this->getUsr()?->getId());
+        $RedisCache = $cache->init('Authority');
+        $RedisCache->delete((string) $this->getUsr()?->getId());
 
         $profile = new ActivateUserProfileDTO();
         $Event->getDto($profile);
@@ -80,18 +79,7 @@ final class ActivateController extends AbstractController
         {
             $this->addFlash('danger', 'user.danger.delete', 'user.user.profile', $UserProfile);
         }
-
-
-
-
-
-//        // Сбрасываем кеш пользователя
-//        $cache = new ApcuAdapter($this->getUsr()?->getUserIdentifier());
-//        $cache->clear();
-//
-//        // Чистим кеш профиля
-//        $cache = new FilesystemAdapter('UserProfile');
-//        $cache->delete('current_user_profile'.$this->getUsr()?->getId().$request->getLocale());
+        
 
         return $this->redirectToReferer();
     }

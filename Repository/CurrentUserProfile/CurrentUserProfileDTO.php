@@ -32,183 +32,183 @@ use BaksDev\Users\User\Type\Id\UserUid;
 
 final class CurrentUserProfileDTO
 {
-	
-	/** Идентификатор профиля  */
-	private UserProfileUid $id;
-	
-	/** Идентификатор события профиля  */
-	private UserProfileEventUid $event;
-	
-	/** Идентификатор пользователя  */
-	private UserUid $usr;
-	
-	/** Username профиля */
-	private string $username;
-	
-	/** Местоположение */
-	private string $location;
-	
-	/** Аватарка профиля */
-	private string $avatar;
-	
-	/** Расширение аватарки */
-	private string $ext;
-	
-	/** Флаг загрузки CDN */
-	private bool $cdn;
-	
-	/** Персональный адрес профиля */
-	private string $url;
-	
-	/** Персональная скидка */
-	private ?int $discount;
-	
-	/** Идентификатор профиля пользователя */
-	private TypeProfileUid $type;
-	
-	/** Название профиля */
-	private string $profileName;
-	
-	private ?string $host;
-	
-	
-	public function __construct(
-		UserProfileUid $id,
-		UserProfileEventUid $event,
-		UserUid $usr,
-		
-		string $username,
-		string $location,
-		
-		string $avatar,
-		string $ext,
-		bool $cdn,
-		?string $host,
-		
-		string $url,
-		?int $discount,
-		
-		TypeProfileUid $type,
-		string $profileName,
-	)
-	{
-		
-		$this->id = $id;
-		$this->event = $event;
-		$this->usr = $usr;
-		$this->username = $username;
-		$this->location = $location;
-		$this->avatar = $avatar;
-		$this->ext = $ext;
-		$this->cdn = $cdn;
-		$this->url = $url;
-		$this->discount = $discount;
-		$this->type = $type;
-		$this->profileName = $profileName;
-		$this->host = $host;
-	}
-	
-	
-	/** Идентификатор профиля  */
-	
-	public function getId() : UserProfileUid
-	{
-		return $this->id;
-	}
-	
-	
-	/** Идентификатор события профиля  */
-	
-	public function getEvent() : UserProfileEventUid
-	{
-		return $this->event;
-	}
-	
-	
-	/** Идентификатор пользователя  */
-	
-	public function getUsr() : UserUid
-	{
-		return $this->usr;
-	}
-	
-	
-	/** Username профиля */
-	
-	public function getUsername() : string
-	{
-		return $this->username;
-	}
-	
-	
-	/** Местоположение */
-	
-	public function getLocation() : string
-	{
-		return $this->location;
-	}
-	
-	
-	/** Аватарка профиля */
-	
-	public function getAvatar() : string
-	{
-		$avatar = $this->avatar.$this->ext;
-		
-		if(!$this->cdn)
-		{
-			$avatar = $this->host.$this->avatar;
-		}
-		
-		return $avatar;
-	}
-	
-	
-	/** Расширение аватарки */
-	
-	public function getExt() : string
-	{
-		return $this->ext;
-	}
-	
-	
-	/** Флаг загрузки CDN */
-	
-	public function isCdn() : bool
-	{
-		return $this->cdn;
-	}
-	
-	
-	/** Персональный адрес профиля */
-	
-	public function getUrl() : string
-	{
-		return $this->url;
-	}
-	
-	
-	/** Персональная скидка */
-	
-	public function getDiscount() : ?int
-	{
-		return $this->discount;
-	}
-	
-	
-	/** Идентификатор профиля пользователя */
-	
-	public function getType() : TypeProfileUid
-	{
-		return $this->type;
-	}
-	
-	
-	/** Название профиля */
-	
-	public function getProfileName() : string
-	{
-		return $this->profileName;
-	}
+
+    /** Идентификатор профиля  */
+    private UserProfileUid $id;
+
+    /** Идентификатор события профиля  */
+    private UserProfileEventUid $event;
+
+    /** Идентификатор пользователя  */
+    private UserUid $usr;
+
+    /** Username профиля */
+    private string $username;
+
+    /** Местоположение */
+    private string $location;
+
+    /** Аватарка профиля */
+    private ?string $avatar;
+
+    /** Расширение аватарки */
+    private ?string $ext;
+
+    /** Флаг загрузки CDN */
+    private bool $cdn;
+
+    /** Персональный адрес профиля */
+    private string $url;
+
+    /** Персональная скидка */
+    private ?int $discount;
+
+    /** Идентификатор профиля пользователя */
+    private TypeProfileUid $type;
+
+    /** Название профиля */
+    private string $profileName;
+
+    private ?string $host;
+
+
+    public function __construct(
+        UserProfileUid $id,
+        UserProfileEventUid $event,
+        UserUid $usr,
+
+        string $username,
+        string $location,
+
+        ?string $avatar,
+        ?string $ext,
+        ?bool $cdn,
+        ?string $host,
+
+        string $url,
+        ?int $discount,
+
+        TypeProfileUid $type,
+        string $profileName,
+    )
+    {
+
+        $this->id = $id;
+        $this->event = $event;
+        $this->usr = $usr;
+        $this->username = $username;
+        $this->location = $location;
+        $this->avatar = $avatar;
+        $this->ext = $ext;
+        $this->cdn = $cdn !== null ?: false;
+        $this->url = $url;
+        $this->discount = $discount;
+        $this->type = $type;
+        $this->profileName = $profileName;
+        $this->host = $host;
+    }
+
+
+    /** Идентификатор профиля  */
+
+    public function getId(): UserProfileUid
+    {
+        return $this->id;
+    }
+
+
+    /** Идентификатор события профиля  */
+
+    public function getEvent(): UserProfileEventUid
+    {
+        return $this->event;
+    }
+
+
+    /** Идентификатор пользователя  */
+
+    public function getUsr(): UserUid
+    {
+        return $this->usr;
+    }
+
+
+    /** Username профиля */
+
+    public function getUsername(): string
+    {
+        return $this->username;
+    }
+
+
+    /** Местоположение */
+
+    public function getLocation(): string
+    {
+        return $this->location;
+    }
+
+
+    /** Аватарка профиля */
+
+    public function getAvatar(): string
+    {
+        $avatar = $this->avatar.$this->ext;
+
+        if(!$this->cdn)
+        {
+            $avatar = $this->host.$this->avatar;
+        }
+
+        return $avatar;
+    }
+
+
+    /** Расширение аватарки */
+
+    public function getExt(): string
+    {
+        return $this->ext;
+    }
+
+
+    /** Флаг загрузки CDN */
+
+    public function isCdn(): bool
+    {
+        return $this->cdn;
+    }
+
+
+    /** Персональный адрес профиля */
+
+    public function getUrl(): string
+    {
+        return $this->url;
+    }
+
+
+    /** Персональная скидка */
+
+    public function getDiscount(): ?int
+    {
+        return $this->discount;
+    }
+
+
+    /** Идентификатор профиля пользователя */
+
+    public function getType(): TypeProfileUid
+    {
+        return $this->type;
+    }
+
+
+    /** Название профиля */
+
+    public function getProfileName(): string
+    {
+        return $this->profileName;
+    }
 
 }

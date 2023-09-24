@@ -48,7 +48,7 @@ final class UserProfileChoice implements UserProfileChoiceInterface
     /**
      * Метод возвращает список идентификаторов профилей с username профиля в качестве атрибута
      */
-    public function getActiveUserProfile(): ?array
+    public function getActiveUserProfile(?UserProfileUid $authority = null): ?array
     {
         $select = sprintf('new %s(user_profile.id, personal.username)', UserProfileUid::class);
 

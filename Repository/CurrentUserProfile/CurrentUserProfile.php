@@ -23,6 +23,7 @@
 
 namespace BaksDev\Users\Profile\UserProfile\Repository\CurrentUserProfile;
 
+use BaksDev\Core\Cache\AppCacheInterface;
 use BaksDev\Core\Doctrine\DBALQueryBuilder;
 use BaksDev\Core\Doctrine\ORMQueryBuilder;
 use BaksDev\Users\Profile\TypeProfile\Entity as TypeProfileEntity;
@@ -33,7 +34,6 @@ use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatusEnum;
 use BaksDev\Users\User\Entity\User;
 use BaksDev\Users\User\Type\Id\UserUid;
 use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\Cache\Adapter\ApcuAdapter;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 final class CurrentUserProfile implements CurrentUserProfileInterface
@@ -42,6 +42,7 @@ final class CurrentUserProfile implements CurrentUserProfileInterface
     private DBALQueryBuilder $DBALQueryBuilder;
     private string $CDN_HOST;
     private Security $security;
+    private AppCacheInterface $cache;
 
 
     public function __construct(
@@ -49,6 +50,7 @@ final class CurrentUserProfile implements CurrentUserProfileInterface
         ORMQueryBuilder $ORMQueryBuilder,
         DBALQueryBuilder $DBALQueryBuilder,
         Security $security,
+        AppCacheInterface $cache
 
     )
     {
@@ -57,6 +59,7 @@ final class CurrentUserProfile implements CurrentUserProfileInterface
         $this->DBALQueryBuilder = $DBALQueryBuilder;
         $this->CDN_HOST = $CDN_HOST;
         $this->security = $security;
+        $this->cache = $cache;
     }
 
 
@@ -75,20 +78,22 @@ final class CurrentUserProfile implements CurrentUserProfileInterface
 
     public function fetchProfileAssociative(UserUid $usr, bool $authority = true): ?array
     {
-        $qb = $this->DBALQueryBuilder->createQueryBuilder(self::class);
+        $qb = $this->DBALQueryBuilder
+            ->createQueryBuilder(self::class)
+            ->bindLocal();
         
         if($authority)
         {
             /** Если пользовтаель олицетворен - подгружаем профиль самозванца */
-            $ApcuAdapter = new ApcuAdapter('Authority');
-            $authority = $ApcuAdapter->getItem((string) $usr)->get();
+            $RedisCache = $this->cache->init('Authority');
+            $authority = $RedisCache->getItem((string) $usr)->get();
+
         }
 
         //dump($authority );
 
         if($authority)
         {
-
             //dump((string) $authority);
             
             /* Пользователь */
@@ -201,7 +206,10 @@ final class CurrentUserProfile implements CurrentUserProfileInterface
             TypeProfileEntity\Trans\TypeProfileTrans::TABLE,
             'profiletype_trans',
             'profiletype_trans.event = profiletype_event.id AND profiletype_trans.local = :local'
-        )->bindLocal();
+        );
+
+
+
 
         /* Кешируем результат DBAL */
         return $qb->enableCache('UserProfile', 3600)->fetchAssociative();
@@ -210,7 +218,10 @@ final class CurrentUserProfile implements CurrentUserProfileInterface
 
     public function getCurrentUserProfile(UserUid $usr): ?CurrentUserProfileDTO
     {
-        $qb = $this->ORMQueryBuilder->createQueryBuilder(self::class);
+        $qb = $this->ORMQueryBuilder
+            ->createQueryBuilder(self::class)
+            ->bindLocal()
+        ;
 
         $sealect = sprintf("new %s(
 			profile.id,
@@ -313,12 +324,14 @@ final class CurrentUserProfile implements CurrentUserProfileInterface
             'WITH',
             'profiletype_trans.event = profiletype_event.id AND profiletype_trans.local = :local'
         )
-            ->bindLocal();
+            ;
 
 
         $qb->where('users.id = :usr');
         $qb->setParameter('usr', $usr, UserUid::TYPE);
 
+
+     
         /* Кешируем результат ORM */
         return $qb->enableCache('UserProfile', 3600)->getOneOrNullResult();
 

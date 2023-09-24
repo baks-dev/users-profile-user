@@ -34,7 +34,10 @@ final class UserProfileUid extends Uid
 
     private mixed $attr;
 
-    public function __construct(AbstractUid|string|null $value = null, mixed $attr = null)
+    public function __construct(
+        AbstractUid|string|null $value = null,
+        mixed $attr = null
+    )
     {
         parent::__construct($value);
         $this->attr = $attr;

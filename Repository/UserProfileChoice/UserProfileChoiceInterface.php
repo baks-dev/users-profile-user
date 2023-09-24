@@ -23,10 +23,12 @@
 
 namespace BaksDev\Users\Profile\UserProfile\Repository\UserProfileChoice;
 
+use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
+
 interface UserProfileChoiceInterface
 {
     /**
      * Метод возвращает список идентификаторов профилей с username профиля в качестве атрибута
      */
-    public function getActiveUserProfile(): ?array;
+    public function getActiveUserProfile(?UserProfileUid $authority = null): ?array;
 }

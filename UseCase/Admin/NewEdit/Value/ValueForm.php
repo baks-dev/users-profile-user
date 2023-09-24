@@ -69,9 +69,16 @@ final class ValueForm extends AbstractType
 
                     $fields = $options['fields'];
 
-                    /** @var FieldValueFormDTO $field */
-                    $field = end($fields[(string) $data->getField()]);
-                    $fieldType = $this->fieldsChoice->getChoice($field->getType());
+                    $fieldType = false;
+                    $field = null;
+
+                    if(isset($fields[(string) $data->getField()]))
+                    {
+                        /** @var FieldValueFormDTO $field */
+                        $field = end($fields[(string) $data->getField()]);
+                        $fieldType = $this->fieldsChoice->getChoice($field->getType());
+                    }
+
 
                     if($fieldType)
                     {
@@ -92,8 +99,8 @@ final class ValueForm extends AbstractType
                             'value',
                             TextType::class,
                             [
-                                'label' => $field->getFieldName(),
-                                'required' => $field->isRequired(),
+                                'label' => $field?->getFieldName(),
+                                'required' => $field && $field->isRequired(),
                             ]
                         );
                     }

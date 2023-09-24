@@ -5,14 +5,20 @@ ROLE_USERPROFILE:
   desc: 'Профили пользователей'
 
 # Правила
+ROLE_USERPROFILE_INDEX:
+  name: 'Просмотр'
+  desc: ''
 
 ROLE_USERPROFILE_NEW:
   name: 'Добавить'
+  desc: ''
 
 ROLE_USERPROFILE_EDIT:
   name: 'Редактировать'
+  desc: ''
 
 ROLE_USERPROFILE_DELETE:
   name: 'Удалить'
+  desc: ''
 
 

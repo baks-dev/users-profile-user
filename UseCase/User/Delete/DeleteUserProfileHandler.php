@@ -23,7 +23,7 @@
 
 namespace BaksDev\Users\Profile\UserProfile\UseCase\User\Delete;
 
-use BaksDev\Core\Services\Messenger\MessageDispatchInterface;
+use BaksDev\Core\Messenger\MessageDispatchInterface;
 use BaksDev\Core\Type\Modify\ModifyActionEnum;
 use BaksDev\Users\Profile\UserProfile\Entity as EntityUserProfile;
 use BaksDev\Users\Profile\UserProfile\Messenger\UserProfileMessage;
@@ -79,9 +79,9 @@ final class DeleteUserProfileHandler
 		
 		if(count($errors) > 0)
 		{
-			$uniqid = uniqid('', false);
-			$errorsString = (string) $errors;
-			$this->logger->error($uniqid.': '.$errorsString);
+            /** Ошибка валидации */
+            $uniqid = uniqid('', false);
+            $this->logger->error(sprintf('%s: %s', $uniqid, $errors), [__LINE__ => __FILE__]);
 			
 			return $uniqid;
 		}
