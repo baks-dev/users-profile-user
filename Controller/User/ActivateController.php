@@ -49,8 +49,8 @@ final class ActivateController extends AbstractController
     ): Response
     {
 
-        $RedisCache = $cache->init('Authority');
-        $RedisCache->delete((string) $this->getUsr()?->getId());
+        $AppCache = $cache->init('Authority');
+        $AppCache->delete((string) $this->getUsr()?->getId());
 
         $profile = new ActivateUserProfileDTO();
         $Event->getDto($profile);

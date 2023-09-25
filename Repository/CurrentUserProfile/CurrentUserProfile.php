@@ -85,8 +85,8 @@ final class CurrentUserProfile implements CurrentUserProfileInterface
         if($authority)
         {
             /** Если пользовтаель олицетворен - подгружаем профиль самозванца */
-            $RedisCache = $this->cache->init('Authority');
-            $authority = $RedisCache->getItem((string) $usr)->get();
+            $AppCache = $this->cache->init('Authority');
+            $authority = ($AppCache->getItem((string) $usr))->get();
 
         }
 
