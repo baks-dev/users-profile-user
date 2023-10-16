@@ -70,7 +70,7 @@ final class InfoDTO implements UserProfileInfoInterface
 	/**
 	 * @return string
 	 */
-	public function getUrl() : string
+	public function getUrl(): string
 	{
 		return $this->url;
 	}

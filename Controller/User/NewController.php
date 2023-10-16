@@ -44,33 +44,28 @@ final class NewController extends AbstractController
     public function new(
         Request $request,
         #[MapEntity] TypeProfile $type,
-        UserProfileHandler $handler,
+        UserProfileHandler $UserProfileHandler,
     ): Response
     {
-        $profile = new UserProfileDTO();
-        $profile->setType($type->getId());
-        $profile->getInfo()->setUsr($this->getUsr());
+        $UserProfileDTO = new UserProfileDTO();
+        $UserProfileDTO->setType($type->getId());
+        $UserProfileDTO->getInfo()->setUsr($this->getUsr());
 
         // Форма
-        $form = $this->createForm(UserProfileForm::class, $profile);
+        $form = $this->createForm(UserProfileForm::class, $UserProfileDTO);
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid() && $form->has('Save'))
         {
-            $UserProfile = $handler->handle($profile);
+            $handle = $UserProfileHandler->handle($UserProfileDTO);
 
-            if($UserProfile instanceof UserProfile)
-            {
-                $this->addFlash('success', 'user.success.new', 'user.user.profile');
-
-                // Отправляем уведомление о модерации в телегу
-                // $telega = new ModerationUserProfileDTO($UserProfile->getEvent());
-                // $bus->dispatch($telega);
-            }
-            else
-            {
-                $this->addFlash('danger', 'user.danger.new', 'user.user.profile');
-            }
+            $this->addFlash
+            (
+                'admin.page.new',
+                $handle instanceof UserProfile ? 'user.success.new' : 'user.danger.new',
+                'user.user.profile',
+                $handle
+            );
 
             return $this->redirectToRoute('UserProfile:user.index');
         }

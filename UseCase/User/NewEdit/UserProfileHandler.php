@@ -23,127 +23,76 @@
 
 namespace BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit;
 
+use BaksDev\Core\Entity\AbstractHandler;
 use BaksDev\Core\Messenger\MessageDispatchInterface;
+use BaksDev\Core\Validator\ValidatorCollectionInterface;
+use BaksDev\Files\Resources\Upload\File\FileUploadInterface;
 use BaksDev\Files\Resources\Upload\Image\ImageUploadInterface;
-use BaksDev\Users\Profile\UserProfile\Entity;
+use BaksDev\Users\Profile\UserProfile\Entity\Event\UserProfileEvent;
+use BaksDev\Users\Profile\UserProfile\Entity\Event\UserProfileEventInterface;
+use BaksDev\Users\Profile\UserProfile\Entity\Info\UserProfileInfo;
+use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
 use BaksDev\Users\Profile\UserProfile\Messenger\UserProfileMessage;
 use BaksDev\Users\Profile\UserProfile\Repository\UniqProfileUrl\UniqProfileUrlInterface;
 use Doctrine\ORM\EntityManagerInterface;
+use DomainException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-final class UserProfileHandler
+final class UserProfileHandler extends AbstractHandler
 {
-    private EntityManagerInterface $entityManager;
-
-    private ImageUploadInterface $imageUpload;
-
     private UniqProfileUrlInterface $uniqProfileUrl;
-
-    private ValidatorInterface $validator;
-
-    private LoggerInterface $logger;
-
-    private MessageDispatchInterface $messageDispatch;
 
     public function __construct(
         EntityManagerInterface $entityManager,
+        MessageDispatchInterface $messageDispatch,
+        ValidatorCollectionInterface $validatorCollection,
         ImageUploadInterface $imageUpload,
+        FileUploadInterface $fileUpload,
         UniqProfileUrlInterface $uniqProfileUrl,
-        ValidatorInterface $validator,
-        LoggerInterface $logger,
-        MessageDispatchInterface $messageDispatch
     )
     {
-        $this->entityManager = $entityManager;
-        $this->imageUpload = $imageUpload;
+        parent::__construct($entityManager, $messageDispatch, $validatorCollection, $imageUpload, $fileUpload);
+
         $this->uniqProfileUrl = $uniqProfileUrl;
-        $this->validator = $validator;
-        $this->logger = $logger;
-        $this->messageDispatch = $messageDispatch;
     }
 
-    public function handle(
-        Entity\Event\UserProfileEventInterface $command,
-    ): string|Entity\UserProfile
+    public function handle(UserProfileEventInterface $command,): string|UserProfile
     {
-        /* Валидация */
-        $errors = $this->validator->validate($command);
 
-        if(count($errors) > 0)
+        /* Валидация DTO  */
+        $this->validatorCollection->add($command);
+
+        $this->main = new UserProfile();
+        $this->event = new UserProfileEvent();
+
+
+        try
         {
-            /** Ошибка валидации */
-            $uniqid = uniqid('', false);
-            $this->logger->error(sprintf('%s: %s', $uniqid, $errors), [__LINE__ => __FILE__]);
-
-            return $uniqid;
+            $command->getEvent() ? $this->preUpdate($command) : $this->prePersist($command);
+        }
+        catch(DomainException $errorUniqid)
+        {
+            return $errorUniqid;
         }
 
-        if($command->getEvent())
+        $UserProfileInfo = $this->entityManager->getRepository(UserProfileInfo::class)->find(
+            $this->event->getProfile()
+        );
+
+        if(!$UserProfileInfo)
         {
-            $EventRepo = $this->entityManager->getRepository(Entity\Event\UserProfileEvent::class)->find(
-                $command->getEvent()
-            );
-
-            if($EventRepo === null)
-            {
-                $uniqid = uniqid('', false);
-                $errorsString = sprintf(
-                    'Not found %s by id: %s',
-                    Entity\Event\UserProfileEvent::class,
-                    $command->getEvent()
-                );
-                $this->logger->error($uniqid.': '.$errorsString);
-
-                return $uniqid;
-            }
-
-            $Event = $EventRepo->cloneEntity();
-        }
-        else
-        {
-            $Event = new Entity\Event\UserProfileEvent();
-            $this->entityManager->persist($Event);
-        }
-
-        $this->entityManager->clear();
-
-        /* @var Entity\UserProfile $UserProfile */
-        if($Event->getProfile())
-        {
-            $UserProfile = $this->entityManager->getRepository(Entity\UserProfile::class)->findOneBy(
-                ['event' => $command->getEvent()]
-            );
-
-            if(empty($UserProfile))
-            {
-                $uniqid = uniqid('', false);
-                $errorsString = sprintf(
-                    'Not found %s by event: %s',
-                    Entity\UserProfile::class,
-                    $command->getEvent()
-                );
-                $this->logger->error($uniqid.': '.$errorsString);
-
-                return $uniqid;
-            }
-
-            $UserProfileInfo = $this->entityManager->getRepository(Entity\Info\UserProfileInfo::class)->find(
-                $UserProfile
-            );
-        }
-        else
-        {
-            $UserProfile = new Entity\UserProfile();
-            $this->entityManager->persist($UserProfile);
-            $Event->setProfile($UserProfile);
-
-            $UserProfileInfo = new Entity\Info\UserProfileInfo($UserProfile);
+            $UserProfileInfo = new UserProfileInfo($this->event->getProfile());
             $this->entityManager->persist($UserProfileInfo);
         }
 
+        $this->validatorCollection->add($UserProfileInfo);
+
+
         /** @var Info\InfoDTO $infoDTO */
         $infoDTO = $command->getInfo();
+
+
 
         /* Проверяем на уникальность Адрес персональной страницы */
         $uniqProfileUrl = $this->uniqProfileUrl->exist($infoDTO->getUrl(), $UserProfileInfo->getProfile());
@@ -158,7 +107,7 @@ final class UserProfileHandler
         {
             $InfoActive = $this
                 ->entityManager
-                ->getRepository(Entity\Info\UserProfileInfo::class)
+                ->getRepository(UserProfileInfo::class)
                 ->findOneBy(['usr' => $infoDTO->getUsr(), 'active' => true]);
 
             /* Если у текущего пользователя имеется активный профиль - деактивируем */
@@ -168,8 +117,6 @@ final class UserProfileHandler
             }
         }
 
-        $Event->setEntity($command);
-        $this->entityManager->persist($Event);
 
         /* Загружаем файл аватарки профиля */
         if(method_exists($command, 'getAvatar'))
@@ -177,27 +124,33 @@ final class UserProfileHandler
             /** @var Avatar\AvatarDTO $Avatar */
             $Avatar = $command->getAvatar();
 
-            if($Avatar && $Avatar->file !== null)
+            if($Avatar->file !== null)
             {
-                $UserProfileAvatar = $Event->getUploadAvatar();
+                $UserProfileAvatar = $this->event->getUploadAvatar();
                 $this->imageUpload->upload($Avatar->file, $UserProfileAvatar);
             }
         }
 
+
         /* Присваиваем событие INFO */
         $UserProfileInfo->setEntity($infoDTO);
+        $this->validatorCollection->add($UserProfileInfo);
 
-        /* присваиваем событие корню */
-        $UserProfile->setEvent($Event);
+        /* Валидация всех объектов */
+        if($this->validatorCollection->isInvalid())
+        {
+            return $this->validatorCollection->getErrorUniqid();
+        }
 
         $this->entityManager->flush();
 
         /* Отправляем событие в шину  */
         $this->messageDispatch->dispatch(
-            message: new UserProfileMessage($UserProfile->getId(), $UserProfile->getEvent(), $command->getEvent()),
+            message: new UserProfileMessage($this->main->getId(), $this->main->getEvent(), $command->getEvent()),
             transport: 'users-profile-user'
         );
 
-        return $UserProfile;
+        return $this->main;
     }
+
 }

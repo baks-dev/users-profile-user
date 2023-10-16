@@ -50,7 +50,8 @@ final class ActivateUserProfilehandler
         ValidatorInterface $validator,
         LoggerInterface $logger,
         MessageDispatchInterface $messageDispatch
-    ) {
+    )
+    {
         $this->entityManager = $entityManager;
 
         $this->translator = $translator;
@@ -59,18 +60,17 @@ final class ActivateUserProfilehandler
         $this->messageDispatch = $messageDispatch;
     }
 
-    public function handle(
-        EntityUserProfile\Event\UserProfileEventInterface $command,
-        //?UploadedFile $cover = null
-    ): string|EntityUserProfile\UserProfile {
+    public function handle(EntityUserProfile\Event\UserProfileEventInterface $command,
+    ): string|EntityUserProfile\UserProfile
+    {
         /* Валидация */
         $errors = $this->validator->validate($command);
 
-        if (count($errors) > 0)
+        if(count($errors) > 0)
         {
             /** Ошибка валидации */
             $uniqid = uniqid('', false);
-            $this->logger->error(sprintf('%s: %s', $uniqid, $errors), [__LINE__ => __FILE__]);
+            $this->logger->error(sprintf('%s: %s', $uniqid, $errors), [__FILE__.':'.__LINE__]);
 
             return $uniqid;
         }
@@ -81,7 +81,7 @@ final class ActivateUserProfilehandler
             ['event' => $command->getEvent()]
         );
 
-        if (empty($UserProfile))
+        if(empty($UserProfile))
         {
             $uniqid = uniqid('', false);
             $errorsString = sprintf(
@@ -102,7 +102,7 @@ final class ActivateUserProfilehandler
         $UserProfileInfo = $this->entityManager->getRepository(EntityUserProfile\Info\UserProfileInfo::class)
             ->find($UserProfile);
 
-        if (empty($UserProfileInfo))
+        if(empty($UserProfileInfo))
         {
             $uniqid = uniqid('', false);
             $errorsString = sprintf(
@@ -122,7 +122,7 @@ final class ActivateUserProfilehandler
         /* Если у текущего пользователя имеется активный профиль - деактивируем */
         $InfoActive = $this->entityManager->getRepository(Entity\Info\UserProfileInfo::class)
             ->findOneBy(['usr' => $infoDTO->getUsr(), 'active' => true]);
-        if ($InfoActive)
+        if($InfoActive)
         {
             $InfoActive->deactivate();
         }

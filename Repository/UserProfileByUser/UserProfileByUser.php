@@ -23,12 +23,22 @@
 
 namespace BaksDev\Users\Profile\UserProfile\Repository\UserProfileByUser;
 
-use BaksDev\Auth\Email\Entity as EntityAccountEmail;
+//use BaksDev\Auth\Email\Entity as EntityAccountEmail;
+use BaksDev\Auth\Email\Entity\Account;
+use BaksDev\Auth\Email\Entity\Event\AccountEvent;
 use BaksDev\Core\Doctrine\DBALQueryBuilder;
 use BaksDev\Core\Form\Search\SearchDTO;
 use BaksDev\Core\Services\Paginator\PaginatorInterface;
-use BaksDev\Users\Profile\TypeProfile\Entity as EntityTypeProfile;
-use BaksDev\Users\Profile\UserProfile\Entity as EntityUserProfile;
+//use BaksDev\Users\Profile\TypeProfile\Entity as EntityTypeProfile;
+//use BaksDev\Users\Profile\UserProfile\Entity as EntityUserProfile;
+use BaksDev\Users\Profile\TypeProfile\Entity\Event\TypeProfileEvent;
+use BaksDev\Users\Profile\TypeProfile\Entity\Trans\TypeProfileTrans;
+use BaksDev\Users\Profile\TypeProfile\Entity\TypeProfile;
+use BaksDev\Users\Profile\UserProfile\Entity\Avatar\UserProfileAvatar;
+use BaksDev\Users\Profile\UserProfile\Entity\Event\UserProfileEvent;
+use BaksDev\Users\Profile\UserProfile\Entity\Info\UserProfileInfo;
+use BaksDev\Users\Profile\UserProfile\Entity\Personal\UserProfilePersonal;
+use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
 use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatus;
 use BaksDev\Users\User\Type\Id\UserUid;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -39,6 +49,7 @@ final class UserProfileByUser implements UserProfileByUserInterface
     private PaginatorInterface $paginator;
     private Security $security;
     private DBALQueryBuilder $DBALQueryBuilder;
+    private ?SearchDTO $search = null;
 
 
     public function __construct(
@@ -52,8 +63,13 @@ final class UserProfileByUser implements UserProfileByUserInterface
         $this->DBALQueryBuilder = $DBALQueryBuilder;
     }
 
+    public function search(SearchDTO $search): self
+    {
+        $this->search = $search;
+        return $this;
+    }
 
-    public function get(SearchDTO $search, ?UserProfileStatus $status): PaginatorInterface
+    public function findAllUserProfile(?UserProfileStatus $status = null): PaginatorInterface
     {
 
         $usr = $this->security->getUser();
@@ -65,7 +81,7 @@ final class UserProfileByUser implements UserProfileByUserInterface
 
         $qb->select('userprofile.id');
         $qb->addSelect('userprofile.event');
-        $qb->from(EntityUserProfile\UserProfile::TABLE, 'userprofile');
+        $qb->from(UserProfile::TABLE, 'userprofile');
 
         /* INFO */
 
@@ -76,7 +92,7 @@ final class UserProfileByUser implements UserProfileByUserInterface
 
         $qb->join(
             'userprofile',
-            EntityUserProfile\Info\UserProfileInfo::TABLE,
+            UserProfileInfo::TABLE,
             'info',
             'info.profile = userprofile.id AND
           info.usr = :usr
@@ -93,7 +109,7 @@ final class UserProfileByUser implements UserProfileByUserInterface
         $qb->addSelect('userprofile_event.sort');
         $qb->join(
             'userprofile',
-            EntityUserProfile\Event\UserProfileEvent::TABLE,
+            UserProfileEvent::TABLE,
             'userprofile_event',
             'userprofile_event.id = userprofile.event'
         );
@@ -105,20 +121,19 @@ final class UserProfileByUser implements UserProfileByUserInterface
 
         $qb->join(
             'userprofile',
-            EntityUserProfile\Personal\UserProfilePersonal::TABLE,
+            UserProfilePersonal::TABLE,
             'personal',
             'personal.event = userprofile.event'
         );
 
         /* AVATAR */
-        $qb->addSelect('avatar.name AS avatar_name');
-        $qb->addSelect('avatar.dir AS avatar_dir');
+        $qb->addSelect("CONCAT('/upload/".UserProfileAvatar::TABLE."' , '/', avatar.name) AS avatar_name");
         $qb->addSelect('avatar.ext AS avatar_ext');
         $qb->addSelect('avatar.cdn AS avatar_cdn');
 
         $qb->leftJoin(
             'userprofile_event',
-            EntityUserProfile\Avatar\UserProfileAvatar::TABLE,
+            UserProfileAvatar::TABLE,
             'avatar',
             'avatar.event = userprofile_event.id'
         );
@@ -126,14 +141,14 @@ final class UserProfileByUser implements UserProfileByUserInterface
         /** Аккаунт пользователя */
 
         /* ACCOUNT */
-        $qb->join('info', EntityAccountEmail\Account::TABLE, 'account', 'account.id = info.usr');
+        $qb->join('info', Account::TABLE, 'account', 'account.id = info.usr');
 
         /* ACCOUNT EVENT */
         $qb->addSelect('account_event.id as account_id');
         $qb->addSelect('account_event.email');
         $qb->leftJoin(
             'account',
-            EntityAccountEmail\Event\AccountEvent::TABLE,
+            AccountEvent::TABLE,
             'account_event',
             'account_event.id = account.event'
         );
@@ -143,7 +158,7 @@ final class UserProfileByUser implements UserProfileByUserInterface
         /* TypeProfile */
         $qb->join(
             'userprofile_event',
-            EntityTypeProfile\TypeProfile::TABLE,
+            TypeProfile::TABLE,
             'type',
             'type.id = userprofile_event.type'
         );
@@ -151,7 +166,7 @@ final class UserProfileByUser implements UserProfileByUserInterface
         /* TypeProfileEvent */
         $qb->join(
             'type',
-            EntityTypeProfile\Event\TypeProfileEvent::TABLE,
+            TypeProfileEvent::TABLE,
             'type_event',
             'type_event.id = type.event'
         );
@@ -160,18 +175,17 @@ final class UserProfileByUser implements UserProfileByUserInterface
         $qb->addSelect('type_trans.name as profile_type');
         $qb->join(
             'type_event',
-            EntityTypeProfile\Trans\TypeProfileTrans::TABLE,
+            TypeProfileTrans::TABLE,
             'type_trans',
             'type_trans.event = type_event.id AND type_trans.local = :local'
         );
 
 
         /* Поиск */
-        if($search->getQuery())
+        if($this->search?->getQuery())
         {
             $qb
-                ->createSearchQueryBuilder($search)
-
+                ->createSearchQueryBuilder($this->search)
                 ->addSearchLike('personal.username')
                 ->addSearchLike('personal.location')
             ;

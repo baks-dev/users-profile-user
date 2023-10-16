@@ -47,7 +47,6 @@ function changeProfileStaus($status) {
 }
 
 
-
 let $idLocation = 'user_profile_form_personal_location';
 let $idLocationHelp = 'user_profile_form_personal_location_help';
 
@@ -64,12 +63,29 @@ let $idLocationHelp = 'user_profile_form_personal_location_help';
 // }, 100);
 
 
-
 /* Определяем поле ввода Username */
 let $name = document.getElementById('user_profile_form_personal_username');
+
 if ($name) {
 
-    $name.addEventListener('input', profileUrl.debounce(500));
+    let debouncerepeat = 100;
+    setTimeout(function zZFlBXCqXd() {
+
+        if (debouncerepeat > 500) {
+            return;
+        }
+
+        if (typeof profileUrl.debounce === 'function') {
+            $name.addEventListener('input', profileUrl.debounce(500));
+            return;
+        }
+
+        debouncerepeat += 100;
+
+        setTimeout(zZFlBXCqXd, debouncerepeat);
+
+    }, 100);
+
 
     function profileUrl() {
         /* Заполняем транслитом URL */

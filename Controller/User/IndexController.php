@@ -47,7 +47,8 @@ final class IndexController extends AbstractController
         UserProfileByUserInterface $userProfileByUser,
         AllProfileTypeInterface $allProfileType, // Типы профилей
         int $page = 0,
-    ): Response {
+    ): Response
+    {
         // Список доступных типов профилей
         $profile = $allProfileType->get()->getData();
 
@@ -62,9 +63,12 @@ final class IndexController extends AbstractController
 
         // Получаем список
         $status = !$request->get('status') ? null : new UserProfileStatus($request->get('status'));
-        $query = $userProfileByUser->get($search, $status);
 
-        
+
+        $query = $userProfileByUser
+            ->search($search)
+            ->findAllUserProfile($status)
+        ;
 
         return $this->render(
             [

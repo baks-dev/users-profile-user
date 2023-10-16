@@ -30,18 +30,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 final class AvatarDTO implements UserProfileAvatarInterface
 {
-	/** Файл загрузки */
-	#[Assert\File(
-		maxSize: '1024k',
-		mimeTypes: [
-			'image/png',
-			'image/gif',
-			'image/jpeg',
-			'image/pjpeg',
-			'image/webp',
-		],
-		mimeTypesMessage: 'Please upload a valid file'
-	)]
 	public ?File $file = null;
 	
 	/** Название файла без расширения */
@@ -52,10 +40,7 @@ final class AvatarDTO implements UserProfileAvatarInterface
 	
 	/** Флаг загрузки файла CDN */
 	private bool $cdn = false;
-	
-	/** Директория загрузки файла  */
-	private ?UserProfileEventUid $dir = null;
-	
+
 	
 	/** Название файла без расширения */
 	
@@ -64,12 +49,7 @@ final class AvatarDTO implements UserProfileAvatarInterface
 		return $this->name;
 	}
 	
-	
-	public function setName(?string $name) : void
-	{
-		$this->name = $name;
-	}
-	
+
 	
 	/** Расширение файла  */
 	
@@ -77,39 +57,13 @@ final class AvatarDTO implements UserProfileAvatarInterface
 	{
 		return $this->ext;
 	}
-	
-	
-	public function setExt(?string $ext) : void
-	{
-		$this->ext = $ext;
-	}
-	
+
 	
 	/** Флаг загрузки файла CDN */
 	
 	public function getCdn() : bool
 	{
 		return $this->cdn;
-	}
-	
-	
-	public function setCdn(bool $cdn) : void
-	{
-		$this->cdn = $cdn;
-	}
-	
-	
-	/** Директория загрузки файла  */
-	
-	public function getDir() : ?UserProfileEventUid
-	{
-		return $this->dir;
-	}
-	
-	
-	public function setDir(?UserProfileEventUid $dir) : void
-	{
-		$this->dir = $dir;
 	}
 	
 }

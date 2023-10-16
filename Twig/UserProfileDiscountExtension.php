@@ -38,7 +38,7 @@ final class UserProfileDiscountExtension extends AbstractExtension
 	}
 	
 	/** Пользовательская скидка */
-	public function discount(Environment $twig, $number) : mixed
+	public function discount(Environment $twig, $number): mixed
 	{
 		$globals = $twig->getGlobals();
 

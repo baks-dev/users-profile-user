@@ -97,7 +97,7 @@ final class ValueDTO implements UserProfileValueInterface
 	}
 	
 	
-	public function getSectionName() : string
+	public function getSectionName(): string
 	{
 		return $this->sectionName;
 	}
@@ -109,7 +109,7 @@ final class ValueDTO implements UserProfileValueInterface
 	}
 	
 	
-	public function getType() : string
+	public function getType(): string
 	{
 		return $this->type;
 	}

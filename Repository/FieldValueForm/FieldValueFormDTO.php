@@ -74,7 +74,7 @@ final class FieldValueFormDTO
 	}
 	
 	
-	public function getSectionName() : string
+	public function getSectionName(): string
 	{
 		return $this->sectionName;
 	}
@@ -92,7 +92,7 @@ final class FieldValueFormDTO
 	}
 	
 	
-	public function getFieldName() : string
+	public function getFieldName(): string
 	{
 		return $this->fieldName;
 	}

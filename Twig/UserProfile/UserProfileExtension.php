@@ -94,7 +94,7 @@ final class UserProfileExtension extends AbstractExtension
         }
     }
 
-    /*public function userProfile(Environment $twig, $profile) : string
+    /*public function userProfile(Environment $twig, $profile): string
     {
         try
         {

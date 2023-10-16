@@ -54,10 +54,10 @@ final class UserProfileAvatar implements UserProfileInterface
     public function getValue(UserUid $usr): bool|string
     {
         $current = $this->currentUserProfile->fetchProfileAssociative($usr);
-        
-        if ($current && !empty($current['profile_avatar_file']))
+
+        if ($current && !empty($current['profile_avatar_ext']))
         {
-            return ($current['profile_avatar_cdn'] ? 'https://'.$this->CDN_HOST : '').$current['profile_avatar_file'].($current['profile_avatar_cdn'] ? 'small.' : '').$current['profile_avatar_ext'];
+            return ($current['profile_avatar_cdn'] ? 'https://'.$this->CDN_HOST : '').$current['profile_avatar_name'].($current['profile_avatar_cdn'] ? '/min.' : '/image.').$current['profile_avatar_ext'];
         }
 
         return false;

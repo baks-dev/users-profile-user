@@ -23,7 +23,10 @@
 
 namespace BaksDev\Users\Profile\UserProfile\Repository\UserProfileByUser;
 
+use BaksDev\Core\Services\Paginator\PaginatorInterface;
+use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatus;
+
 interface UserProfileByUserInterface
 {
-	
+    public function findAllUserProfile(?UserProfileStatus $status = null): PaginatorInterface;
 }

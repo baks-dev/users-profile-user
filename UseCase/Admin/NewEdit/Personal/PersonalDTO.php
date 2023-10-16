@@ -48,7 +48,7 @@ final class PersonalDTO implements UserProfilePersonalInterface
 	
 	
 	/** Никнейм пользователя */
-	public function getUsername() : string
+	public function getUsername(): string
 	{
 		return $this->username;
 	}

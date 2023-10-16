@@ -23,13 +23,12 @@
 
 namespace BaksDev\Users\Profile\UserProfile\Entity\Personal;
 
-use BaksDev\Users\Profile\UserProfile\Entity\Event\UserProfileEvent;
 use BaksDev\Core\Entity\EntityEvent;
 use BaksDev\Reference\Gender\Type\Gender;
+use BaksDev\Users\Profile\UserProfile\Entity\Event\UserProfileEvent;
 use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Exception;
 use InvalidArgumentException;
 
 /* Модификаторы событий UserProfile */
@@ -67,13 +66,16 @@ class UserProfilePersonal extends EntityEvent
 	{
 		$this->event = $event;
 	}
-	
-	
-	/**
-	 * @throws Exception
-	 */
-	public function getDto($dto) : mixed
+
+    public function __toString(): string
+    {
+        return (string) $this->event;
+    }
+
+	public function getDto($dto): mixed
 	{
+        $dto = is_string($dto) && class_exists($dto) ? new $dto() : $dto;
+
 		if($dto instanceof UserProfilePersonalInterface)
 		{
 			return parent::getDto($dto);
@@ -81,14 +83,10 @@ class UserProfilePersonal extends EntityEvent
 		
 		throw new InvalidArgumentException(sprintf('Class %s interface error', $dto::class));
 	}
-	
-	
-	/**
-	 * @throws Exception
-	 */
-	public function setEntity($dto) : mixed
+
+	public function setEntity($dto): mixed
 	{
-		if($dto instanceof UserProfilePersonalInterface)
+		if($dto instanceof UserProfilePersonalInterface || $dto instanceof self)
 		{
 			return parent::setEntity($dto);
 		}
@@ -97,7 +95,7 @@ class UserProfilePersonal extends EntityEvent
 	}
 	
 	
-	public function name() : string
+	public function name(): string
 	{
 		return $this->username;
 	}

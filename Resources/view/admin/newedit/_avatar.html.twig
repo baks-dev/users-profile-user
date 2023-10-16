@@ -2,14 +2,22 @@
 
 
 <div class="card-body text-center pt-0">
-	
-	{% set img_path = form.avatar.vars.data.cdn is defined and form.avatar.vars.data.cdn == true ? CDN_HOST : '' %}
-	
+
+	{# Обложка #}
+	{% set image_path = '/assets/img/blank.svg' %}
+
+	{% if form.avatar.vars.data.ext is defined and form.avatar.vars.data.ext is not null %}
+		{% set img_host =  form.avatar.vars.data.cdn == true  ? CDN_HOST : '' %}
+		{% set img_table = '/upload/' ~ constant('BaksDev\\Users\\Profile\\UserProfile\\Entity\\Avatar\\UserProfileAvatar::TABLE') %}
+		{% set img_dir = form.avatar.vars.data.name %}
+		{% set img_file = (img_host is empty ? '/image.' : '/small.') ~ form.avatar.vars.data.ext %}
+		{% set image_path = img_host ~ img_table ~ img_dir ~ img_file %}
+	{% endif %}
+
+
 	<label class="icon rounded-circle bg-contain lazy position-relative image-input"
 			style="width: 150px; height: 150px;"
-			
-			data-bg="{{ form.avatar.vars.data.name is defined and form.avatar.vars.data.name is not null ?
-			img_path ~ '/upload/' ~ constant('BaksDev\\Users\\Profile\\UserProfile\\Entity\\Avatar\\UserProfileAvatar::TABLE') ~'/' ~ form.avatar.vars.data.dir ~'/'~ form.avatar.vars.data.name~'.'~form.avatar.vars.data.ext  : '/assets/img/blank.svg' }}"
+			data-bg="{{ image_path }}"
 	>
 		
 		<div class="position-absolute top-0 start-100 rounded-circle border p-2 d-flex align-items-center justify-content-center"

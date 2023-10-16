@@ -25,5 +25,11 @@ namespace BaksDev\Users\Profile\UserProfile\Entity\Avatar;
 
 interface UserProfileAvatarInterface
 {
-	
+    public function getName() : ?string;
+
+
+    public function getExt() : ?string;
+
+
+    public function getCdn() : bool;
 }

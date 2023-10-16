@@ -26,6 +26,6 @@ namespace BaksDev\Users\Profile\UserProfile\Repository\UsersChoiceForm;
 interface UsersChoiceOptionalAccountEmailInterface
 {
 	/** Список объектов аккаунтов с опциональным Account Email  */
-	public function getChoice() : mixed;
+	public function getChoice(): mixed;
 	
 }

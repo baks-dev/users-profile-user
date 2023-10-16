@@ -1,96 +1,104 @@
 <tr class="vertical-middle">
-	
-	
-	<td class="text-nowrap">
-		{# Пользовательское меню #}
-		{{ include(_self|replace({ "card.html.twig": "_usecase.html.twig" })) }}
-	</td>
-	
-	<td class="text-center">
-		{{ item.sort }}
-	</td>
-	
-	
-	<td class="w-50">
-		
-		<div class="d-flex">
-			{# Превью  #}
-			
-			{% set img_path = item.avatar_cdn == true ? CDN_HOST : '' %}
-			{% set img_min = item.avatar_cdn == true ? 'small.' : '' %}
-			
-			<a href="{{ path('UserProfile:user.newedit.edit', { id: item.event }) }}" class="pe-3">
-				<div class="rounded-circle bg-contain lazy p-1" style="width: 50px; height: 50px;"
-						data-bg="{{ item.avatar_ext ? img_path ~ '/upload/' ~ constant('BaksDev\\Users\\Profile\\UserProfile\\Entity\\Avatar\\UserProfileAvatar::TABLE') ~'/' ~ item.avatar_dir ~'/'~ item.avatar_name ~'.'~ img_min ~ item.avatar_ext : '/assets/img/blank.svg' }}">
-				</div>
-			</a>
-			
-			
-			<div class="ms-0">
-				{# Название #}
-				<a href="{{ path('UserProfile:user.newedit.edit', { id: item.event }) }}"
-						class=""
-				>{{ item.username }}</a>
-				
-				{# Описание #}
-				<div class="text-muted pointer copy" data-copy="{{ item.id }}" >
+
+
+    <td class="text-nowrap">
+        {# Пользовательское меню #}
+        {{ include(_self|replace({ "card.html.twig": "_usecase.html.twig" })) }}
+    </td>
+
+    <td class="text-center">
+        {{ item.sort }}
+    </td>
+
+
+    <td class="w-50">
+
+        <div class="d-flex">
+
+            {# Обложка #}
+            {% set image_path = '/assets/img/blank.svg' %}
+
+            {% if item.avatar_ext is defined and item.avatar_ext is not null %}
+                {% set img_host =  item.avatar_cdn == true  ? CDN_HOST : '' %}
+                {% set img_dir = item.avatar_name %}
+                {% set img_file = (img_host is empty ? '/image.' : '/small.') ~ item.avatar_ext %}
+                {% set image_path = img_host ~ img_dir ~ img_file %}
+            {% endif %}
+
+
+            <a href="{{ path('UserProfile:user.newedit.edit', { id: item.event }) }}" class="pe-3">
+                <div class="rounded-circle bg-contain lazy p-1"
+                     style="width: 50px; height: 50px;"
+                     data-bg="{{ image_path }}">
+                </div>
+            </a>
+
+
+            <div class="ms-0">
+                {# Название #}
+                <a href="{{ path('UserProfile:user.newedit.edit', { id: item.event }) }}"
+                   class=""
+                >{{ item.username }}</a>
+
+                {# Описание #}
+                <div class="text-muted pointer copy" data-copy="{{ item.id }}">
 
 					<span class="me-3">
 						<svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
-							 width="14"
-							 height="14"
-							 fill="currentColor"
-							 viewBox="0 0 115.77 122.88"
->
-							<path class="st0" d="M89.62,13.96v7.73h12.19h0.01v0.02c3.85,0.01,7.34,1.57,9.86,4.1c2.5,2.51,4.06,5.98,4.07,9.82h0.02v0.02 v73.27v0.01h-0.02c-0.01,3.84-1.57,7.33-4.1,9.86c-2.51,2.5-5.98,4.06-9.82,4.07v0.02h-0.02h-61.7H40.1v-0.02 c-3.84-0.01-7.34-1.57-9.86-4.1c-2.5-2.51-4.06-5.98-4.07-9.82h-0.02v-0.02V92.51H13.96h-0.01v-0.02c-3.84-0.01-7.34-1.57-9.86-4.1 c-2.5-2.51-4.06-5.98-4.07-9.82H0v-0.02V13.96v-0.01h0.02c0.01-3.85,1.58-7.34,4.1-9.86c2.51-2.5,5.98-4.06,9.82-4.07V0h0.02h61.7 h0.01v0.02c3.85,0.01,7.34,1.57,9.86,4.1c2.5,2.51,4.06,5.98,4.07,9.82h0.02V13.96L89.62,13.96z M79.04,21.69v-7.73v-0.02h0.02 c0-0.91-0.39-1.75-1.01-2.37c-0.61-0.61-1.46-1-2.37-1v0.02h-0.01h-61.7h-0.02v-0.02c-0.91,0-1.75,0.39-2.37,1.01 c-0.61,0.61-1,1.46-1,2.37h0.02v0.01v64.59v0.02h-0.02c0,0.91,0.39,1.75,1.01,2.37c0.61,0.61,1.46,1,2.37,1v-0.02h0.01h12.19V35.65 v-0.01h0.02c0.01-3.85,1.58-7.34,4.1-9.86c2.51-2.5,5.98-4.06,9.82-4.07v-0.02h0.02H79.04L79.04,21.69z M105.18,108.92V35.65v-0.02 h0.02c0-0.91-0.39-1.75-1.01-2.37c-0.61-0.61-1.46-1-2.37-1v0.02h-0.01h-61.7h-0.02v-0.02c-0.91,0-1.75,0.39-2.37,1.01 c-0.61,0.61-1,1.46-1,2.37h0.02v0.01v73.27v0.02h-0.02c0,0.91,0.39,1.75,1.01,2.37c0.61,0.61,1.46,1,2.37,1v-0.02h0.01h61.7h0.02 v0.02c0.91,0,1.75-0.39,2.37-1.01c0.61-0.61,1-1.46,1-2.37h-0.02V108.92L105.18,108.92z"></path>
+                             width="14"
+                             height="14"
+                             fill="currentColor"
+                             viewBox="0 0 115.77 122.88"
+                        >
+							<path class="st0"
+                                  d="M89.62,13.96v7.73h12.19h0.01v0.02c3.85,0.01,7.34,1.57,9.86,4.1c2.5,2.51,4.06,5.98,4.07,9.82h0.02v0.02 v73.27v0.01h-0.02c-0.01,3.84-1.57,7.33-4.1,9.86c-2.51,2.5-5.98,4.06-9.82,4.07v0.02h-0.02h-61.7H40.1v-0.02 c-3.84-0.01-7.34-1.57-9.86-4.1c-2.5-2.51-4.06-5.98-4.07-9.82h-0.02v-0.02V92.51H13.96h-0.01v-0.02c-3.84-0.01-7.34-1.57-9.86-4.1 c-2.5-2.51-4.06-5.98-4.07-9.82H0v-0.02V13.96v-0.01h0.02c0.01-3.85,1.58-7.34,4.1-9.86c2.51-2.5,5.98-4.06,9.82-4.07V0h0.02h61.7 h0.01v0.02c3.85,0.01,7.34,1.57,9.86,4.1c2.5,2.51,4.06,5.98,4.07,9.82h0.02V13.96L89.62,13.96z M79.04,21.69v-7.73v-0.02h0.02 c0-0.91-0.39-1.75-1.01-2.37c-0.61-0.61-1.46-1-2.37-1v0.02h-0.01h-61.7h-0.02v-0.02c-0.91,0-1.75,0.39-2.37,1.01 c-0.61,0.61-1,1.46-1,2.37h0.02v0.01v64.59v0.02h-0.02c0,0.91,0.39,1.75,1.01,2.37c0.61,0.61,1.46,1,2.37,1v-0.02h0.01h12.19V35.65 v-0.01h0.02c0.01-3.85,1.58-7.34,4.1-9.86c2.51-2.5,5.98-4.06,9.82-4.07v-0.02h0.02H79.04L79.04,21.69z M105.18,108.92V35.65v-0.02 h0.02c0-0.91-0.39-1.75-1.01-2.37c-0.61-0.61-1.46-1-2.37-1v0.02h-0.01h-61.7h-0.02v-0.02c-0.91,0-1.75,0.39-2.37,1.01 c-0.61,0.61-1,1.46-1,2.37h0.02v0.01v73.27v0.02h-0.02c0,0.91,0.39,1.75,1.01,2.37c0.61,0.61,1.46,1,2.37,1v-0.02h0.01h61.7h0.02 v0.02c0.91,0,1.75-0.39,2.37-1.01c0.61-0.61,1-1.46,1-2.37h-0.02V108.92L105.18,108.92z"></path>
 						</svg>
 					</span>
 
-					<strong>ID:</strong> {{ item.id }}
+                    <strong>ID:</strong> {{ item.id }}
 
-				</div>
-			</div>
-		</div>
-		
-		{# Описание #}
-		<div class="text-muted small">
-			{# {{ string_width(item.description, 150)|raw }} #}
-		</div>
-	
-	</td>
-	
-	<td class="text-center">
-		{{ item.profile_type }}
-	</td>
-	
-	
-	<td class="text-center">
-		{% if item.active %}
-			{# <div class="badge bg-success px-2"> #}
-			{# {{ 'user.active.label'|trans }} #}{# &nbsp; #}
-			{# <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-success" viewBox="0 0 16 16">
+                </div>
+            </div>
+        </div>
+
+        {# Описание #}
+        <div class="text-muted small">
+            {# {{ string_width(item.description, 150)|raw }} #}
+        </div>
+
+    </td>
+
+    <td class="text-center">
+        {{ item.profile_type }}
+    </td>
+
+
+    <td class="text-center">
+        {% if item.active %}
+            {# <div class="badge bg-success px-2"> #}
+            {# {{ 'user.active.label'|trans }} #}{# &nbsp; #}
+            {# <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-success" viewBox="0 0 16 16">
                     <path d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0z"/>
                     <path d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l7-7z"/>
                 </svg> #}
-			
-			<svg xmlns="http://www.w3.org/2000/svg"
-					width="16"
-					height="16"
-					fill="currentColor"
-					class="text-success"
-					viewBox="0 0 16 16">
-				<path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
-			</svg>
-			{# </div> #}
-		{% else %}
-			---
-		{% endif %}
-	</td>
-	
-	
 
-	<td class="text-center">
-		{{ user_profile_status(item.status) }}
-	</td>
+            <svg xmlns="http://www.w3.org/2000/svg"
+                 width="16"
+                 height="16"
+                 fill="currentColor"
+                 class="text-success"
+                 viewBox="0 0 16 16">
+                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+            </svg>
+            {# </div> #}
+        {% else %}
+            ---
+        {% endif %}
+    </td>
+
+
+    <td class="text-center">
+        {{ user_profile_status(item.status) }}
+    </td>
 
 </tr>

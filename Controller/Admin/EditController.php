@@ -43,38 +43,39 @@ use Symfony\Component\Routing\Annotation\Route;
 final class EditController extends AbstractController
 {
     #[Route('/admin/users/profile/edit/{id}', name: 'admin.newedit.edit', methods: ['GET', 'POST'])]
-    // #[ParamConverter('Event', \BaksDev\Users\Profile\UserProfile\Entity\Event\Event::class)]
     public function edit(
         Request $request,
         #[MapEntity] UserProfileEvent $Event,
         EntityManagerInterface $entityManager,
-        UserProfileHandler $handler,
+        UserProfileHandler $UserProfileHandler,
     ): Response
     {
-        $profile = new UserProfileDTO();
-        $Event->getDto($profile);
+        $UserProfileDTO = new UserProfileDTO();
+        $Event->getDto($UserProfileDTO);
 
         $Info = $entityManager->getRepository(UserProfileInfo::class)->findOneBy(
             ['profile' => $Event->getProfile()]
         );
-        $Info->getDto($profile->getInfo());
+        $Info->getDto($UserProfileDTO->getInfo());
 
         // Форма
-        $form = $this->createForm(UserProfileForm::class, $profile);
+        $form = $this->createForm(UserProfileForm::class, $UserProfileDTO);
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid() && $form->has('Save'))
         {
-            $UserProfile = $handler->handle($profile);
+            $handle = $UserProfileHandler->handle($UserProfileDTO);
 
-            if($UserProfile instanceof UserProfile)
-            {
-                $this->addFlash('success', 'admin.success.update', 'admin.user.profile');
+            $this->addFlash
+            (
+                'admin.page.edit',
+                $handle instanceof UserProfile ? 'admin.success.edit' : 'admin.danger.edit',
+                'admin.user.profile',
+                $handle
+            );
 
-                return $this->redirectToRoute('UserProfile:admin.index');
-            }
+            return $this->redirectToRoute('UserProfile:admin.index');
 
-            $this->addFlash('danger', 'admin.danger.update', 'admin.user.profile', $UserProfile);
         }
 
         return $this->render(['form' => $form->createView()]);

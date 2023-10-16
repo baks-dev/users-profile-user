@@ -23,12 +23,11 @@
 
 namespace BaksDev\Users\Profile\UserProfile\Entity\Value;
 
+use BaksDev\Core\Entity\EntityEvent;
 use BaksDev\Users\Profile\TypeProfile\Type\Section\Field\Id\TypeProfileSectionFieldUid;
 use BaksDev\Users\Profile\UserProfile\Entity\Event\UserProfileEvent;
-use BaksDev\Core\Entity\EntityEvent;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Exception;
 use InvalidArgumentException;
 
 /* Модификаторы событий UserProfile */
@@ -54,22 +53,21 @@ class UserProfileValue extends EntityEvent
 	/** Заполненное значение */
 	#[ORM\Column(type: Types::TEXT, nullable: true)]
 	private ?string $value = null;
-	
-	
-	/**
-	 * @param UserProfileEvent $event
-	 */
+
 	public function __construct(UserProfileEvent $event)
 	{
 		$this->event = $event;
 	}
-	
-	
-	/**
-	 * @throws Exception
-	 */
-	public function getDto($dto) : mixed
+
+    public function __toString(): string
+    {
+        return (string) $this->event;
+    }
+
+	public function getDto($dto): mixed
 	{
+        $dto = is_string($dto) && class_exists($dto) ? new $dto() : $dto;
+
 		if($dto instanceof UserProfileValueInterface)
 		{
 			return parent::getDto($dto);
@@ -77,14 +75,10 @@ class UserProfileValue extends EntityEvent
 		
 		throw new InvalidArgumentException(sprintf('Class %s interface error', $dto::class));
 	}
-	
-	
-	/**
-	 * @throws Exception
-	 */
-	public function setEntity($dto) : mixed
+
+	public function setEntity($dto): mixed
 	{
-		if($dto instanceof UserProfileValueInterface)
+		if($dto instanceof UserProfileValueInterface || $dto instanceof self)
 		{
 			return parent::setEntity($dto);
 		}

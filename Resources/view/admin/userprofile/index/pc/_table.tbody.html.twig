@@ -16,15 +16,21 @@
 	
 	<td class="ps-5">
 		<div class="d-flex">
-			{# Превью  #}
-			
-			{% set img_path = item.avatar_cdn == true ? CDN_HOST : '' %}
-			{% set img_min = item.avatar_cdn == true ? 'small.' : '' %}
-			
+
+			{# Обложка #}
+			{% set image_path = '/assets/img/blank.svg' %}
+
+			{% if item.avatar_ext is defined and item.avatar_ext is not null %}
+				{% set img_host = item.avatar_cdn == true  ? CDN_HOST : '' %}
+				{% set img_dir = item.avatar_name %}
+				{% set img_file = (img_host is empty ? '/image.' : '/small.') ~ item.avatar_ext %}
+				{% set image_path = img_host ~ img_dir ~ img_file %}
+			{% endif %}
+
 			<a href="{{ path('UserProfile:admin.newedit.edit', { id: item.event }) }}"
 					class="symbol symbol-circle symbol-50px pe-5">
 				<span class="symbol-label lazy"
-						data-bg="{{ item.avatar_name ? img_path ~ profile_avatar_dir ~ item.avatar_dir ~'/'~ item.avatar_name ~'.'~ img_min ~ item.avatar_ext : '/assets/img/blank.svg' }}"></span>
+						data-bg="{{ image_path }}"></span>
 			</a>
 			
 			

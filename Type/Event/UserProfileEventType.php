@@ -29,13 +29,13 @@ use Doctrine\DBAL\Types\Types;
 final class UserProfileEventType extends UidType
 {
 	
-	public function getClassType() : string
+	public function getClassType(): string
 	{
 		return UserProfileEventUid::class;
 	}
 	
 	
-	public function getName() : string
+	public function getName(): string
 	{
         return UserProfileEventUid::TYPE;
 	}

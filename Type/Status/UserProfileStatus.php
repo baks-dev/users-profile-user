@@ -50,7 +50,7 @@ final class UserProfileStatus
 	/**
 	 * @return string
 	 */
-	public function __toString() : string
+	public function __toString(): string
 	{
 		return $this->status->value;
 	}
@@ -59,7 +59,7 @@ final class UserProfileStatus
 	/**
 	 * @return string
 	 */
-	public function getValue() : string
+	public function getValue(): string
 	{
 		return $this->status->value;
 	}
@@ -68,7 +68,7 @@ final class UserProfileStatus
 	/**
 	 * @return string
 	 */
-	public function getName() : string
+	public function getName(): string
 	{
 		return $this->status->name;
 	}

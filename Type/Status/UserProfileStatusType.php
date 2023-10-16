@@ -29,19 +29,19 @@ use Doctrine\DBAL\Types\StringType;
 final class UserProfileStatusType extends StringType
 {
 	
-	public function convertToDatabaseValue($value, AbstractPlatform $platform) : mixed
+	public function convertToDatabaseValue($value, AbstractPlatform $platform): mixed
 	{
 		return $value instanceof UserProfileStatus ? $value->getValue() : (new UserProfileStatus($value))->getValue();
 	}
 	
 	
-	public function convertToPHPValue($value, AbstractPlatform $platform) : mixed
+	public function convertToPHPValue($value, AbstractPlatform $platform): mixed
 	{
 		return $value ? new UserProfileStatus($value) : null;
 	}
 	
 	
-	public function getName() : string
+	public function getName(): string
 	{
 		return UserProfileStatus::TYPE;
 	}
@@ -53,7 +53,7 @@ final class UserProfileStatusType extends StringType
 	}
 	
 	
-	public function getSQLDeclaration(array $column, AbstractPlatform $platform) : string
+	public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
 	{
 		$column['length'] = 3;
 		

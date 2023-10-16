@@ -25,8 +25,9 @@ namespace BaksDev\Users\Profile\UserProfile\Controller\User;
 
 use BaksDev\Core\Controller\AbstractController;
 use BaksDev\Core\Listeners\Event\Security\RoleSecurity;
-use BaksDev\Users\Profile\UserProfile\Entity;
-use BaksDev\Users\Profile\UserProfile\Message\ModerationUserProfile\ModerationUserProfileDTO;
+use BaksDev\Users\Profile\UserProfile\Entity\Event\UserProfileEvent;
+use BaksDev\Users\Profile\UserProfile\Entity\Info\UserProfileInfo;
+use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
 use BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\UserProfileDTO;
 use BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\UserProfileForm;
 use BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\UserProfileHandler;
@@ -46,41 +47,39 @@ final class EditController extends AbstractController
     #[Route('/user/profile/edit/{id}', name: 'user.newedit.edit', methods: ['GET', 'POST'])]
     public function edit(
         Request $request,
-        #[MapEntity] Entity\Event\UserProfileEvent $Event,
+        #[MapEntity] UserProfileEvent $Event,
         EntityManagerInterface $entityManager,
-        UserProfileHandler $handler,
-        MessageBusInterface $bus,
-    ): Response {
-        $Info = $entityManager->getRepository(Entity\Info\UserProfileInfo::class)
-            ->findOneBy(['profile' => $Event->getProfile()])
-        ;
+        UserProfileHandler $UserProfileHandler
+    ): Response
+    {
+        $Info = $entityManager->getRepository(UserProfileInfo::class)
+            ->findOneBy(['profile' => $Event->getProfile()]);
 
         // НЕ является владельцем профиля
-        if (!$Info?->isProfileOwnedUser($this->getUsr())) {
+        if(!$Info?->isProfileOwnedUser($this->getUsr()))
+        {
             throw new AccessDeniedException();
         }
 
-        $profile = new UserProfileDTO();
-        $Event->getDto($profile);
-        $Info->getDto($profile->getInfo());
+        $UserProfileDTO = new UserProfileDTO();
+        $Event->getDto($UserProfileDTO);
+        $Info->getDto($UserProfileDTO->getInfo());
 
         // Форма
-        $form = $this->createForm(UserProfileForm::class, $profile);
+        $form = $this->createForm(UserProfileForm::class, $UserProfileDTO);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid() && $form->has('Save')) {
-            $UserProfile = $handler->handle($profile);
+        if($form->isSubmitted() && $form->isValid() && $form->has('Save'))
+        {
+            $handle = $UserProfileHandler->handle($UserProfileDTO);
 
-            if ($UserProfile instanceof Entity\UserProfile) {
-                $this->addFlash('success', 'user.success.update', 'user.user.profile');
-
-            // Отправляем уведомление о модерации в телегу
-            // $telega = new ModerationUserProfileDTO($UserProfile->getEvent());
-            // $bus->dispatch($telega);
-                
-            } else {
-                $this->addFlash('danger', 'user.danger.update', 'user.user.profile', $UserProfile);
-            }
+            $this->addFlash
+            (
+                'admin.page.edit',
+                $handle instanceof UserProfile ? 'user.success.edit' : 'user.danger.edit',
+                'user.user.profile',
+                $handle
+            );
 
             return $this->redirectToRoute('UserProfile:user.index');
         }

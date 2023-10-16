@@ -80,7 +80,7 @@ final class UserProfileHandler
         {
             /** Ошибка валидации */
             $uniqid = uniqid('', false);
-            $this->logger->error(sprintf('%s: %s', $uniqid, $errors), [__LINE__ => __FILE__]);
+            $this->logger->error(sprintf('%s: %s', $uniqid, $errors), [__FILE__.':'.__LINE__]);
 
             return $uniqid;
         }
@@ -104,19 +104,20 @@ final class UserProfileHandler
                 return $uniqid;
             }
 
+            $EventRepo->setEntity($command);
+            $EventRepo->setEntityManager($this->entityManager);
             $Event = $EventRepo->cloneEntity();
-
         }
         else
         {
             $Event = new Entity\Event\UserProfileEvent();
+            $Event->setEntity($command);
             $this->entityManager->persist($Event);
         }
 
+//        $this->entityManager->clear();
+//        $this->entityManager->persist($Event);
 
-        $this->entityManager->clear();
-
-        $Event->setEntity($command);
 
         /** @var Entity\UserProfile $UserProfile */
         if($Event->getProfile())
@@ -180,8 +181,6 @@ final class UserProfileHandler
             }
         }
 
-        $Event->setEntity($command);
-        $this->entityManager->persist($Event);
 
         /* Загружаем файл аватарки профиля */
 
@@ -198,6 +197,23 @@ final class UserProfileHandler
 
         /* присваиваем событие корню */
         $UserProfile->setEvent($Event);
+
+
+        /**
+         * Валидация Event
+         */
+
+        $errors = $this->validator->validate($Event);
+
+        if(count($errors) > 0)
+        {
+            /** Ошибка валидации */
+            $uniqid = uniqid('', false);
+            $this->logger->error(sprintf('%s: %s', $uniqid, $errors), [__FILE__.':'.__LINE__]);
+
+            return $uniqid;
+        }
+
         $this->entityManager->flush();
 
 

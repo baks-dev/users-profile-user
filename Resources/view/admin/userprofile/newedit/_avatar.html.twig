@@ -3,14 +3,21 @@
 
 <div class="card-body text-center pt-0">
 	
-	<div class="image-input image-input-circle mb-3" data-kt-image-input="true" style="">
-		
-		{% set img_path = form.avatar.vars.data.cdn is defined and form.avatar.vars.data.cdn == true ? CDN_HOST : '' %}
-		
-		
+	<div class="image-input image-input-circle mb-3" data-kt-image-input="true">
+
+		{# Обложка #}
+		{% set image_path = '/assets/img/blank.svg' %}
+
+		{% if form.avatar.vars.data.ext is defined and form.avatar.vars.data.ext is not null %}
+			{% set img_host =  form.avatar.vars.data.cdn == true  ? CDN_HOST : '' %}
+			{% set img_table = '/upload/' ~ constant('BaksDev\\Payment\\Entity\\Cover\\PaymentCover::TABLE') %}
+			{% set img_dir = form.avatar.vars.data.name %}
+			{% set img_file = (img_host is empty ? '/image.' : '/small.') ~ form.avatar.vars.data.ext %}
+			{% set image_path = img_host ~ img_table ~ img_dir ~ img_file %}
+		{% endif %}
+
 		<div class="image-input-wrapper w-150px h-150px lazy"
-				data-bg="{{ form.avatar.vars.data.name is defined and form.avatar.vars.data.name is not null ?
-				img_path ~ profile_avatar_dir ~ form.avatar.vars.data.dir ~'/'~ form.avatar.vars.data.name~'.'~form.avatar.vars.data.ext  : '/assets/img/blank.svg' }}"
+				data-bg="{{ image_path }}"
 		>
 		</div>
 		

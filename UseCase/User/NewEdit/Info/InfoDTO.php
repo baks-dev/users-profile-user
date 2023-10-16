@@ -80,7 +80,7 @@ final class InfoDTO implements UserProfileInfoInterface
 
     public function setStatus(UserProfileStatus|UserProfileStatusEnum $status): self
     {
-        $this->status = $status instanceof UserProfileStatus ?: new UserProfileStatus($status);
+        $this->status = $status instanceof UserProfileStatus ? $status : new UserProfileStatus($status);
 
         return $this;
     }

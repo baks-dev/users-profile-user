@@ -47,7 +47,7 @@ class UserProfileModify extends EntityEvent
 	
 	/** ID события */
 	#[ORM\Id]
-	#[ORM\OneToOne(inversedBy: 'modify', targetEntity: UserProfileEvent::class, cascade: ['persist'])]
+	#[ORM\OneToOne(inversedBy: 'modify', targetEntity: UserProfileEvent::class)]
 	#[ORM\JoinColumn(name: 'event', referencedColumnName: 'id')]
 	private UserProfileEvent $event;
 	
@@ -89,10 +89,17 @@ class UserProfileModify extends EntityEvent
 		$this->ip = new IpAddress('127.0.0.1');
 		$this->agent = 'console';
 	}
+
+    public function __toString(): string
+    {
+        return (string) $this->event;
+    }
 	
 	
-	public function getDto($dto) : mixed
+	public function getDto($dto): mixed
 	{
+        $dto = is_string($dto) && class_exists($dto) ? new $dto() : $dto;
+
 		if($dto instanceof UserProfileModifyInterface)
 		{
 			return parent::getDto($dto);
@@ -102,9 +109,9 @@ class UserProfileModify extends EntityEvent
 	}
 	
 	
-	public function setEntity($dto) : mixed
+	public function setEntity($dto): mixed
 	{
-		if($dto instanceof UserProfileModifyInterface)
+		if($dto instanceof UserProfileModifyInterface || $dto instanceof self)
 		{
 			return parent::setEntity($dto);
 		}

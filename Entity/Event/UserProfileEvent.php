@@ -37,7 +37,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Exception;
 use InvalidArgumentException;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -121,13 +120,16 @@ class UserProfileEvent extends EntityEvent
 		$this->value = new ArrayCollection();
 		
 	}
-	
-	
+
 	public function __clone()
 	{
-		$this->id = new UserProfileEventUid();
+        $this->id = clone $this->id;
 	}
-	
+
+    public function __toString(): string
+    {
+        return (string) $this->id;
+    }
 	
 	public function getId() : UserProfileEventUid
 	{
@@ -151,28 +153,22 @@ class UserProfileEvent extends EntityEvent
 	{
 		$this->profile = $profile instanceof UserProfile ? $profile->getId() : $profile;
 	}
-	
-	
-	/**
-	 * @throws Exception
-	 */
-	public function getDto($dto) : mixed
+
+	public function getDto($dto): mixed
 	{
-		if($dto instanceof UserProfileEventInterface)
+        $dto = is_string($dto) && class_exists($dto) ? new $dto() : $dto;
+
+		if($dto instanceof UserProfileEventInterface || $dto instanceof self)
 		{
 			return parent::getDto($dto);
 		}
 		
 		throw new InvalidArgumentException(sprintf('Class %s interface error', $dto::class));
 	}
-	
-	
-	/**
-	 * @throws Exception
-	 */
-	public function setEntity($dto) : mixed
+
+	public function setEntity($dto): mixed
 	{
-		if($dto instanceof UserProfileEventInterface)
+		if($dto instanceof UserProfileEventInterface || $dto instanceof self)
 		{
 			return parent::setEntity($dto);
 		}

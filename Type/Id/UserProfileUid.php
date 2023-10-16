@@ -23,6 +23,7 @@
 
 namespace BaksDev\Users\Profile\UserProfile\Type\Id;
 
+use App\Kernel;
 use BaksDev\Core\Type\UidType\Uid;
 use Symfony\Component\Uid\AbstractUid;
 
@@ -40,6 +41,7 @@ final class UserProfileUid extends Uid
     )
     {
         parent::__construct($value);
+
         $this->attr = $attr;
     }
 

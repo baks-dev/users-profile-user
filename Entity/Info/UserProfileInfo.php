@@ -32,7 +32,6 @@ use BaksDev\Users\User\Entity\User;
 use BaksDev\Users\User\Type\Id\UserUid;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Exception;
 use InvalidArgumentException;
 
 // Неизменяемые данные UserProfile
@@ -88,6 +87,11 @@ class UserProfileInfo extends EntityState
         $this->status = new UserProfileStatus(UserProfileStatusEnum::MODERATION);
     }
 
+    public function __toString(): string
+    {
+        return (string) $this->profile;
+    }
+
     public function getProfile(): ?UserProfileUid
     {
         return $this->profile;
@@ -110,28 +114,22 @@ class UserProfileInfo extends EntityState
         return !$this->status->equals(UserProfileStatusEnum::ACTIVE);
     }
 
-    /**
-     * @param mixed $dto
-     *
-     * @throws Exception
-     */
     public function getDto($dto): mixed
     {
-        if ($dto instanceof UserProfileInfoInterface) {
+        $dto = is_string($dto) && class_exists($dto) ? new $dto() : $dto;
+
+        if ($dto instanceof UserProfileInfoInterface)
+        {
             return parent::getDto($dto);
         }
 
         throw new InvalidArgumentException(sprintf('Class %s interface error', $dto::class));
     }
 
-    /**
-     * @param mixed $dto
-     *
-     * @throws Exception
-     */
     public function setEntity($dto): mixed
     {
-        if ($dto instanceof UserProfileInfoInterface) {
+        if ($dto instanceof UserProfileInfoInterface || $dto instanceof self)
+        {
             return parent::setEntity($dto);
         }
 

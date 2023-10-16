@@ -71,7 +71,7 @@ final class DeleteUserProfileHandler
 	public function handle(
 		EntityUserProfile\Event\UserProfileEventInterface $command,
 		//?UploadedFile $cover = null
-	) : string|EntityUserProfile\UserProfile
+	): string|EntityUserProfile\UserProfile
 	{
 		
 		/* Валидация */
@@ -81,7 +81,7 @@ final class DeleteUserProfileHandler
 		{
             /** Ошибка валидации */
             $uniqid = uniqid('', false);
-            $this->logger->error(sprintf('%s: %s', $uniqid, $errors), [__LINE__ => __FILE__]);
+            $this->logger->error(sprintf('%s: %s', $uniqid, $errors), [__FILE__.':'.__LINE__]);
 			
 			return $uniqid;
 		}
@@ -147,9 +147,12 @@ final class DeleteUserProfileHandler
 			
 			return $uniqid;
 		}
-		
-		$Event = $EventRepo->cloneEntity();
-		$Event->setEntity($command);
+
+        $EventRepo->setEntity($command);
+        $EventRepo->setEntityManager($this->entityManager);
+        $Event = $EventRepo->cloneEntity();
+//        $this->entityManager->clear();
+//        $this->entityManager->persist($Event);
 		
 		/* Проверяем, что модификатор DELETE */
 		if(!$Event->isModifyActionEquals(ModifyActionEnum::DELETE))
@@ -170,9 +173,7 @@ final class DeleteUserProfileHandler
 		$infoDTO = $command->getInfo();
 		$infoDTO->updateUrlUniq();
 		
-		/* Добавляем новое событие */
-		$this->entityManager->persist($Event);
-		
+
 		/* Присваиваем событие INFO */
 		$UserProfileInfo->setEntity($infoDTO);
 		

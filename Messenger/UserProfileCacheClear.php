@@ -29,7 +29,7 @@ use BaksDev\Core\Cache\AppCacheInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
-#[AsMessageHandler(fromTransport: 'sync')]
+#[AsMessageHandler]
 final class UserProfileCacheClear
 {
 
@@ -50,7 +50,7 @@ final class UserProfileCacheClear
 		$cache = $this->cache->init('UserProfile');
 		$cache->clear();
 
-        $this->messageDispatchLogger->info('Очистили кеш UserProfile', [__LINE__ => __FILE__]);
+        $this->messageDispatchLogger->info('Очистили кеш UserProfile', [__FILE__.':'.__LINE__]);
 
 	}
 }

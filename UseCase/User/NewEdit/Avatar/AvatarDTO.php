@@ -24,24 +24,12 @@
 namespace BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\Avatar;
 
 use BaksDev\Users\Profile\UserProfile\Entity\Avatar\UserProfileAvatarInterface;
-use BaksDev\Users\Profile\UserProfile\Type\Event\UserProfileEventUid;
 use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\Validator\Constraints as Assert;
 
+/** @see UserProfileAvatar */
 final class AvatarDTO implements UserProfileAvatarInterface
 {
 	/** Обложка категории */
-	#[Assert\File(
-		maxSize: '1024k',
-		mimeTypes: [
-			'image/png',
-			'image/gif',
-			'image/jpeg',
-			'image/pjpeg',
-			'image/webp',
-		],
-		mimeTypesMessage: 'Please upload a valid file'
-	)]
 	public ?File $file = null;
 	
 	private ?string $name = null;
@@ -49,24 +37,13 @@ final class AvatarDTO implements UserProfileAvatarInterface
 	private ?string $ext = null;
 	
 	private bool $cdn = false;
-	
-	#[Assert\Uuid]
-	private ?UserProfileEventUid $dir = null;
-	
-	
-	/* NAME */
-	
+
+
 	public function getName() : ?string
 	{
 		return $this->name;
 	}
-	
-	
-	public function setName(?string $name) : void
-	{
-		$this->name = $name;
-	}
-	
+
 	
 	/* EXT */
 	
@@ -74,12 +51,7 @@ final class AvatarDTO implements UserProfileAvatarInterface
 	{
 		return $this->ext;
 	}
-	
-	
-	public function setExt(?string $ext) : void
-	{
-		$this->ext = $ext;
-	}
+
 	
 	
 	/* CDN */
@@ -88,25 +60,5 @@ final class AvatarDTO implements UserProfileAvatarInterface
 	{
 		return $this->cdn;
 	}
-	
-	
-	public function setCdn(bool $cdn) : void
-	{
-		$this->cdn = $cdn;
-	}
-	
-	
-	/* DIR */
-	
-	public function getDir() : ?UserProfileEventUid
-	{
-		return $this->dir;
-	}
-	
-	
-	public function setDir(?UserProfileEventUid $dir) : void
-	{
-		$this->dir = $dir;
-	}
-	
+
 }

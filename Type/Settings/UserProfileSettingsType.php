@@ -31,19 +31,19 @@ final class UserProfileSettingsType extends StringType
 	public const NAME = 'user_profile_settings';
 	
 	
-	public function convertToDatabaseValue($value, AbstractPlatform $platform) : mixed
+	public function convertToDatabaseValue($value, AbstractPlatform $platform): mixed
 	{
 		return $value instanceof UserProfileSettingsIdentifier ? $value->getValue() : $value;
 	}
 	
 	
-	public function convertToPHPValue($value, AbstractPlatform $platform) : mixed
+	public function convertToPHPValue($value, AbstractPlatform $platform): mixed
 	{
 		return !empty($value) ? new UserProfileSettingsIdentifier() : $value;
 	}
 	
 	
-	public function getName() : string
+	public function getName(): string
 	{
 		return self::NAME;
 	}

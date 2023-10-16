@@ -138,7 +138,6 @@ final class AllUserProfile implements AllUserProfileInterface
 		$qb->addSelect('userprofile_profile.location AS user_profile_location');
 		
 		$qb->addSelect('userprofile_avatar.name AS user_profile_avatar_name');
-		$qb->addSelect('userprofile_avatar.dir AS user_profile_avatar_dir');
 		$qb->addSelect('userprofile_avatar.ext AS user_profile_avatar_ext');
 		$qb->addSelect('userprofile_avatar.cdn AS user_profile_avatar_cdn');
 		

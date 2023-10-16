@@ -23,11 +23,11 @@ user:
 
   success:
     new: 'Profile added successfully'
-    update: 'Profile updated successfully'
+    edit: 'Profile updated successfully'
     delete: 'Profile deleted successfully'
     activate: 'Profile applied successfully'
   danger:
     new: '%s: Error adding profile'
-    update: '%s: Error updating profile'
+    edit: '%s: Error updating profile'
     delete: '%s: Error deleting profile'
     activate: '%s: Error applying profile'

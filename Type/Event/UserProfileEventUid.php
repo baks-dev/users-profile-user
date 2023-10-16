@@ -23,12 +23,14 @@
 
 namespace BaksDev\Users\Profile\UserProfile\Type\Event;
 
+use App\Kernel;
 use BaksDev\Core\Type\UidType\Uid;
+use Symfony\Component\Uid\AbstractUid;
 
 final class UserProfileEventUid extends Uid
 {
     public const TEST = '0188a9a8-54c9-716f-9297-94a6348291a5';
     
 	public const TYPE = 'user_profile_event';
-	
+
 }

@@ -109,7 +109,7 @@ final class InfoDTO implements UserProfileInfoInterface
 	
 	/** Ссылка на профиль пользователя */
 	
-	public function getUrl() : string
+	public function getUrl(): string
 	{
 		return $this->url;
 	}

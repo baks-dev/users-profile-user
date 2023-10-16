@@ -47,7 +47,7 @@ final class UsersChoiceOptionalAccountEmail implements UsersChoiceOptionalAccoun
 
     /** Список объектов UserUid аккаунтов с опциональным Account Email  */
 
-    public function getChoice() : mixed
+    public function getChoice(): mixed
     {
         $qb = $this->entityManager->createQueryBuilder();
 
