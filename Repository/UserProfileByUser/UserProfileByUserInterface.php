@@ -24,7 +24,7 @@
 namespace BaksDev\Users\Profile\UserProfile\Repository\UserProfileByUser;
 
 use BaksDev\Core\Services\Paginator\PaginatorInterface;
-use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatus;
+use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
 
 interface UserProfileByUserInterface
 {

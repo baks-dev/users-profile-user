@@ -27,7 +27,7 @@
 				{% set image_path = img_host ~ img_dir ~ img_file %}
 			{% endif %}
 
-			<a href="{{ path('UserProfile:admin.newedit.edit', { id: item.event }) }}"
+			<a href="{{ path('users-profile-user:admin.newedit.edit', { id: item.event }) }}"
 					class="symbol symbol-circle symbol-50px pe-5">
 				<span class="symbol-label lazy"
 						data-bg="{{ image_path }}"></span>
@@ -35,7 +35,7 @@
 			
 			
 			<div class="ms-0">
-				<a href="{{ path('UserProfile:admin.newedit.edit', { id: item.event }) }}"
+				<a href="{{ path('users-profile-user:admin.newedit.edit', { id: item.event }) }}"
 						class="text-gray-800 text-hover-primary fs-5 fw-bolder mb-1">
 					{{ item.username }}
 				</a>

@@ -24,7 +24,7 @@
 namespace BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Info;
 
 use BaksDev\Users\Profile\UserProfile\Repository\UsersChoiceForm\UsersChoiceOptionalAccountEmailInterface;
-use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatus;
+use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
 use BaksDev\Users\User\Type\Id\UserUid;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -78,10 +78,10 @@ final class InfoForm extends AbstractType
 			->add('status', ChoiceType::class, [
 				'choices' => UserProfileStatus::cases(),
 				'choice_value' => function(?UserProfileStatus $status) {
-					return $status?->getValue();
+					return $status?->getUserProfileStatusValue();
 				},
 				'choice_label' => function(UserProfileStatus $status) {
-					return $status->getName();
+					return $status->getUserProfileStatusValue();
 				},
 				
 				'label' => false,

@@ -29,8 +29,8 @@ use BaksDev\Core\Command\Update\ProjectUpgradeInterface;
 use BaksDev\Users\Profile\TypeProfile\Type\Id\TypeProfileUid;
 use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
 use BaksDev\Users\Profile\UserProfile\Repository\ExistUserProfileByUser\ExistUserProfileByUserInterface;
-use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatus;
-use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatusEnum;
+use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\UserProfileStatusActive;
+use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
 use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Info\InfoDTO;
 use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\UserProfileDTO;
 use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\UserProfileHandler;
@@ -104,7 +104,7 @@ class UpgradeUserProfileAdminCommand extends Command implements ProjectUpgradeIn
                 $InfoDTO = $UserProfileDTO->getInfo();
                 $InfoDTO->setUrl(uniqid('', false));
                 $InfoDTO->setUsr($AccountEvent->getAccount());
-                $InfoDTO->setStatus(new UserProfileStatus(UserProfileStatusEnum::ACTIVE));
+                $InfoDTO->setStatus(new UserProfileStatus(UserProfileStatusActive::class));
 
                 $PersonalDTO = $UserProfileDTO->getPersonal();
                 $PersonalDTO->setUsername($AccountEmail->getUserName());

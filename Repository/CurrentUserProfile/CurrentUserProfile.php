@@ -35,8 +35,9 @@ use BaksDev\Users\Profile\UserProfile\Entity\Info\UserProfileInfo;
 use BaksDev\Users\Profile\UserProfile\Entity\Personal\UserProfilePersonal;
 use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
-use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatus;
-use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatusEnum;
+use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\UserProfileStatusActive;
+use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
+
 use BaksDev\Users\User\Entity\User;
 use BaksDev\Users\User\Type\Id\UserUid;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -138,7 +139,7 @@ final class CurrentUserProfile implements CurrentUserProfileInterface
         }
 
 
-        $qb->setParameter('profile_status', new UserProfileStatus(UserProfileStatusEnum::ACTIVE), UserProfileStatus::TYPE);
+        $qb->setParameter('profile_status', new UserProfileStatus(UserProfileStatusActive::class), UserProfileStatus::TYPE);
 
 
         $qb->addSelect('profile.id AS user_profile_id'); /* ID профиля */
@@ -206,7 +207,7 @@ final class CurrentUserProfile implements CurrentUserProfileInterface
 
 
         /* Кешируем результат DBAL */
-        return $qb->enableCache('UserProfile', 3600)->fetchAssociative();
+        return $qb->enableCache('users-profile-user', 3600)->fetchAssociative();
     }
 
 
@@ -260,7 +261,7 @@ final class CurrentUserProfile implements CurrentUserProfileInterface
 				profile_info.active = true
 		');
 
-        $qb->setParameter('profile_status', new UserProfileStatus(UserProfileStatusEnum::ACTIVE), UserProfileStatus::TYPE);
+        $qb->setParameter('profile_status', new UserProfileStatus(UserProfileStatusActive::class), UserProfileStatus::TYPE);
 
         $qb->join(
 
@@ -326,7 +327,7 @@ final class CurrentUserProfile implements CurrentUserProfileInterface
 
      
         /* Кешируем результат ORM */
-        return $qb->enableCache('UserProfile', 3600)->getOneOrNullResult();
+        return $qb->enableCache('users-profile-user', 3600)->getOneOrNullResult();
 
     }
 }

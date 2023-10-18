@@ -39,7 +39,7 @@ use BaksDev\Users\Profile\UserProfile\Entity\Event\UserProfileEvent;
 use BaksDev\Users\Profile\UserProfile\Entity\Info\UserProfileInfo;
 use BaksDev\Users\Profile\UserProfile\Entity\Personal\UserProfilePersonal;
 use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
-use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatus;
+use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
 use BaksDev\Users\User\Type\Id\UserUid;
 use Symfony\Bundle\SecurityBundle\Security;
 

@@ -25,7 +25,7 @@ namespace BaksDev\Users\Profile\UserProfile\Repository\AllUserProfile;
 
 use BaksDev\Core\Form\Search\SearchDTO;
 use BaksDev\Core\Services\Paginator\Paginator;
-use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatus;
+use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
 
 interface AllUserProfileInterface
 {

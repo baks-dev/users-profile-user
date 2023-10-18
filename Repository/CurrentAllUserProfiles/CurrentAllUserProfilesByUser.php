@@ -25,8 +25,8 @@ namespace BaksDev\Users\Profile\UserProfile\Repository\CurrentAllUserProfiles;
 
 use BaksDev\Core\Doctrine\DBALQueryBuilder;
 use BaksDev\Users\Profile\UserProfile\Entity;
-use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatus;
-use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatusEnum;
+use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\UserProfileStatusActive;
+use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
 use BaksDev\Users\User\Type\Id\UserUid;
 
 final class CurrentAllUserProfilesByUser implements CurrentAllUserProfilesByUserInterface
@@ -66,7 +66,7 @@ final class CurrentAllUserProfilesByUser implements CurrentAllUserProfilesByUser
         );
 
         $qb->setParameter('usr', $usr, UserUid::TYPE);
-        $qb->setParameter('status', new UserProfileStatus(UserProfileStatusEnum::ACTIVE), UserProfileStatus::TYPE);
+        $qb->setParameter('status', new UserProfileStatus(UserProfileStatusActive::class), UserProfileStatus::TYPE);
 
         $qb->join(
             'userprofile',
@@ -89,7 +89,7 @@ final class CurrentAllUserProfilesByUser implements CurrentAllUserProfilesByUser
 
 
         /* Кешируем результат DBAL */
-        return $qb->enableCache('UserProfile', 86400)->fetchAllAssociative();
+        return $qb->enableCache('users-profile-user', 86400)->fetchAllAssociative();
 
     }
 }

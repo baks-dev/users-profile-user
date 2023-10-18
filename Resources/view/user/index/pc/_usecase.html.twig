@@ -31,7 +31,7 @@
 		{# Активировать #}
 		{% if item.active == false and item.status == 'act' %}
 			<li class="list-group-item d-flex justify-content-between bg-transparent border-0 text-truncate rounded-5">
-				<a href="{{ path('UserProfile:user.activate', {id: item.event }) }}"
+				<a href="{{ path('users-profile-user:user.activate', {id: item.event }) }}"
 						class="text-decoration-none text-dark w-100"
 						title="{{ 'btn.apply'|trans({}, 'core.btn') }}">
 					{{ 'btn.apply'|trans({}, 'core.btn') }}
@@ -41,7 +41,7 @@
 		
 		{# Редактировать #}
 		<li class="list-group-item d-flex justify-content-between bg-transparent border-0 text-truncate rounded-5">
-			<a href="{{ path('UserProfile:user.newedit.edit', {id: item.event }) }}"
+			<a href="{{ path('users-profile-user:user.newedit.edit', {id: item.event }) }}"
 					class="text-decoration-none text-dark w-100"
 					title="{{ 'btn.edit'|trans({}, 'core.btn') }}">
 				{{ 'btn.edit'|trans({}, 'core.btn') }}
@@ -50,7 +50,7 @@
 		
 		{# Удалить #}
 		<li class="list-group-item d-flex justify-content-between bg-transparent border-0 text-truncate rounded-5">
-			<a href="{{ path('UserProfile:user.delete', { id: item.event }) }}"
+			<a href="{{ path('users-profile-user:user.delete', { id: item.event }) }}"
 					class="text-decoration-none text-dark w-100 modal-link"
 					data-bs-toggle="modal"
 					data-bs-target="#modal"

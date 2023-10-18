@@ -24,8 +24,8 @@
 namespace BaksDev\Users\Profile\UserProfile\UseCase\Admin\Delete\Info;
 
 use BaksDev\Users\Profile\UserProfile\Entity\Info\InfoInterface;
-use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatus;
-use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatusEnum;
+use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\UserProfileStatusModeration;
+use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
 use BaksDev\Users\User\Type\Id\UserUid;
 
 final class InfoDTO implements InfoInterface
@@ -47,7 +47,7 @@ final class InfoDTO implements InfoInterface
 	
 
 	public function __construct() {
-        $this->status = new UserProfileStatus(UserProfileStatusEnum::MODERATION);
+        $this->status = new UserProfileStatus(UserProfileStatusModeration::class);
     }
 	
 	

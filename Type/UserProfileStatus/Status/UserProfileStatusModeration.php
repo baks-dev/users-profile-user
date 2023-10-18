@@ -21,29 +21,34 @@
  *  THE SOFTWARE.
  */
 
-namespace BaksDev\Users\Profile\UserProfile\Type\Status;
+declare(strict_types=1);
 
-use Twig\Environment;
-use Twig\Extension\AbstractExtension;
-use Twig\TwigFunction;
+namespace BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status;
 
-final class UserProfileStatusExtension extends AbstractExtension
+
+use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\Collection\UserProfileStatusInterface;
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
+
+#[AutoconfigureTag('baks.profile.status')]
+final class UserProfileStatusModeration implements UserProfileStatusInterface
 {
-	public function getFunctions() : array
-	{
-		return [
-			new TwigFunction(
-				UserProfileStatus::TYPE,
-				[$this, 'status'],
-				['needs_environment' => true, 'is_safe' => ['html']]
-			),
-		];
-	}
-	
-	
-	public function status(Environment $twig, ?string $status): string
-	{
-		return $twig->render('@UserProfileStatus/status.html.twig', ['status' => $status]);
-	}
-	
+    public const STATUS = 'mod';
+
+    public function getValue(): string
+    {
+        return self::STATUS;
+    }
+
+    /**
+     * Сортировка (чем меньше число - тем первым в итерации будет значение)
+     */
+    public static function sort(): int
+    {
+        return 2;
+    }
+
+    public static function equals(string $status): bool
+    {
+        return self::STATUS === $status;
+    }
 }

@@ -25,32 +25,10 @@ declare(strict_types=1);
 
 namespace BaksDev\Users\Profile\UserProfile\Messenger;
 
-use BaksDev\Core\Cache\AppCacheInterface;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
-final class UserProfileCacheClear
+final class UserProfileDispatch
 {
-
-    private AppCacheInterface $cache;
-    private LoggerInterface $messageDispatchLogger;
-
-    public function __construct(
-        AppCacheInterface $cache,
-        LoggerInterface $messageDispatchLogger,
-    ) {
-        $this->cache = $cache;
-        $this->messageDispatchLogger = $messageDispatchLogger;
-    }
-
-    public function __invoke(UserProfileMessage $message)
-	{
-		/* Чистим кеш модуля */
-		$cache = $this->cache->init('UserProfile');
-		$cache->clear();
-
-        $this->messageDispatchLogger->info('Очистили кеш UserProfile', [__FILE__.':'.__LINE__]);
-
-	}
+    public function __invoke(UserProfileMessage $message): void {}
 }

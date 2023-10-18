@@ -23,26 +23,27 @@
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatusExtension;
+use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatusExtension;
 use Symfony\Config\TwigConfig;
 
 return static function(TwigConfig $config, ContainerConfigurator $configurator) {
 	
-	$config->path(__DIR__.'/../view', 'UserProfile');
+	$config->path(__DIR__.'/../view', 'users-profile-user');
+    $config->path(__DIR__.'/../../Twig/UserProfileStatus', 'UserProfileStatus');
 
-	$services = $configurator->services()
-		->defaults()
-		->autowire()
-		->autoconfigure()
-	;
+//	$services = $configurator->services()
+//		->defaults()
+//		->autowire()
+//		->autoconfigure()
+//	;
 	
 	/* AccountStatusExtension */
-	$config->path(__DIR__.'/../../Type/Status', 'UserProfileStatus');
+
     
-	$services->set('baks_profile.status.twig.extension')
-		->class(UserProfileStatusExtension::class)
-		->tag('twig.extension')
-	;
+//	$services->set('baks_profile.status.twig.extension')
+//		->class(UserProfileStatusExtension::class)
+//		->tag('twig.extension')
+//	;
 
 };
 

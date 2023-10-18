@@ -62,7 +62,7 @@ final class SendProfileTelegrammHandler implements MessageHandlerInterface
             if($command->getHref())
             {
                 /*$url = $this->urlGenerator->generate(
-                  'UserProfile:admin.newedit.edit',
+                  'users-profile-user:admin.newedit.edit',
                   ['id' => $command->getEvent()],
                   UrlGeneratorInterface::ABSOLUTE_URL);*/
                 

@@ -25,7 +25,7 @@
                     {% if profiles|length == 1 %}
 
                             {% for profile in profiles %}
-                                <a href="{{ path('UserProfile:user.newedit.new', { id : profile.id }) }}"
+                                <a href="{{ path('users-profile-user:user.newedit.new', { id : profile.id }) }}"
                                    class="btn btn-danger"
                                 >
                                     Добавить профиль
@@ -39,7 +39,7 @@
                         {# Добавить профиль #}
                         <div class="btn-group ms-10">
                             {% for profile in profiles %}
-                                <a href="{{ path('UserProfile:user.newedit.new', { id : profile.id }) }}"
+                                <a href="{{ path('users-profile-user:user.newedit.new', { id : profile.id }) }}"
                                    class="btn btn-danger"
                                    data-bs-toggle="tooltip"
                                    data-bs-placement="bottom"

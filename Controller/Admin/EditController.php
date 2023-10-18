@@ -74,7 +74,7 @@ final class EditController extends AbstractController
                 $handle
             );
 
-            return $this->redirectToRoute('UserProfile:admin.index');
+            return $this->redirectToRoute('users-profile-user:admin.index');
 
         }
 

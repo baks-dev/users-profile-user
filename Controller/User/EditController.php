@@ -81,7 +81,7 @@ final class EditController extends AbstractController
                 $handle
             );
 
-            return $this->redirectToRoute('UserProfile:user.index');
+            return $this->redirectToRoute('users-profile-user:user.index');
         }
 
         return $this->render(['form' => $form->createView()]);

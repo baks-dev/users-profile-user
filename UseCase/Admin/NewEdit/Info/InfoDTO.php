@@ -24,8 +24,10 @@
 namespace BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Info;
 
 use BaksDev\Users\Profile\UserProfile\Entity\Info\UserProfileInfoInterface;
-use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatus;
-use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatusEnum;
+use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\UserProfileStatusActive;
+use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\UserProfileStatusBlock;
+use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\UserProfileStatusModeration;
+use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
 use BaksDev\Users\User\Type\Id\UserUid;
 
 /** @see UserProfileInfo */
@@ -51,7 +53,7 @@ final class InfoDTO implements UserProfileInfoInterface
 	
 	
 	public function __construct() {
-        $this->status = new UserProfileStatus(UserProfileStatusEnum::MODERATION);
+        $this->status = new UserProfileStatus(UserProfileStatusModeration::class);
     }
 	
 	
@@ -86,7 +88,7 @@ final class InfoDTO implements UserProfileInfoInterface
 	
 	public function setStatus(UserProfileStatus $status) : void
 	{
-		if($status->equals(UserProfileStatusEnum::ACTIVE))
+		if($status->equals(UserProfileStatusActive::class))
 		{
 			$this->active = true;
 		}
@@ -97,13 +99,13 @@ final class InfoDTO implements UserProfileInfoInterface
 	
 	public function isModeration() : bool
 	{
-		return $this->status->equals(UserProfileStatusEnum::MODERATION);
+		return $this->status->equals(UserProfileStatusModeration::class);
 	}
 	
 	
 	public function isBlock() : bool
 	{
-		return $this->status->equals(UserProfileStatusEnum::BLOCK);
+		return $this->status->equals(UserProfileStatusBlock::class);
 	}
 	
 	

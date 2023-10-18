@@ -18,7 +18,7 @@
 			</li>
 			
 			<li class="breadcrumb-item text-gray-600">
-				<a href="{{ path('Core:admin.homepage') }}"
+				<a href="{{ path('core:admin.homepage') }}"
 						class="text-gray-600 text-hover-primary">{{ 'breadcrumb.admin'|trans({}, 'messages') }}</a>
 			</li>
 		
@@ -33,20 +33,20 @@
 		{% if is_granted('ROLE_ADMIN') or is_granted('ROLE_USERPROFILE_NEW') %}
 			<div class="btn-group ms-10">
 				{% for profile in profiles %}
-					<a href="{{ path('UserProfile:admin.userprofile.newedit.new', { id : profile.id }) }}"
+					<a href="{{ path('users-profile-user:admin.userprofile.newedit.new', { id : profile.id }) }}"
 							class="btn btn-primary ">
 						{{ profile.name }}
 					</a>
 				{% endfor %}
 			</div>
-			{# <a href="{{ path('UserProfile:admin.userprofile.newedit.new, { id:  }') }}" class="btn btn-primary ">
+			{# <a href="{{ path('users-profile-user:admin.userprofile.newedit.new, { id:  }') }}" class="btn btn-primary ">
 				{{ 'btn.new'|trans({}, 'core.btn') }}
 			</a> #}
 		{% endif %}
 		
 		
 		{# <div class="btn-group ms-3">
-			<a href=" #}{# {{ path('User:admin.user.account.recyclebin.index') }} #}{# " class="btn btn-light">
+			<a href=" #}{# {{ path('users-user:admin.user.account.recyclebin.index') }} #}{# " class="btn btn-light">
 		#}{# Корзина #}{#
 		<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3"
 			 viewBox="0 0 16 16">

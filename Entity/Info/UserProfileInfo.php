@@ -26,8 +26,9 @@ namespace BaksDev\Users\Profile\UserProfile\Entity\Info;
 use BaksDev\Core\Entity\EntityState;
 use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
-use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatus;
-use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatusEnum;
+use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\UserProfileStatusActive;
+use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\UserProfileStatusModeration;
+use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
 use BaksDev\Users\User\Entity\User;
 use BaksDev\Users\User\Type\Id\UserUid;
 use Doctrine\DBAL\Types\Types;
@@ -84,7 +85,7 @@ class UserProfileInfo extends EntityState
     public function __construct(UserProfileUid|UserProfile $profile)
     {
         $this->profile = $profile instanceof UserProfile ? $profile->getId() : $profile;
-        $this->status = new UserProfileStatus(UserProfileStatusEnum::MODERATION);
+        $this->status = new UserProfileStatus(UserProfileStatusModeration::class);
     }
 
     public function __toString(): string
@@ -111,7 +112,7 @@ class UserProfileInfo extends EntityState
 
     public function isNotStatusActive(): bool
     {
-        return !$this->status->equals(UserProfileStatusEnum::ACTIVE);
+        return !$this->status->equals(UserProfileStatusActive::class);
     }
 
     public function getDto($dto): mixed

@@ -24,8 +24,8 @@
 namespace BaksDev\Users\Profile\UserProfile\UseCase\User\Delete\Info;
 
 use BaksDev\Users\Profile\UserProfile\Entity\Info\UserProfileInfoInterface;
-use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatus;
-use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatusEnum;
+use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\UserProfileStatusBlock;
+use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
 use BaksDev\Users\User\Type\Id\UserUid;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -48,7 +48,7 @@ final class InfoDTO implements UserProfileInfoInterface
 	
 	public function __construct()
 	{
-		$this->status = new UserProfileStatus(UserProfileStatusEnum::DELETE);
+		$this->status = new UserProfileStatus(UserProfileStatusBlock::class);
 		$this->active = false;
 	}
 	

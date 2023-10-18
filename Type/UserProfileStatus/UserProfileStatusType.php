@@ -21,22 +21,35 @@
  *  THE SOFTWARE.
  */
 
-namespace Symfony\Component\DependencyInjection\Loader\Configurator;
+namespace BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus;
 
-return static function(ContainerConfigurator $configurator) {
+use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\DBAL\Types\StringType;
 
-    $services = $configurator->services()
-        ->defaults()
-        ->autowire()
-        ->autoconfigure();
+final class UserProfileStatusType extends StringType
+{
+	
+	public function convertToDatabaseValue($value, AbstractPlatform $platform): mixed
+	{
+		return (string) $value;
+	}
+	
+	
+	public function convertToPHPValue($value, AbstractPlatform $platform): mixed
+	{
+		return new UserProfileStatus($value);
+	}
+	
+	
+	public function getName(): string
+	{
+		return UserProfileStatus::TYPE;
+	}
 
-    $NAMESPACE = 'BaksDev\Users\Profile\UserProfile\\';
 
-    $MODULE = substr(__DIR__, 0, strpos(__DIR__, "Resources"));
-
-    $services->load($NAMESPACE, $MODULE)
-        ->exclude($MODULE.'{Entity,Resources,Type,*DTO.php,*Message.php}');
-
-    $services->load($NAMESPACE.'Type\UserProfileStatus\Status\\', $MODULE.'Type/UserProfileStatus/Status');
-
-};
+    public function requiresSQLCommentHint(AbstractPlatform $platform): bool
+    {
+        return true;
+    }
+	
+}

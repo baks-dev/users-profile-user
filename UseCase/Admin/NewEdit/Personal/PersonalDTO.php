@@ -24,7 +24,7 @@
 namespace BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Personal;
 
 use BaksDev\Reference\Gender\Type\Gender;
-use BaksDev\Reference\Gender\Type\GenderEnum;
+use BaksDev\Reference\Gender\Type\Genders\GenderMen;
 use BaksDev\Users\Profile\UserProfile\Entity\Personal\UserProfilePersonalInterface;
 use DateTimeImmutable;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -44,7 +44,7 @@ final class PersonalDTO implements UserProfilePersonalInterface
 	private ?string $location = null;
 	
 	
-	public function __construct() { $this->gender = new Gender(GenderEnum::MEN); }
+	public function __construct() { $this->gender = new Gender(GenderMen::class); }
 	
 	
 	/** Никнейм пользователя */

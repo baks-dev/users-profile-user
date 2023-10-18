@@ -14,7 +14,7 @@
 		{% if  is_granted('ROLE_ADMIN') or is_granted('ROLE_USERPROFILE_EDIT') %}
 			
 			<li>
-				<a href="{{ path('UserProfile:admin.newedit.edit', { id: item.event }) }}"
+				<a href="{{ path('users-profile-user:admin.newedit.edit', { id: item.event }) }}"
 						class="dropdown-item">
 					{{ 'btn.edit'|trans({}, 'core.btn') }}
 				</a>
@@ -25,7 +25,7 @@
 		{# Удалить #}
 		{% if  is_granted('ROLE_ADMIN') or is_granted('ROLE_USERPROFILE_DELETE') %}
 			<li>
-				<a data-href="{{ path('UserProfile:admin.userprofile.delete', { id: item.event }) }}"
+				<a data-href="{{ path('users-profile-user:admin.userprofile.delete', { id: item.event }) }}"
 						class="dropdown-item modal-link"
 						data-bs-toggle="modal" data-bs-target="#modal"
 				>

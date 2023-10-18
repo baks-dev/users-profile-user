@@ -30,7 +30,8 @@ use BaksDev\Auth\Email\Messenger\Confirmation\ConfirmationAccountMessage;
 use BaksDev\Auth\Email\Repository\UserNew\UserNewInterface;
 use BaksDev\Users\Profile\TypeProfile\Type\Id\TypeProfileUid;
 use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
-use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatusEnum;
+use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\UserProfileStatusActive;
+use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
 use BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\Info\InfoDTO;
 use BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\UserProfileDTO;
 use BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\UserProfileHandler;
@@ -83,7 +84,7 @@ final class CreateUserProfileByRegistration
         $InfoDTO->activate();
         $InfoDTO->setUrl(uniqid('', false));
         $InfoDTO->setUsr($UserUid);
-        $InfoDTO->setStatus(UserProfileStatusEnum::ACTIVE);
+        $InfoDTO->setStatus(new UserProfileStatus(UserProfileStatusActive::class));
 
         $PersonalDTO = $UserProfileDTO->getPersonal();
         $PersonalDTO->setUsername($AccountEmail->getUserName());

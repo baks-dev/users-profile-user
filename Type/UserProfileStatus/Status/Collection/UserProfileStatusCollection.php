@@ -21,13 +21,35 @@
  *  THE SOFTWARE.
  */
 
-namespace BaksDev\Users\Profile\UserProfile\Type\Status;
+declare(strict_types=1);
 
-enum UserProfileStatusEnum : string
+namespace BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\Collection;
+
+use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
+
+final class UserProfileStatusCollection
 {
-	case MODERATION = 'mod';
-	case ACTIVE = 'act';
-	case BLOCK = 'ban';
-	case DELETE = 'del';
-	
+    private iterable $status;
+
+    public function __construct(
+        #[TaggedIterator('baks.profile.status', defaultPriorityMethod: 'sort')] iterable $status,
+    )
+    {
+        $this->status = $status;
+    }
+
+    /** Возвращает массив из значений */
+    public function cases(): array
+    {
+        $case = null;
+
+        foreach($this->status as $key => $status)
+        {
+            $case[$status::sort().$key] = new $status();
+        }
+
+        ksort($case);
+
+        return $case;
+    }
 }

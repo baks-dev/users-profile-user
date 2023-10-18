@@ -26,7 +26,8 @@ namespace BaksDev\Users\Profile\UserProfile\Repository\UsersChoiceForm;
 use BaksDev\Auth\Email\Entity\Account;
 use BaksDev\Auth\Email\Entity\Event\AccountEvent;
 use BaksDev\Auth\Email\Entity\Status\AccountStatus;
-use BaksDev\Auth\Email\Type\Status\AccountStatusEnum;
+use BaksDev\Auth\Email\Type\EmailStatus\EmailStatus;
+use BaksDev\Auth\Email\Type\EmailStatus\Status\EmailStatusActive;
 use BaksDev\Users\User\Entity\User;
 use BaksDev\Users\User\Type\Id\UserUid;
 use Doctrine\ORM\EntityManagerInterface;
@@ -35,13 +36,13 @@ final class UsersChoiceOptionalAccountEmail implements UsersChoiceOptionalAccoun
 {
     private EntityManagerInterface $entityManager;
 
-    private \BaksDev\Auth\Email\Type\Status\AccountStatus $status;
+    private EmailStatus $status;
 
 
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
-        $this->status = new \BaksDev\Auth\Email\Type\Status\AccountStatus(AccountStatusEnum::ACTIVE);
+        $this->status = new EmailStatus(EmailStatusActive::class);
     }
 
 
@@ -68,7 +69,7 @@ final class UsersChoiceOptionalAccountEmail implements UsersChoiceOptionalAccoun
             'account_status.event = account_event.id AND account_status.status = :status'
         );
 
-        $qb->setParameter('status', $this->status, \BaksDev\Auth\Email\Type\Status\AccountStatus::TYPE);
+        $qb->setParameter('status', $this->status, EmailStatus::TYPE);
 
         return $qb->getQuery()->getResult();
     }

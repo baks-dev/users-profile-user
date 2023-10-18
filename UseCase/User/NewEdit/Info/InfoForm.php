@@ -24,7 +24,7 @@
 namespace BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\Info;
 
 use BaksDev\Users\Profile\UserProfile\Repository\UsersChoiceForm\UsersChoiceInterface;
-use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatus;
+use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
 use BaksDev\Users\User\Type\Id\UserUid;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;

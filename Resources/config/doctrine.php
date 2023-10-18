@@ -29,8 +29,8 @@ use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUidType;
 use BaksDev\Users\Profile\UserProfile\Type\Settings\UserProfileSettingsIdentifier;
 use BaksDev\Users\Profile\UserProfile\Type\Settings\UserProfileSettingsType;
-use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatus;
-use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatusType;
+use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
+use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatusType;
 use Symfony\Config\DoctrineConfig;
 
 return static function(ContainerConfigurator $container, DoctrineConfig $doctrine) {
@@ -45,11 +45,11 @@ return static function(ContainerConfigurator $container, DoctrineConfig $doctrin
 
     $MODULE = substr(__DIR__, 0, strpos(__DIR__, "Resources"));
 
-    $emDefault->mapping('UserProfile')
+    $emDefault->mapping('users-profile-user')
 		->type('attribute')
 		->dir($MODULE.'Entity')
 		->isBundle(false)
 		->prefix('BaksDev\Users\Profile\UserProfile\Entity')
-		->alias('UserProfile')
+		->alias('users-profile-user')
 	;
 };

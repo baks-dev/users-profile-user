@@ -47,10 +47,10 @@ final class PersonalForm extends AbstractType
 			->add('gender', ChoiceType::class, [
 				'choices' => Gender::cases(),
 				'choice_value' => function(?Gender $gender) {
-					return $gender?->getValue();
+					return $gender?->getGenderValue();
 				},
 				'choice_label' => function(Gender $gender) {
-					return $gender->getName();
+					return $gender->getGenderValue();
 				},
 				
 				'label' => false,

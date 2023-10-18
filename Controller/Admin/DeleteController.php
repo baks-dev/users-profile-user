@@ -57,7 +57,7 @@ final class DeleteController extends AbstractController
         $Info->getDto($profile->getInfo());
 
         $form = $this->createForm(DeleteUserProfileForm::class, $profile, [
-            'action' => $this->generateUrl('UserProfile:admin.delete', ['id' => $profile->getEvent()]),
+            'action' => $this->generateUrl('users-profile-user:admin.delete', ['id' => $profile->getEvent()]),
         ]);
         $form->handleRequest($request);
 
@@ -68,13 +68,13 @@ final class DeleteController extends AbstractController
                 if ($handle) {
                     $this->addFlash('success', 'admin.success.delete', 'userprofile');
 
-                    return $this->redirectToRoute('UserProfile:admin.index');
+                    return $this->redirectToRoute('users-profile-user:admin.index');
                 }
             }
 
             $this->addFlash('danger', 'admin.danger.delete', 'userprofile');
 
-            return $this->redirectToRoute('UserProfile:admin.index');
+            return $this->redirectToRoute('users-profile-user:admin.index');
             // return $this->redirectToReferer();
         }
 

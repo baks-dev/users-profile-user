@@ -29,8 +29,8 @@ use BaksDev\Auth\Email\Type\Email\AccountEmail;
 use BaksDev\Core\Doctrine\DBALQueryBuilder;
 use BaksDev\Users\Profile\UserProfile\Entity as UserProfileEntity;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
-use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatus;
-use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatusEnum;
+use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\UserProfileStatusActive;
+use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 final class AdminUserProfile implements AdminUserProfileInterface
@@ -78,7 +78,7 @@ final class AdminUserProfile implements AdminUserProfileInterface
             profile_info.status = :profile_status AND 
             profile_info.active = true'
         )
-            ->setParameter('profile_status', new UserProfileStatus(UserProfileStatusEnum::ACTIVE), UserProfileStatus::TYPE);
+            ->setParameter('profile_status', new UserProfileStatus(UserProfileStatusActive::class), UserProfileStatus::TYPE);
 
 
         $qb->addSelect('profile.id'); /* ID профиля */

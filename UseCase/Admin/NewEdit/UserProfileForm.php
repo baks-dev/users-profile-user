@@ -87,7 +87,7 @@ final class UserProfileForm extends AbstractType
 					/** @var ValueDTO $value */
 					foreach($data->getValue() as $value)
 					{
-						/* Если поле пристуствует в профиле - не добавляем*/
+						/* Если поле присутствует в профиле - не добавляем*/
 						if($field->getField()->equals($value->getField()))
 						{
 							$value->updSection($field);

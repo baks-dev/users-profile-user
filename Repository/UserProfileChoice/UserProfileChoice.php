@@ -27,13 +27,13 @@ namespace BaksDev\Users\Profile\UserProfile\Repository\UserProfileChoice;
 
 
 use BaksDev\Auth\Email\Entity as AccountEntity;
-use BaksDev\Auth\Email\Type\Status\AccountStatus;
-use BaksDev\Auth\Email\Type\Status\AccountStatusEnum;
+use BaksDev\Auth\Email\Type\EmailStatus\EmailStatus;
+use BaksDev\Auth\Email\Type\EmailStatus\Status\EmailStatusActive;
 use BaksDev\Core\Doctrine\ORMQueryBuilder;
 use BaksDev\Users\Profile\UserProfile\Entity as UserProfileEntity;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
-use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatus;
-use BaksDev\Users\Profile\UserProfile\Type\Status\UserProfileStatusEnum;
+use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\UserProfileStatusActive;
+use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
 
 final class UserProfileChoice implements UserProfileChoiceInterface
 {
@@ -63,7 +63,7 @@ final class UserProfileChoice implements UserProfileChoiceInterface
             'WITH',
             'info.profile = user_profile.id AND info.status = :status');
 
-        $qb->setParameter('status', new UserProfileStatus(UserProfileStatusEnum::ACTIVE), UserProfileStatus::TYPE);
+        $qb->setParameter('status', new UserProfileStatus(UserProfileStatusActive::class), UserProfileStatus::TYPE);
 
         $qb->join(
             UserProfileEntity\Event\UserProfileEvent::class,
@@ -90,11 +90,11 @@ final class UserProfileChoice implements UserProfileChoiceInterface
             'WITH',
             'status.event = account.event AND status.status = :account_status');
 
-        $qb->setParameter('account_status', new AccountStatus(AccountStatusEnum::ACTIVE), AccountStatus::TYPE);
+        $qb->setParameter('account_status', new EmailStatus(EmailStatusActive::class), EmailStatus::TYPE);
 
 
         /* Кешируем результат ORM */
-        return $qb->enableCache('UserProfile', 86400)->getResult();
+        return $qb->enableCache('users-profile-user', 86400)->getResult();
 
     }
 }

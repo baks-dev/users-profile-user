@@ -1,7 +1,7 @@
 {
   "namespaces": [
     {
-      "namespace": "UserProfile",
+      "namespace": "users-profile-user",
       "path": "Resources/view"
     }
   ]

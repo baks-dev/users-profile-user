@@ -13,7 +13,7 @@
 		<div class="d-flex">
 			
 			<a href="{{ app.request.headers.get('referer') is null or app.request.uri == app.request.headers.get('referer') ?
-			path('ProfileType:admin.index') : app.request.headers.get('referer') }}"
+			path('users-profile-type:admin.index') : app.request.headers.get('referer') }}"
 					class="btn btn-light me-5">
 				{{ 'btn.cancel'|trans({}, 'messages') }}
 			</a>

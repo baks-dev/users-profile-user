@@ -21,22 +21,34 @@
  *  THE SOFTWARE.
  */
 
-namespace Symfony\Component\DependencyInjection\Loader\Configurator;
+declare(strict_types=1);
 
-return static function(ContainerConfigurator $configurator) {
+namespace BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status;
 
-    $services = $configurator->services()
-        ->defaults()
-        ->autowire()
-        ->autoconfigure();
 
-    $NAMESPACE = 'BaksDev\Users\Profile\UserProfile\\';
+use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\Collection\UserProfileStatusInterface;
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
-    $MODULE = substr(__DIR__, 0, strpos(__DIR__, "Resources"));
+#[AutoconfigureTag('baks.profile.status')]
+final class UserProfileStatusActive implements UserProfileStatusInterface
+{
+    public const STATUS = 'act';
 
-    $services->load($NAMESPACE, $MODULE)
-        ->exclude($MODULE.'{Entity,Resources,Type,*DTO.php,*Message.php}');
+    public function getValue(): string
+    {
+        return self::STATUS;
+    }
 
-    $services->load($NAMESPACE.'Type\UserProfileStatus\Status\\', $MODULE.'Type/UserProfileStatus/Status');
+    /**
+     * Сортировка (чем меньше число - тем первым в итерации будет значение)
+     */
+    public static function sort(): int
+    {
+        return 2;
+    }
 
-};
+    public static function equals(string $status): bool
+    {
+        return self::STATUS === $status;
+    }
+}

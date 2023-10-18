@@ -21,22 +21,30 @@
  *  THE SOFTWARE.
  */
 
-namespace Symfony\Component\DependencyInjection\Loader\Configurator;
+namespace BaksDev\Users\Profile\UserProfile\Twig\UserProfileStatus;
 
-return static function(ContainerConfigurator $configurator) {
+use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
+use Twig\Environment;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
 
-    $services = $configurator->services()
-        ->defaults()
-        ->autowire()
-        ->autoconfigure();
-
-    $NAMESPACE = 'BaksDev\Users\Profile\UserProfile\\';
-
-    $MODULE = substr(__DIR__, 0, strpos(__DIR__, "Resources"));
-
-    $services->load($NAMESPACE, $MODULE)
-        ->exclude($MODULE.'{Entity,Resources,Type,*DTO.php,*Message.php}');
-
-    $services->load($NAMESPACE.'Type\UserProfileStatus\Status\\', $MODULE.'Type/UserProfileStatus/Status');
-
-};
+final class UserProfileStatusExtension extends AbstractExtension
+{
+	public function getFunctions() : array
+	{
+		return [
+			new TwigFunction(
+				UserProfileStatus::TYPE,
+				[$this, 'status'],
+				['needs_environment' => true, 'is_safe' => ['html']]
+			),
+		];
+	}
+	
+	
+	public function status(Environment $twig, ?string $status): string
+	{
+		return $twig->render('@UserProfileStatus/status.html.twig', ['status' => $status]);
+	}
+	
+}

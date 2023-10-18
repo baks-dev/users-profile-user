@@ -21,43 +21,34 @@
  *  THE SOFTWARE.
  */
 
-namespace BaksDev\Users\Profile\UserProfile\Type\Status;
+declare(strict_types=1);
 
-use Doctrine\DBAL\Platforms\AbstractPlatform;
-use Doctrine\DBAL\Types\StringType;
+namespace BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status;
 
-final class UserProfileStatusType extends StringType
+
+use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\Collection\UserProfileStatusInterface;
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
+
+#[AutoconfigureTag('baks.profile.status')]
+final class UserProfileStatusBlock implements UserProfileStatusInterface
 {
-	
-	public function convertToDatabaseValue($value, AbstractPlatform $platform): mixed
-	{
-		return $value instanceof UserProfileStatus ? $value->getValue() : (new UserProfileStatus($value))->getValue();
-	}
-	
-	
-	public function convertToPHPValue($value, AbstractPlatform $platform): mixed
-	{
-		return $value ? new UserProfileStatus($value) : null;
-	}
-	
-	
-	public function getName(): string
-	{
-		return UserProfileStatus::TYPE;
-	}
-	
-	
-	public function requiresSQLCommentHint(AbstractPlatform $platform) : bool
-	{
-		return true;
-	}
-	
-	
-	public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
-	{
-		$column['length'] = 3;
-		
-		return $platform->getVarcharTypeDeclarationSQL($column);
-	}
-	
+    public const STATUS = 'ban';
+
+    public function getValue(): string
+    {
+        return self::STATUS;
+    }
+
+    /**
+     * Сортировка (чем меньше число - тем первым в итерации будет значение)
+     */
+    public static function sort(): int
+    {
+        return 2;
+    }
+
+    public static function equals(string $status): bool
+    {
+        return self::STATUS === $status;
+    }
 }
