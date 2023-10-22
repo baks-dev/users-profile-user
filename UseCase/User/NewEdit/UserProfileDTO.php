@@ -59,8 +59,7 @@ final class UserProfileDTO implements UserProfileEventInterface
 	
 	/** Сортировка */
 	private int $sort = 500;
-	
-	
+
 	public function __construct()
 	{
 		$this->avatar = new Avatar\AvatarDTO();
@@ -82,12 +81,6 @@ final class UserProfileDTO implements UserProfileEventInterface
 	
 	public function getType() : TypeProfileUid
 	{
-        /** Если профиль пользовательский - делаем активным */
-        if($this->type->equals(TypeProfileUid::userProfileType()))
-        {
-            $this->info->setStatus(UserProfileStatusActive::class);
-        }
-
 		return $this->type;
 	}
 	

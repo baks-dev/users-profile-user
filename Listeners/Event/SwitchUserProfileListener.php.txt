@@ -55,23 +55,14 @@ final class SwitchUserProfileListener
         $impersonator = $event->getToken()?->getUser();
 
 
-        dump( $user );
-        dd( $impersonator );
 
-
-//        dump('Current');
-//        dump($user);
-//        dump('Самозванец');
-//        dd($impersonator);
 
 
         //dd($this->tokenStorage->getToken());
 
         //throw new AccessDeniedException();
 
-//        dump($event);
-//
-//        dd('  ПЕРЕКЛЮЧАТЕЛЬ ');
+
     }
 
 }

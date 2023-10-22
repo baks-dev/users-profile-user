@@ -23,171 +23,49 @@
 
 namespace BaksDev\Users\Profile\UserProfile\UseCase\User\Delete;
 
-use BaksDev\Core\Messenger\MessageDispatchInterface;
+use BaksDev\Core\Entity\AbstractHandler;
 use BaksDev\Core\Type\Modify\ModifyActionEnum;
-use BaksDev\Users\Profile\UserProfile\Entity as EntityUserProfile;
+use BaksDev\Users\Profile\UserProfile\Entity\Event\UserProfileEvent;
+use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
 use BaksDev\Users\Profile\UserProfile\Messenger\UserProfileMessage;
-use Doctrine\ORM\EntityManagerInterface;
-use Psr\Log\LoggerInterface;
-use Symfony\Component\Messenger\MessageBusInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use DomainException;
 
-final class DeleteUserProfileHandler
+final class DeleteUserProfileHandler extends AbstractHandler
 {
-	private EntityManagerInterface $entityManager;
-	
-//	private ImageUploadInterface $imageUpload;
-//
-//	private UniqProfileUrlInterface $uniqProfileUrl;
-	
-	private TranslatorInterface $translator;
-	
-	private ValidatorInterface $validator;
-	
-	private LoggerInterface $logger;
-	
-	private MessageBusInterface $bus;
-    private MessageDispatchInterface $messageDispatch;
 
+    public function handle(
+        DeleteUserProfileDTO $command
+    ): string|UserProfile
+    {
+        /** Валидация DTO  */
+        $this->validatorCollection->add($command);
 
-    public function __construct(
-		EntityManagerInterface $entityManager,
-		TranslatorInterface $translator,
-		ValidatorInterface $validator,
-		LoggerInterface $logger,
-        MessageDispatchInterface $messageDispatch
+        $this->main = new UserProfile();
+        $this->event = new UserProfileEvent();
 
-	)
-	{
-		$this->entityManager = $entityManager;
-		$this->translator = $translator;
-		$this->validator = $validator;
-		$this->logger = $logger;
-        $this->messageDispatch = $messageDispatch;
-    }
-	
-	
-	public function handle(
-		EntityUserProfile\Event\UserProfileEventInterface $command,
-		//?UploadedFile $cover = null
-	): string|EntityUserProfile\UserProfile
-	{
-		
-		/* Валидация */
-		$errors = $this->validator->validate($command);
-		
-		if(count($errors) > 0)
-		{
-            /** Ошибка валидации */
-            $uniqid = uniqid('', false);
-            $this->logger->error(sprintf('%s: %s', $uniqid, $errors), [__FILE__.':'.__LINE__]);
-			
-			return $uniqid;
-		}
-		
-		$this->entityManager->clear();
-		
-		/* UserProfile */
-		
-		$UserProfile = $this->entityManager->getRepository(EntityUserProfile\UserProfile::class)->findOneBy(
-			['event' => $command->getEvent()]
-		);
-		
-		if(empty($UserProfile))
-		{
-			$uniqid = uniqid('', false);
-			$errorsString = sprintf(
-				'%s: Невозможно получить %s с id: %s',
-				self::class,
-				EntityUserProfile\UserProfile::class,
-				$command->getEvent()
-			);
-			$this->logger->error($uniqid.': '.$errorsString);
-			
-			return $uniqid;
-		}
-		
-		/* UserProfileInfo */
-		
-		$UserProfileInfo = $this->entityManager->getRepository(EntityUserProfile\Info\UserProfileInfo::class)
-			->find($UserProfile)
-		;
-		
-		if(empty($UserProfileInfo))
-		{
-			$uniqid = uniqid('', false);
-			$errorsString = sprintf(
-				'%s: Невозможно получить %s с id: %s',
-				self::class,
-				EntityUserProfile\Info\UserProfileInfo::class,
-				$UserProfile->getId()
-			);
-			$this->logger->error($uniqid.': '.$errorsString);
-			
-			return $uniqid;
-		}
-		
-		/* UserProfileEvent */
-		
-		$EventRepo = $this->entityManager->getRepository(EntityUserProfile\Event\UserProfileEvent::class)
-			->find($command->getEvent())
-		;
-		
-		if(empty($EventRepo))
-		{
-			$uniqid = uniqid('', false);
-			$errorsString = sprintf(
-				'%s: Невозможно получить %s с id: %s',
-				self::class,
-				EntityUserProfile\Event\UserProfileEvent::class,
-				$command->getEvent()
-			);
-			$this->logger->error($uniqid.': '.$errorsString);
-			
-			return $uniqid;
-		}
+        try
+        {
+            $this->preRemove($command);
+        }
+        catch(DomainException $errorUniqid)
+        {
+            return $errorUniqid;
+        }
 
-        $EventRepo->setEntity($command);
-        $EventRepo->setEntityManager($this->entityManager);
-        $Event = $EventRepo->cloneEntity();
-//        $this->entityManager->clear();
-//        $this->entityManager->persist($Event);
-		
-		/* Проверяем, что модификатор DELETE */
-		if(!$Event->isModifyActionEquals(ModifyActionEnum::DELETE))
-		{
-			$uniqid = uniqid('', false);
-			$errorsString = sprintf(
-				'%s: Модификатор не соответствует: %s',
-				self::class,
-				(ModifyActionEnum::DELETE)->name
-			);
-			$this->logger->error($uniqid.': '.$errorsString);
-			
-			return $uniqid;
-		}
-		
-		/* Видоизменяем (освобождаем) уникальную ссылку для профиля */
-		/** @var Info\InfoDTO $infoDTO */
-		$infoDTO = $command->getInfo();
-		$infoDTO->updateUrlUniq();
-		
+        /** Валидация всех объектов */
+        if($this->validatorCollection->isInvalid())
+        {
+            return $this->validatorCollection->getErrorUniqid();
+        }
 
-		/* Присваиваем событие INFO */
-		$UserProfileInfo->setEntity($infoDTO);
-		
-		/* Удаляем профиль */
-		$this->entityManager->remove($UserProfile);
-		
-		$this->entityManager->flush();
+        $this->entityManager->flush();
 
+        /* Отправляем сообщение в шину */
         $this->messageDispatch->dispatch(
-            message: new UserProfileMessage($UserProfile->getId(), $UserProfile->getEvent(), $command->getEvent()),
+            message: new UserProfileMessage($this->main->getId(), $this->main->getEvent(), $command->getEvent()),
             transport: 'users-profile-user'
         );
-		
-		return $UserProfile;
-	}
-	
+
+        return $this->main;
+    }
 }

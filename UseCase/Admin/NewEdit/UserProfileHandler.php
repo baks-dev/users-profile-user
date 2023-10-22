@@ -149,7 +149,7 @@ final class UserProfileHandler
 
             $UserProfile = new Entity\UserProfile();
             $this->entityManager->persist($UserProfile);
-            $Event->setProfile($UserProfile);
+            $Event->setMain($UserProfile);
 
             $UserProfileInfo = new Entity\Info\UserProfileInfo($UserProfile);
             $this->entityManager->persist($UserProfileInfo);

@@ -57,10 +57,6 @@ final class IndexController extends AbstractController
         $searchForm = $this->createForm(SearchForm::class, $search);
         $searchForm->handleRequest($request);
 
-        if ($searchForm->isSubmitted()) {
-            // dd($csrfTokenManager->isTokenValid('search'));
-        }
-
         // Получаем список
         $status = !$request->get('status') ? null : new UserProfileStatus($request->get('status'));
 

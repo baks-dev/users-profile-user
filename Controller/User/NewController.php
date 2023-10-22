@@ -26,7 +26,9 @@ namespace BaksDev\Users\Profile\UserProfile\Controller\User;
 use BaksDev\Core\Controller\AbstractController;
 use BaksDev\Core\Listeners\Event\Security\RoleSecurity;
 use BaksDev\Users\Profile\TypeProfile\Entity\TypeProfile;
+use BaksDev\Users\Profile\TypeProfile\Type\Id\TypeProfileUid;
 use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
+use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\UserProfileStatusActive;
 use BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\UserProfileDTO;
 use BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\UserProfileForm;
 use BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\UserProfileHandler;
@@ -51,6 +53,12 @@ final class NewController extends AbstractController
         $UserProfileDTO->setType($type->getId());
         $UserProfileDTO->getInfo()->setUsr($this->getUsr());
 
+        /** Если профиль пользовательский - делаем активным */
+        if($UserProfileDTO->getType()->equals(TypeProfileUid::userProfileType()))
+        {
+            $UserProfileDTO->getInfo()->setStatus(UserProfileStatusActive::class);
+        }
+
         // Форма
         $form = $this->createForm(UserProfileForm::class, $UserProfileDTO);
         $form->handleRequest($request);
@@ -61,7 +69,7 @@ final class NewController extends AbstractController
 
             $this->addFlash
             (
-                'admin.page.new',
+                'user.page.new',
                 $handle instanceof UserProfile ? 'user.success.new' : 'user.danger.new',
                 'user.user.profile',
                 $handle

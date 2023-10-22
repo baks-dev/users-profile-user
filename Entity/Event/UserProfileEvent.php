@@ -149,10 +149,13 @@ class UserProfileEvent extends EntityEvent
 	}
 	
 
-	public function setProfile(UserProfileUid|UserProfile $profile) : void
+	public function setMain(UserProfileUid|UserProfile $profile) : void
 	{
 		$this->profile = $profile instanceof UserProfile ? $profile->getId() : $profile;
 	}
+
+
+
 
 	public function getDto($dto): mixed
 	{

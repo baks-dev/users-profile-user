@@ -97,12 +97,10 @@ final class CurrentUserProfile implements CurrentUserProfileInterface
 
         }
 
-        //dump($authority );
 
         if($authority)
         {
-            //dump((string) $authority);
-            
+
             /* Пользователь */
             $qb->from(User::TABLE, 'users');
 
@@ -140,6 +138,9 @@ final class CurrentUserProfile implements CurrentUserProfileInterface
 
 
         $qb->setParameter('profile_status', new UserProfileStatus(UserProfileStatusActive::class), UserProfileStatus::TYPE);
+
+
+
 
 
         $qb->addSelect('profile.id AS user_profile_id'); /* ID профиля */
@@ -198,7 +199,7 @@ final class CurrentUserProfile implements CurrentUserProfileInterface
         );
 
         $qb->addSelect('profiletype_trans.name as profile_type');
-        $qb->join(
+        $qb->leftJoin(
             'profiletype_event',
             TypeProfileTrans::TABLE,
             'profiletype_trans',

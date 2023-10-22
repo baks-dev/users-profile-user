@@ -25,11 +25,14 @@ namespace BaksDev\Users\Profile\UserProfile\Controller\User;
 
 use BaksDev\Core\Controller\AbstractController;
 use BaksDev\Core\Listeners\Event\Security\RoleSecurity;
-use BaksDev\Users\Profile\UserProfile\Entity as EntityUserProfile;
+use BaksDev\Users\Profile\UserProfile\Entity\Event\UserProfileEvent;
+use BaksDev\Users\Profile\UserProfile\Entity\Info\UserProfileInfo;
+use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
 use BaksDev\Users\Profile\UserProfile\UseCase\User\Delete\DeleteUserProfileDTO;
 use BaksDev\Users\Profile\UserProfile\UseCase\User\Delete\DeleteUserProfileForm;
 use BaksDev\Users\Profile\UserProfile\UseCase\User\Delete\DeleteUserProfileHandler;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
@@ -42,31 +45,32 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 final class DeleteController extends AbstractController
 {
     #[Route(
-        '/user/profile/delete/{id}',
-        name: 'user.delete',
-        methods: ['POST', 'GET'],
+        '/user/profile/delete/{id}', name: 'user.delete', methods: ['POST', 'GET'],
         //condition: "request.headers.get('X-Requested-With') === 'XMLHttpRequest'",
     )]
     public function delete(
         Request $request,
-        EntityUserProfile\Event\UserProfileEvent $Event,
+        #[MapEntity] UserProfileEvent $Event,
         DeleteUserProfileHandler $aggregate,
         EntityManagerInterface $entityManager,
         //      TranslatorInterface $translator,
         //      TransName $getTransName,
         //      Handler $handler,
         //      Profile $profile,
-    ): Response {
-        $Info = $entityManager->getRepository(EntityUserProfile\Info\UserProfileInfo::class)
-            ->findOneBy(['profile' => $Event->getProfile()])
-        ;
+    ): Response
+    {
 
-        if (!$Info) {
+        $Info = $entityManager->getRepository(UserProfileInfo::class)
+            ->findOneBy(['profile' => $Event->getProfile()]);
+
+        if(!$Info)
+        {
             throw new NotFoundHttpException();
         }
 
         // НЕ является владельцем профиля
-        if (!$Info->isProfileOwnedUser($this->getUsr())) {
+        if(!$Info->isProfileOwnedUser($this->getUsr()))
+        {
             throw new AccessDeniedException();
         }
 
@@ -80,25 +84,26 @@ final class DeleteController extends AbstractController
         ]);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid() && $form->has('delete')) {
-            $UserProfile = $aggregate->handle($profile);
-            if ($UserProfile instanceof EntityUserProfile\UserProfile) {
-                $this->addFlash('user.form.delete.header', 'user.success.delete', 'user.user.profile');
+        if($form->isSubmitted() && $form->isValid() && $form->has('delete'))
+        {
+            $handle = $aggregate->handle($profile);
 
-                return $this->redirectToRoute('users-profile-user:admin.index');
-            }
+            $this->addFlash
+            (
+                'admin.page.delete',
+                $handle instanceof UserProfile ? 'user.success.delete' : 'user.danger.delete',
+                'user.user.profile',
+                $handle
+            );
 
-            $this->addFlash('user.form.delete.header', 'user.danger.delete', 'user.user.profile', $UserProfile);
-
-            return $this->redirectToRoute('users-profile-user:user.index', status: 400);
+            return $this->redirectToRoute('users-profile-user:user.index');
         }
 
         return $this->render(
             [
                 'form' => $form->createView(),
                 'name' => $Event->getNameUserProfile(), // название согласно локали
-            ],
-            'content.html.twig'
+            ]
         );
     }
 }
