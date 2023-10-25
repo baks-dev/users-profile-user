@@ -44,7 +44,7 @@ final class UserProfileStatusModeration implements UserProfileStatusInterface
      */
     public static function sort(): int
     {
-        return 2;
+        return 200;
     }
 
     public static function equals(string $status): bool

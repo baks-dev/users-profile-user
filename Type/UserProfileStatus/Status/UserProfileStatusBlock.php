@@ -44,7 +44,7 @@ final class UserProfileStatusBlock implements UserProfileStatusInterface
      */
     public static function sort(): int
     {
-        return 2;
+        return 300;
     }
 
     public static function equals(string $status): bool

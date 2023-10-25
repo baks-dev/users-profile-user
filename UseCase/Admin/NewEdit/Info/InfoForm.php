@@ -72,8 +72,9 @@ final class InfoForm extends AbstractType
 				'attr' => ['min' => 0, 'max' => 99],
 			]
 		);
-		
-		
+
+
+
 		$builder
 			->add('status', ChoiceType::class, [
 				'choices' => UserProfileStatus::cases(),
