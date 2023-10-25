@@ -56,32 +56,34 @@ final class AdminUserProfile implements AdminUserProfileInterface
     {
         $qb = $this->DBALQueryBuilder->createQueryBuilder(self::class);
 
-        $qb->from(Account::TABLE, 'account');
-
-        $qb->join(
-            'account',
-            AccountEvent::TABLE,
-            'users_event',
-            '
-                users_event.id = account.event AND
-                users_event.email = :email
-            '
-        )
+        $qb
+            ->from(AccountEvent::TABLE, 'users_event')
+            ->where('users_event.email = :email')
             ->setParameter('email', new AccountEmail('admin@'.$this->HOST), AccountEmail::TYPE);
 
-
         $qb->join(
+            'users_event',
+            Account::TABLE,
+            'account',
+            '
+                account.event = users_event.id
+            '
+        );
+
+        $qb
+            ->addSelect('profile.id')
+            ->join(
             'users_event',
             UserProfileEntity\Info\UserProfileInfo::TABLE,
             'profile_info',
-            'profile_info.usr = users_event.account AND 
-            profile_info.status = :profile_status AND 
-            profile_info.active = true'
+            '
+                profile_info.usr = users_event.account AND 
+                profile_info.status = :profile_status AND 
+                profile_info.active = true
+            '
         )
             ->setParameter('profile_status', new UserProfileStatus(UserProfileStatusActive::class), UserProfileStatus::TYPE);
 
-
-        $qb->addSelect('profile.id'); /* ID профиля */
 
         $qb->join(
             'profile_info',
@@ -89,7 +91,6 @@ final class AdminUserProfile implements AdminUserProfileInterface
             'profile',
             'profile.id = profile_info.profile'
         );
-
 
         $profile = $qb->fetchOne();
 

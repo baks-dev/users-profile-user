@@ -66,7 +66,6 @@ final class UserProfileHandler extends AbstractHandler
         $this->main = new UserProfile();
         $this->event = new UserProfileEvent();
 
-
         try
         {
             $command->getEvent() ? $this->preUpdate($command) : $this->prePersist($command);
@@ -92,8 +91,6 @@ final class UserProfileHandler extends AbstractHandler
         /** @var Info\InfoDTO $infoDTO */
         $infoDTO = $command->getInfo();
 
-
-
         /* Проверяем на уникальность Адрес персональной страницы */
         $uniqProfileUrl = $this->uniqProfileUrl->exist($infoDTO->getUrl(), $UserProfileInfo->getProfile());
 
@@ -102,7 +99,7 @@ final class UserProfileHandler extends AbstractHandler
             $infoDTO->updateUrlUniq(); /* Обновляем URL на уникальный с префиксом */
         }
 
-        /* Деактивируем профиль пользователя, Если был ранеее активный */
+        /* Деактивируем профиль пользователя, Если был другой ранее активный */
         if($infoDTO->getActive() !== $UserProfileInfo->isNotActiveProfile())
         {
             $InfoActive = $this
@@ -135,6 +132,7 @@ final class UserProfileHandler extends AbstractHandler
         /* Присваиваем событие INFO */
         $UserProfileInfo->setEntity($infoDTO);
         $this->validatorCollection->add($UserProfileInfo);
+
 
         /* Валидация всех объектов */
         if($this->validatorCollection->isInvalid())

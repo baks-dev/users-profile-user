@@ -23,11 +23,11 @@
 
 namespace BaksDev\Users\Profile\UserProfile\UseCase\Admin\Delete\Modify;
 
-use BaksDev\Users\Profile\UserProfile\Entity\Modify\ModifyInterface;
-use App\System\Type\Modify\ModifyAction;
-use App\System\Type\Modify\ModifyActionEnum;
+use BaksDev\Core\Type\Modify\Modify\ModifyActionDelete;
+use BaksDev\Core\Type\Modify\ModifyAction;
+use BaksDev\Users\Profile\UserProfile\Entity\Modify\UserProfileModifyInterface;
 
-final class ModifyDTO implements ModifyInterface
+final class ModifyDTO implements UserProfileModifyInterface
 {
 	/** Модификатор */
 	private ModifyAction $action;
@@ -35,7 +35,7 @@ final class ModifyDTO implements ModifyInterface
 	
 	public function __construct()
 	{
-		$this->action = new ModifyAction(ModifyActionEnum::DELETE);
+		$this->action = new ModifyAction(ModifyActionDelete::class);
 	}
 	
 	

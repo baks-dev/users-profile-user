@@ -40,7 +40,7 @@ final class InfoDTO implements UserProfileInfoInterface
     private string $url;
 
     /** Текущий активный профиль, выбранный пользователем */
-    private bool $active = false;
+    private bool $active = true;
 
     /** Статус профиля (модерация, активен, заблокирован) */
     private UserProfileStatus $status;

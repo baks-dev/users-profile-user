@@ -23,69 +23,48 @@
 
 namespace BaksDev\Users\Profile\UserProfile\UseCase\Admin\Delete;
 
-use BaksDev\Users\Profile\UserProfile\Entity\Event\EventInterface;
-use BaksDev\Users\Profile\UserProfile\Type\Event\UserProfileEvent;
+use BaksDev\Users\Profile\UserProfile\Entity\Event\UserProfileEventInterface;
+use BaksDev\Users\Profile\UserProfile\Type\Event\UserProfileEventUid;
 
-final class DeleteUserProfileDTO implements EventInterface
+final class DeleteUserProfileDTO implements UserProfileEventInterface
 {
-	
-	/**
-	 * @var UserProfileEvent|null
-	 */
-	private ?UserProfileEvent $id = null;
+
+	private ?UserProfileEventUid $id = null;
 	
 	/** Тип профиля */
-	private \BaksDev\Users\Profile\UserProfile\UseCase\Admin\Delete\Info\InfoDTO $info;
+	private Info\InfoDTO $info;
 	
 	/**
 	 * Модификатор профиля пользователя
-	 *
-	 * @var \BaksDev\Users\Profile\UserProfile\UseCase\Admin\Delete\Modify\ModifyDTO
 	 */
-	private \BaksDev\Users\Profile\UserProfile\UseCase\Admin\Delete\Modify\ModifyDTO $modify;
+	private Modify\ModifyDTO $modify;
 	
 	
 	public function __construct()
 	{
-		$this->modify = new \BaksDev\Users\Profile\UserProfile\UseCase\Admin\Delete\Modify\ModifyDTO();
-		$this->info = new \BaksDev\Users\Profile\UserProfile\UseCase\Admin\Delete\Info\InfoDTO();
+		$this->modify = new Modify\ModifyDTO();
+		$this->info = new Info\InfoDTO();
 	}
 	
 	/* EVENT */
 	
-	/**
-	 * @return UserProfileEvent|null
-	 */
-	public function getEvent() : ?UserProfileEvent
+
+	public function getEvent() : ?UserProfileEventUid
 	{
 		return $this->id;
 	}
-	
-	
-	/**
-	 * @param UserProfileEvent $id
-	 *
-	 * @return void
-	 */
-	public function setId(UserProfileEvent $id) : void
+
+	public function setId(UserProfileEventUid $id) : void
 	{
 		$this->id = $id;
 	}
-	
-	
-	/**
-	 * @return \BaksDev\Users\Profile\UserProfile\UseCase\Admin\Delete\Info\InfoDTO
-	 */
-	public function getInfo() : \BaksDev\Users\Profile\UserProfile\UseCase\Admin\Delete\Info\InfoDTO
+
+	public function getInfo() : Info\InfoDTO
 	{
 		return $this->info;
 	}
-	
-	
-	/**
-	 * @param \BaksDev\Users\Profile\UserProfile\UseCase\Admin\Delete\Info\InfoDTO $info
-	 */
-	public function setInfo(\BaksDev\Users\Profile\UserProfile\UseCase\Admin\Delete\Info\InfoDTO $info) : void
+
+	public function setInfo(Info\InfoDTO $info) : void
 	{
 		$this->info = $info;
 	}
@@ -93,21 +72,11 @@ final class DeleteUserProfileDTO implements EventInterface
 	
 	/* Modify  */
 	
-	/**
-	 * @return \BaksDev\Users\Profile\UserProfile\UseCase\Admin\Delete\Modify\ModifyDTO
-	 */
-	public function getModify() : \BaksDev\Users\Profile\UserProfile\UseCase\Admin\Delete\Modify\ModifyDTO
+
+	public function getModify() : Modify\ModifyDTO
 	{
 		return $this->modify;
 	}
-	
-	
-	/**
-	 * @return \BaksDev\Users\Profile\UserProfile\UseCase\Admin\Delete\Modify\ModifyDTO
-	 */
-	public function getModifyClass() : \BaksDev\Users\Profile\UserProfile\UseCase\Admin\Delete\Modify\ModifyDTO
-	{
-		return new \BaksDev\Users\Profile\UserProfile\UseCase\Admin\Delete\Modify\ModifyDTO();
-	}
+
 	
 }

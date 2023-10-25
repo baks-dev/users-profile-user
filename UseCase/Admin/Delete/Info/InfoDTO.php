@@ -23,12 +23,13 @@
 
 namespace BaksDev\Users\Profile\UserProfile\UseCase\Admin\Delete\Info;
 
-use BaksDev\Users\Profile\UserProfile\Entity\Info\InfoInterface;
+
+use BaksDev\Users\Profile\UserProfile\Entity\Info\UserProfileInfoInterface;
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\UserProfileStatusModeration;
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
 use BaksDev\Users\User\Type\Id\UserUid;
 
-final class InfoDTO implements InfoInterface
+final class InfoDTO implements UserProfileInfoInterface
 {
 	/**
      * Пользователь, кому принадлежит профиль

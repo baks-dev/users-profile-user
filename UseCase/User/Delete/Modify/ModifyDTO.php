@@ -23,10 +23,12 @@
 
 namespace BaksDev\Users\Profile\UserProfile\UseCase\User\Delete\Modify;
 
+use BaksDev\Core\Type\Modify\Modify\ModifyActionDelete;
 use BaksDev\Users\Profile\UserProfile\Entity\Modify\ModifyInterface;
 use BaksDev\Users\Profile\UserProfile\Entity\Modify\UserProfileModifyInterface;
 use BaksDev\Core\Type\Modify\ModifyAction;
-use BaksDev\Core\Type\Modify\ModifyActionEnum;
+use BaksDev\Core\Type\Modify\Modify\ModifyActionNew;
+use BaksDev\Core\Type\Modify\Modify\ModifyActionUpdate;
 use Symfony\Component\Validator\Constraints as Assert;
 
 final class ModifyDTO implements UserProfileModifyInterface
@@ -38,7 +40,7 @@ final class ModifyDTO implements UserProfileModifyInterface
 	
 	public function __construct()
 	{
-		$this->action = new ModifyAction(ModifyActionEnum::DELETE);
+		$this->action = new ModifyAction(ModifyActionDelete::class);
 	}
 	
 	

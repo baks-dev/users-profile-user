@@ -24,7 +24,8 @@
 namespace BaksDev\Users\Profile\UserProfile\UseCase\User\Delete;
 
 use BaksDev\Core\Messenger\MessageDispatchInterface;
-use BaksDev\Core\Type\Modify\ModifyActionEnum;
+use BaksDev\Core\Type\Modify\Modify\ModifyActionNew;
+use BaksDev\Core\Type\Modify\Modify\ModifyActionUpdate;
 use BaksDev\Users\Profile\UserProfile\Entity as EntityUserProfile;
 use BaksDev\Users\Profile\UserProfile\Messenger\UserProfileMessage;
 use Doctrine\ORM\EntityManagerInterface;
@@ -155,13 +156,13 @@ final class DeleteUserProfileHandler
 //        $this->entityManager->persist($Event);
 		
 		/* Проверяем, что модификатор DELETE */
-		if(!$Event->isModifyActionEquals(ModifyActionEnum::DELETE))
+		if(!$Event->isModifyActionEquals(ModifyActionDelete::class))
 		{
 			$uniqid = uniqid('', false);
 			$errorsString = sprintf(
 				'%s: Модификатор не соответствует: %s',
 				self::class,
-				(ModifyActionEnum::DELETE)->name
+				(ModifyActionDelete::class)->name
 			);
 			$this->logger->error($uniqid.': '.$errorsString);
 			
