@@ -1,0 +1,125 @@
+<?php
+/*
+ *  Copyright 2023.  Baks.dev <admin@baks.dev>
+ *
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy
+ *  of this software and associated documentation files (the "Software"), to deal
+ *  in the Software without restriction, including without limitation the rights
+ *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *  copies of the Software, and to permit persons to whom the Software is furnished
+ *  to do so, subject to the following conditions:
+ *
+ *  The above copyright notice and this permission notice shall be included in all
+ *  copies or substantial portions of the Software.
+ *
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL THE
+ *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ *  THE SOFTWARE.
+ */
+
+namespace BaksDev\Users\Profile\UserProfile\Command\Upgrade;
+
+use BaksDev\Auth\Email\Repository\AccountEventActiveByEmail\AccountEventActiveByEmailInterface;
+use BaksDev\Auth\Email\Type\Email\AccountEmail;
+use BaksDev\Core\Command\Update\ProjectUpgradeInterface;
+use BaksDev\Core\Doctrine\ORMQueryBuilder;
+use BaksDev\Users\Profile\TypeProfile\Type\Id\TypeProfileUid;
+use BaksDev\Users\Profile\UserProfile\Entity\Event\UserProfileEvent;
+use BaksDev\Users\Profile\UserProfile\Entity\Info\UserProfileInfo;
+use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
+use BaksDev\Users\Profile\UserProfile\Repository\ExistUserProfileByUser\ExistUserProfileByUserInterface;
+use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
+use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\UserProfileStatusActive;
+use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
+use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Info\InfoDTO;
+use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\UserProfileDTO;
+use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\UserProfileHandler;
+use Doctrine\ORM\EntityManagerInterface;
+use DomainException;
+use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+
+#[AsCommand(
+    name: 'baks:users-profile-user:info',
+    description: 'Обновляет событиями сущность Info',
+)]
+#[AutoconfigureTag('baks.project.upgrade')]
+class UpgradeUserProfileInfoCommand extends Command implements ProjectUpgradeInterface
+{
+
+
+    private ORMQueryBuilder $ORMQueryBuilder;
+
+    public function __construct(
+        ORMQueryBuilder $ORMQueryBuilder
+    )
+    {
+        parent::__construct();
+
+        $this->ORMQueryBuilder = $ORMQueryBuilder;
+    }
+
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        $em = $this->ORMQueryBuilder->getEntityManager();
+
+        $qb = $this->ORMQueryBuilder->createQueryBuilder(self::class);
+
+        $qb
+            ->select('info')
+            ->from(UserProfileInfo::class, 'info');
+
+        $UserProfileInfo = $qb->getResult();
+
+        /** @var UserProfileInfo $info */
+        foreach($UserProfileInfo as $info)
+        {
+            if(!$info->getEvent())
+            {
+                $qbEvent = $this->ORMQueryBuilder->createQueryBuilder(self::class);
+
+                $qbEvent
+                    ->select('event')
+                    ->from(UserProfile::class, 'profile')
+                    ->where('profile.id = :profile')
+                    ->setParameter('profile', $info->getProfile(), UserProfileUid::TYPE);
+
+                $qbEvent
+                    ->join(
+                    UserProfileEvent::class,
+                    'event',
+                    'WITH',
+                    'event.id = profile.event'
+                );
+
+               $UserProfileEvent = $qbEvent->getOneOrNullResult();
+
+               if($UserProfileEvent)
+               {
+                   $info->setEvent($UserProfileEvent);
+               }
+            }
+
+        }
+
+        $em->flush();
+        $em->clear();
+
+        return Command::SUCCESS;
+    }
+
+    /** Чам выше число - тем первым в итерации будет значение */
+    public static function priority(): int
+    {
+        return 0;
+    }
+}
