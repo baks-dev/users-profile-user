@@ -28,12 +28,14 @@ use BaksDev\Core\Messenger\MessageDispatchInterface;
 use BaksDev\Core\Validator\ValidatorCollectionInterface;
 use BaksDev\Files\Resources\Upload\File\FileUploadInterface;
 use BaksDev\Files\Resources\Upload\Image\ImageUploadInterface;
+use BaksDev\Users\Profile\UserProfile\Entity\Avatar\UserProfileAvatar;
 use BaksDev\Users\Profile\UserProfile\Entity\Event\UserProfileEvent;
 use BaksDev\Users\Profile\UserProfile\Entity\Event\UserProfileEventInterface;
 use BaksDev\Users\Profile\UserProfile\Entity\Info\UserProfileInfo;
 use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
 use BaksDev\Users\Profile\UserProfile\Messenger\UserProfileMessage;
 use BaksDev\Users\Profile\UserProfile\Repository\UniqProfileUrl\UniqProfileUrlInterface;
+use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Avatar\AvatarDTO;
 use Doctrine\ORM\EntityManagerInterface;
 use DomainException;
 use Psr\Log\LoggerInterface;
@@ -57,9 +59,8 @@ final class UserProfileHandler extends AbstractHandler
         $this->uniqProfileUrl = $uniqProfileUrl;
     }
 
-    public function handle(UserProfileEventInterface $command,): string|UserProfile
+    public function handle(UserProfileEventInterface $command): string|UserProfile
     {
-
         /* Валидация DTO  */
         $this->validatorCollection->add($command);
 
@@ -76,12 +77,12 @@ final class UserProfileHandler extends AbstractHandler
         }
 
         $UserProfileInfo = $this->entityManager->getRepository(UserProfileInfo::class)->find(
-            $this->event->getProfile()
+            $this->event->getMain()
         );
 
         if(!$UserProfileInfo)
         {
-            $UserProfileInfo = new UserProfileInfo($this->event->getProfile());
+            $UserProfileInfo = new UserProfileInfo($this->event->getMain());
             $this->entityManager->persist($UserProfileInfo);
         }
 
@@ -99,33 +100,65 @@ final class UserProfileHandler extends AbstractHandler
             $infoDTO->updateUrlUniq(); /* Обновляем URL на уникальный с префиксом */
         }
 
-        /* Деактивируем профиль пользователя, Если был другой ранее активный */
-        if($infoDTO->getActive() !== $UserProfileInfo->isNotActiveProfile())
-        {
-            $InfoActive = $this
-                ->entityManager
-                ->getRepository(UserProfileInfo::class)
-                ->findOneBy(['usr' => $infoDTO->getUsr(), 'active' => true]);
 
-            /* Если у текущего пользователя имеется активный профиль - деактивируем */
-            if($InfoActive)
+
+        /* Если у текущего пользователя имеется активный профиль - деактивируем */
+        $InfoActive = $this->entityManager->getRepository(UserProfileInfo::class)
+            ->findBy(['usr' => $infoDTO->getUsr(), 'active' => true]);
+
+        if($InfoActive)
+        {
+            /** @var UserProfileInfo $deactivate */
+            foreach($InfoActive as $deactivate)
             {
-                $InfoActive->deactivate();
+                if($deactivate->getEvent() !== $command->getEvent())
+                {
+                    $deactivate->deactivate();
+                }
             }
         }
 
 
-        /* Загружаем файл аватарки профиля */
-        if(method_exists($command, 'getAvatar'))
-        {
-            /** @var Avatar\AvatarDTO $Avatar */
-            $Avatar = $command->getAvatar();
+//        /* Деактивируем профиль пользователя, Если был другой ранее активный */
+//        if($infoDTO->getActive() !== $UserProfileInfo->isNotActiveProfile())
+//        {
+//            $InfoActive = $this
+//                ->entityManager
+//                ->getRepository(UserProfileInfo::class)
+//                ->findOneBy(['usr' => $infoDTO->getUsr(), 'active' => true]);
+//
+//            /* Если у текущего пользователя имеется активный профиль - деактивируем */
+//            if($InfoActive)
+//            {
+//                $InfoActive->deactivate();
+//            }
+//        }
 
-            if($Avatar->file !== null)
-            {
-                $UserProfileAvatar = $this->event->getUploadAvatar();
-                $this->imageUpload->upload($Avatar->file, $UserProfileAvatar);
-            }
+
+//        /* Загружаем файл аватарки профиля */
+//        if(method_exists($command, 'getAvatar'))
+//        {
+//            /** @var Avatar\AvatarDTO $Avatar */
+//            $Avatar = $command->getAvatar();
+//
+//            if($Avatar->file !== null)
+//            {
+//                $UserProfileAvatar = $this->event->getUploadAvatar();
+//                $this->imageUpload->upload($Avatar->file, $UserProfileAvatar);
+//            }
+//        }
+
+
+        /* Загружаем файл аватарки профиля */
+
+        /** @var UserProfileAvatar $UserProfileAvatar */
+        $UserProfileAvatar = $this->event->getAvatar();
+        /** @var AvatarDTO $AvatarDTO */
+        $AvatarDTO = $UserProfileAvatar?->getEntityDto();
+
+        if($UserProfileAvatar && $AvatarDTO?->file !== null)
+        {
+            $this->imageUpload->upload($AvatarDTO->file, $UserProfileAvatar);
         }
 
 
@@ -139,6 +172,8 @@ final class UserProfileHandler extends AbstractHandler
         {
             return $this->validatorCollection->getErrorUniqid();
         }
+
+        //dd($this->event);
 
         $this->entityManager->flush();
 

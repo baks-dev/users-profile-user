@@ -28,6 +28,7 @@ use BaksDev\Users\Profile\UserProfile\Type\Event\UserProfileEventUid;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraints as Assert;
 
+/** @see UserProfileAvatar */
 final class AvatarDTO implements UserProfileAvatarInterface
 {
 	public ?File $file = null;

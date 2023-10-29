@@ -47,37 +47,24 @@ final class DeleteUserProfileDTO implements UserProfileEventInterface
 		$this->modify = new Modify\ModifyDTO();
 		$this->info = new Info\InfoDTO();
 	}
-	
-	
-	/* EVENT */
-	
+
 	public function getEvent() : ?UserProfileEventUid
 	{
 		return $this->id;
 	}
-	
-	
-	/* INFO */
+
 	public function getInfo() : Info\InfoDTO
 	{
 		return $this->info;
 	}
-	
-	
+
 	public function setInfo(Info\InfoDTO $info) : void
 	{
 		$this->info = $info;
 	}
-	
-	
-	/* MODIFY  */
-	
-	/**
-	 * @return Modify\ModifyDTO
-	 */
+
 	public function getModify() : Modify\ModifyDTO
 	{
 		return $this->modify;
 	}
-	
 }

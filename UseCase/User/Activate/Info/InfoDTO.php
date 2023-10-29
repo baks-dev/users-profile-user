@@ -51,8 +51,7 @@ final class InfoDTO implements UserProfileInfoInterface
 	{
 		return $this->usr;
 	}
-	
-	
+
 	/**
 	 * @return bool
 	 */

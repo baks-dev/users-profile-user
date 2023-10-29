@@ -1,37 +1,42 @@
 admin:
   page:
-    index: 'User profiles'
-    new: 'Добавить профиль пользователя'
-    edit: 'Редактировать профиль пользователя'
+    index: 'User Profiles'
+    new: 'Add user profile'
+    edit: 'Edit user profile'
   breadcrumb:
-    index: 'Профили пользователей'
-    edit: 'Редактировать профиль'
+    index: 'User Profiles'
+    edit: 'Edit profile'
   form:
     header:
-      administration: 'Администрирвоание'
-      basic: 'Основные настройки'
-      personal: 'Личные данные'
+      administration: 'Administration'
+      basic: 'Basic settings'
+      personal: 'Personal data'
     label:
       info:
-        user: 'Пользователь'
-        status: 'Статус модерации профиля'
-      birthday: 'Дата рождения'
-      location: 'Местоположение'
-      avatar: 'Принимаются только файлы изображений .png, .jpg, .jpeg и .webp'
-      username: 'Имя профиля'
-      url: 'URL Адрес профиля'
-      sort: 'Сортировка'
-      discount: 'Персональная скидка'
+        user: 'User'
+        status: 'Profile moderation status'
+      birthday: 'Date of birth'
+      location: 'Location'
+      avatar: 'Only .png, .jpg, .jpeg and .webp image files are accepted'
+      username: 'Profile name'
+      url: 'Profile URL'
+      sort: 'Sorting'
+      discount: 'Personal discount'
+
     placeholder:
       info:
-        user: 'Выберите пользователя из списка...'
+        user: 'Select a user from the list...'
+
+
   success:
-    update: 'Профиль успешно обновлен'
-    new: 'Профиль успешно добавлен'
-    delete: 'Профиль успешно удален'
+    update: 'Profile updated successfully'
+    new: 'Profile added successfully'
+    edit: 'Profile updated successfully'
+    delete: 'Profile successfully deleted'
+
+
   danger:
-    update: '%s: Ошибка при обновлении профиля'
-    new: '%s: Ошибка при добавлении профиля'
-    delete: '%s: Ошибка при удалении профиля'
-
-
+    update: '%s: Error updating profile'
+    new: '%s: Error adding profile'
+    edit: '%s: Error updating profile'
+    delete: '%s: Error deleting profile'

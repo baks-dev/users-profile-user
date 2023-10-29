@@ -28,6 +28,7 @@ use BaksDev\Core\Type\Modify\Modify\ModifyActionNew;
 use BaksDev\Core\Type\Modify\Modify\ModifyActionUpdate;
 use BaksDev\Users\Profile\TypeProfile\Type\Id\TypeProfileUid;
 use BaksDev\Users\Profile\UserProfile\Entity\Avatar\UserProfileAvatar;
+use BaksDev\Users\Profile\UserProfile\Entity\Info\UserProfileInfo;
 use BaksDev\Users\Profile\UserProfile\Entity\Modify\UserProfileModify;
 use BaksDev\Users\Profile\UserProfile\Entity\Personal\UserProfilePersonal;
 use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
@@ -68,7 +69,14 @@ class UserProfileEvent extends EntityEvent
     #[Assert\Uuid]
 	#[ORM\Column(type: UserProfileUid::TYPE)]
 	private ?UserProfileUid $profile = null;
-	
+
+    /**
+     * Info
+     */
+    #[ORM\OneToOne(mappedBy: 'event', targetEntity: UserProfileInfo::class, cascade: ['all'])]
+    private ?UserProfileInfo $info = null;
+
+
 	/**
      * Тип профиля
      */
@@ -114,12 +122,12 @@ class UserProfileEvent extends EntityEvent
     private UserProfileModify $modify;
 
 
-	public function __construct()
+    public function __construct()
 	{
 		$this->id = new UserProfileEventUid();
 		$this->modify = new UserProfileModify($this);
-		$this->value = new ArrayCollection();
-		
+		//$this->value = new ArrayCollection();
+        //$this->avatar = new UserProfileAvatar($this);
 	}
 
 	public function __clone()
@@ -138,7 +146,7 @@ class UserProfileEvent extends EntityEvent
 	}
 	
 	
-	public function getProfile() : ?UserProfileUid
+	public function getMain() : ?UserProfileUid
 	{
 		return $this->profile;
 	}
@@ -154,9 +162,6 @@ class UserProfileEvent extends EntityEvent
 	{
 		$this->profile = $profile instanceof UserProfile ? $profile->getId() : $profile;
 	}
-
-
-
 
 	public function getDto($dto): mixed
 	{
@@ -180,22 +185,33 @@ class UserProfileEvent extends EntityEvent
 		throw new InvalidArgumentException(sprintf('Class %s interface error', $dto::class));
 	}
 	
-	
-	public function isModifyActionEquals(ModifyActionEnum $action) : bool
-	{
-		return $this->modify->equals($action);
-	}
-	
-	
 	public function getUploadAvatar() : UserProfileAvatar
 	{
 		return $this->avatar ?: $this->avatar = new UserProfileAvatar($this);
 	}
-	
-	
+
 	public function getNameUserProfile() : ?string
 	{
 		return $this->personal->name();
 	}
-	
+
+    /**
+     * Info
+     */
+    public function getInfo(): UserProfileInfo
+    {
+        return $this->info;
+    }
+
+    /**
+     * Avatar
+     */
+    public function getAvatar(): ?UserProfileAvatar
+    {
+        return $this->avatar;
+    }
+
+
 }
+
+

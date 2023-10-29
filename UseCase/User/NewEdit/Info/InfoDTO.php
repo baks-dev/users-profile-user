@@ -29,25 +29,32 @@ use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\UserProfileS
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
 use BaksDev\Users\User\Entity\User;
 use BaksDev\Users\User\Type\Id\UserUid;
+use ReflectionProperty;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /** @see UserProfileInfo */
 final class InfoDTO implements UserProfileInfoInterface
 {
     /** Пользователь, кому принадлежит профиль */
+    #[Assert\NotBlank]
+    #[Assert\Uuid]
     private readonly UserUid $usr;
 
     /** Ссылка на профиль пользователя */
+    #[Assert\NotBlank]
     private string $url;
 
     /** Текущий активный профиль, выбранный пользователем */
-    private bool $active = true;
+    #[Assert\IsTrue]
+    private readonly bool $active;
 
     /** Статус профиля (модерация, активен, заблокирован) */
+    #[Assert\NotBlank]
     private UserProfileStatus $status;
-
 
     public function __construct()
     {
+        $this->active = true;
         $this->status = new UserProfileStatus(UserProfileStatusModeration::class);
     }
 
@@ -64,9 +71,11 @@ final class InfoDTO implements UserProfileInfoInterface
 
     public function setUsr(UserUid|User $usr): void
     {
-        $this->usr = $usr instanceof User ? $usr->getId() : $usr;
+        if(!(new ReflectionProperty(self::class, 'usr'))->isInitialized($this))
+        {
+            $this->usr = $usr instanceof User ? $usr->getId() : $usr;
+        }
     }
-
 
     /* STATUS */
     /* Статус после обновления всегда На модерации */
@@ -95,11 +104,11 @@ final class InfoDTO implements UserProfileInfoInterface
         return $this->active;
     }
 
-    public function activate(): self
-    {
-        $this->active = true;
-        return $this;
-    }
+//    public function activate(): self
+//    {
+//        $this->active = true;
+//        return $this;
+//    }
 
 
     /* URL */

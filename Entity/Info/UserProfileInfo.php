@@ -23,8 +23,11 @@
 
 namespace BaksDev\Users\Profile\UserProfile\Entity\Info;
 
+use BaksDev\Core\Entity\EntityReadonly;
 use BaksDev\Core\Entity\EntityState;
+use BaksDev\Users\Profile\UserProfile\Entity\Event\UserProfileEvent;
 use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
+use BaksDev\Users\Profile\UserProfile\Type\Event\UserProfileEventUid;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\UserProfileStatusActive;
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\UserProfileStatusModeration;
@@ -34,6 +37,7 @@ use BaksDev\Users\User\Type\Id\UserUid;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use InvalidArgumentException;
+use Symfony\Component\Validator\Constraints as Assert;
 
 // Неизменяемые данные UserProfile
 
@@ -41,20 +45,31 @@ use InvalidArgumentException;
 #[ORM\Table(name: 'users_profile_info')]
 #[ORM\Index(columns: ['usr'])]
 #[ORM\Index(columns: ['status', 'active'])]
-class UserProfileInfo extends EntityState
+class UserProfileInfo extends EntityReadonly
 {
     public const TABLE = 'users_profile_info';
 
     /**
      * ID UserProfile
      */
+    #[Assert\NotBlank]
+    #[Assert\Uuid]
     #[ORM\Id]
     #[ORM\Column(type: UserProfileUid::TYPE)]
     private ?UserProfileUid $profile;
 
+    /** ID события */
+    #[Assert\NotBlank]
+    #[Assert\Uuid]
+    #[ORM\OneToOne(inversedBy: 'info', targetEntity: UserProfileEvent::class)]
+    #[ORM\JoinColumn(name: 'event', referencedColumnName: 'id', nullable: true)]
+    private ?UserProfileEvent $event = null;
+
     /**
      * Пользователь, кому принадлежит профиль
      */
+    #[Assert\NotBlank]
+    #[Assert\Uuid]
     #[ORM\Column(type: UserUid::TYPE)]
     private UserUid $usr;
 
@@ -73,18 +88,21 @@ class UserProfileInfo extends EntityState
     /**
      * Статус профиля (модерация, активен, заблокирован)
      */
+    #[Assert\NotBlank]
     #[ORM\Column(type: UserProfileStatus::TYPE)]
     private UserProfileStatus $status;
 
     /**
      * Ссылка на профиль пользователя
      */
+    #[Assert\NotBlank]
     #[ORM\Column(type: Types::STRING, unique: true)]
     private string $url;
 
-    public function __construct(UserProfileUid|UserProfile $profile)
+    public function __construct(UserProfileEvent $event)
     {
-        $this->profile = $profile instanceof UserProfile ? $profile->getId() : $profile;
+        $this->event = $event;
+        $this->profile = $event->getMain();
         $this->status = new UserProfileStatus(UserProfileStatusModeration::class);
     }
 
@@ -96,6 +114,20 @@ class UserProfileInfo extends EntityState
     public function getProfile(): ?UserProfileUid
     {
         return $this->profile;
+    }
+
+    /**
+     * Event
+     */
+    public function getEvent(): ?UserProfileEventUid
+    {
+        return $this->event?->getId();
+    }
+
+    public function setEvent(UserProfileEvent $event): self
+    {
+        $this->event = $event;
+        return $this;
     }
 
     public function isProfileOwnedUser(UserUid|User $usr): bool
@@ -140,5 +172,10 @@ class UserProfileInfo extends EntityState
     public function deactivate(): void
     {
         $this->active = false;
+    }
+
+    public function updateUrlUniq() : void
+    {
+        $this->url = uniqid($this->url.'_', false);
     }
 }

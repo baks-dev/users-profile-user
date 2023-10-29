@@ -34,12 +34,10 @@ final class UserProfileStatusType extends StringType
 		return (string) $value;
 	}
 	
-	
 	public function convertToPHPValue($value, AbstractPlatform $platform): mixed
 	{
-		return new UserProfileStatus($value);
+        return !empty($value) ? new UserProfileStatus($value) : null;
 	}
-	
 	
 	public function getName(): string
 	{

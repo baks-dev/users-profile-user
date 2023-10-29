@@ -28,8 +28,10 @@ use BaksDev\Users\Profile\UserProfile\Entity\Event\UserProfileEventInterface;
 use BaksDev\Users\Profile\UserProfile\Type\Event\UserProfileEventUid;
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\UserProfileStatusActive;
 use Doctrine\Common\Collections\ArrayCollection;
+use ReflectionProperty;
 use Symfony\Component\Validator\Constraints as Assert;
 
+/** @see UserProfileEvent */
 final class UserProfileDTO implements UserProfileEventInterface
 {
 	
@@ -87,7 +89,10 @@ final class UserProfileDTO implements UserProfileEventInterface
 	
 	public function setType(TypeProfileUid $type) : void
 	{
-		$this->type = $type;
+        if(!(new ReflectionProperty(self::class, 'type'))->isInitialized($this))
+        {
+            $this->type = $type;
+        }
 	}
 	
 	
