@@ -34,6 +34,7 @@ use BaksDev\Users\Profile\UserProfile\Entity as UserProfileEntity;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\UserProfileStatusActive;
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
+use BaksDev\Users\User\Type\Id\UserUid;
 
 final class UserProfileChoice implements UserProfileChoiceInterface
 {
@@ -48,7 +49,7 @@ final class UserProfileChoice implements UserProfileChoiceInterface
     /**
      * Метод возвращает список идентификаторов профилей с username профиля в качестве атрибута
      */
-    public function getActiveUserProfile(?UserProfileUid $authority = null): ?array
+    public function getActiveUserProfile(UserUid $usr = null): ?array
     {
         $select = sprintf('new %s(user_profile.id, personal.username)', UserProfileUid::class);
 
@@ -64,6 +65,15 @@ final class UserProfileChoice implements UserProfileChoiceInterface
             'info.profile = user_profile.id AND info.status = :status');
 
         $qb->setParameter('status', new UserProfileStatus(UserProfileStatusActive::class), UserProfileStatus::TYPE);
+
+
+        if($usr)
+        {
+            $qb
+                ->where('info.usr = :usr')
+                ->setParameter('usr', $usr, UserUid::TYPE);
+        }
+
 
         $qb->join(
             UserProfileEntity\Event\UserProfileEvent::class,

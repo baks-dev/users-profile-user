@@ -24,6 +24,7 @@
 namespace BaksDev\Users\Profile\UserProfile\Repository\CurrentAllUserProfiles;
 
 use BaksDev\Core\Doctrine\DBALQueryBuilder;
+use BaksDev\Core\Doctrine\ORMQueryBuilder;
 use BaksDev\Users\Profile\UserProfile\Entity;
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\UserProfileStatusActive;
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
@@ -33,13 +34,16 @@ final class CurrentAllUserProfilesByUser implements CurrentAllUserProfilesByUser
 {
 
     private DBALQueryBuilder $DBALQueryBuilder;
+    private ORMQueryBuilder $ORMQueryBuilder;
 
     public function __construct(
         DBALQueryBuilder $DBALQueryBuilder,
+        ORMQueryBuilder $ORMQueryBuilder
     )
     {
 
         $this->DBALQueryBuilder = $DBALQueryBuilder;
+        $this->ORMQueryBuilder = $ORMQueryBuilder;
     }
 
     /** Список профилей пользователя в меню.
@@ -92,4 +96,9 @@ final class CurrentAllUserProfilesByUser implements CurrentAllUserProfilesByUser
         return $qb->enableCache('users-profile-user', 86400)->fetchAllAssociative();
 
     }
+
+
+
+
+
 }
