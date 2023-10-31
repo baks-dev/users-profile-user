@@ -45,7 +45,7 @@ final class InfoDTO implements UserProfileInfoInterface
 	private string $url;
 	
 	/** Статус модерации профиля */
-	private bool $active;
+	private bool $active = false;
 	
 	
 	/** Персональная скидка профиля */
@@ -76,7 +76,7 @@ final class InfoDTO implements UserProfileInfoInterface
 	{
 		return $this->active;
 	}
-
+	
 	
 	/** Статус модерации профиля */
 	
@@ -88,7 +88,11 @@ final class InfoDTO implements UserProfileInfoInterface
 	
 	public function setStatus(UserProfileStatus $status) : void
 	{
-		$this->active = $status->equals(UserProfileStatusActive::class);
+		if($status->equals(UserProfileStatusActive::class))
+		{
+			$this->active = true;
+		}
+		
 		$this->status = $status;
 	}
 	
@@ -123,7 +127,8 @@ final class InfoDTO implements UserProfileInfoInterface
 	{
 		$this->url = uniqid($this->url.'_', false);
 	}
-
+	
+	
 
 	public function getDiscount() : ?int
 	{

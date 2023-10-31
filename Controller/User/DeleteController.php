@@ -61,7 +61,7 @@ final class DeleteController extends AbstractController
     {
 
         $Info = $entityManager->getRepository(UserProfileInfo::class)
-            ->findOneBy(['profile' => $Event->getMain()]);
+            ->findOneBy(['profile' => $Event->getProfile()]);
 
         if(!$Info)
         {

@@ -42,7 +42,11 @@ final class ModifyDTO implements UserProfileModifyInterface
 	{
 		$this->action = new ModifyAction(ModifyActionDelete::class);
 	}
-
+	
+	
+	/**
+	 * @return ModifyAction
+	 */
 	public function getAction() : ModifyAction
 	{
 		return $this->action;

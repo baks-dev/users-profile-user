@@ -1,42 +1,37 @@
 admin:
   page:
-    index: 'User Profiles'
-    new: 'Add user profile'
-    edit: 'Edit user profile'
+    index: 'User profiles'
+    new: 'Добавить профиль пользователя'
+    edit: 'Редактировать профиль пользователя'
   breadcrumb:
-    index: 'User Profiles'
-    edit: 'Edit profile'
+    index: 'Профили пользователей'
+    edit: 'Редактировать профиль'
   form:
     header:
-      administration: 'Administration'
-      basic: 'Basic settings'
-      personal: 'Personal data'
+      administration: 'Администрирвоание'
+      basic: 'Основные настройки'
+      personal: 'Личные данные'
     label:
       info:
-        user: 'User'
-        status: 'Profile moderation status'
-      birthday: 'Date of birth'
-      location: 'Location'
-      avatar: 'Only .png, .jpg, .jpeg and .webp image files are accepted'
-      username: 'Profile name'
-      url: 'Profile URL'
-      sort: 'Sorting'
-      discount: 'Personal discount'
-
+        user: 'Пользователь'
+        status: 'Статус модерации профиля'
+      birthday: 'Дата рождения'
+      location: 'Местоположение'
+      avatar: 'Принимаются только файлы изображений .png, .jpg, .jpeg и .webp'
+      username: 'Имя профиля'
+      url: 'URL Адрес профиля'
+      sort: 'Сортировка'
+      discount: 'Персональная скидка'
     placeholder:
       info:
-        user: 'Select a user from the list...'
-
-
+        user: 'Выберите пользователя из списка...'
   success:
-    update: 'Profile updated successfully'
-    new: 'Profile added successfully'
-    edit: 'Profile updated successfully'
-    delete: 'Profile successfully deleted'
-
-
+    update: 'Профиль успешно обновлен'
+    new: 'Профиль успешно добавлен'
+    delete: 'Профиль успешно удален'
   danger:
-    update: '%s: Error updating profile'
-    new: '%s: Error adding profile'
-    edit: '%s: Error updating profile'
-    delete: '%s: Error deleting profile'
+    update: '%s: Ошибка при обновлении профиля'
+    new: '%s: Ошибка при добавлении профиля'
+    delete: '%s: Ошибка при удалении профиля'
+
+

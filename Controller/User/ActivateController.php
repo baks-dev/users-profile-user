@@ -28,7 +28,7 @@ use BaksDev\Core\Controller\AbstractController;
 use BaksDev\Core\Listeners\Event\Security\RoleSecurity;
 use BaksDev\Users\Profile\UserProfile\Entity as EntityUserProfile;
 use BaksDev\Users\Profile\UserProfile\UseCase\User\Activate\ActivateUserProfileDTO;
-use BaksDev\Users\Profile\UserProfile\UseCase\User\Activate\ActivateUserProfileHandler;
+use BaksDev\Users\Profile\UserProfile\UseCase\User\Activate\ActivateUserProfilehandler;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\HttpFoundation\Response;
@@ -43,7 +43,7 @@ final class ActivateController extends AbstractController
     #[Route('/user/profile/activate/{id}', name: 'user.activate', methods: ['GET'])]
     public function activate(
         #[MapEntity] EntityUserProfile\Event\UserProfileEvent $Event,
-        ActivateUserProfileHandler $handler,
+        ActivateUserProfilehandler $handler,
         EntityManagerInterface $entityManager,
         AppCacheInterface $cache
     ): Response
@@ -56,7 +56,7 @@ final class ActivateController extends AbstractController
         $Event->getDto($profile);
 
         $Info = $entityManager->getRepository(EntityUserProfile\Info\UserProfileInfo::class)
-            ->findOneBy(['profile' => $Event->getMain()]);
+            ->findOneBy(['profile' => $Event->getProfile()]);
 
         if(
             !$Info

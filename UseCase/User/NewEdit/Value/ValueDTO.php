@@ -32,8 +32,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 final class ValueDTO implements UserProfileValueInterface
 {
 	/** Связь на поле */
-    #[Assert\NotBlank]
-    #[Assert\Uuid]
 	private TypeProfileSectionFieldUid $field;
 	
 	/** Заполненное значение */

@@ -99,7 +99,8 @@ class UserProfileAvatar extends EntityEvent implements UploadEntityInterface
 	{
 		/* Если размер файла нулевой - не заполняем сущность */
 		if(
-			(empty($dto->file) && empty($dto->getName()))
+			(empty($dto->file) && empty($dto->getName())) ||
+			(!empty($dto->file) && empty($dto->getName()))
 		)
 		{
 			return false;

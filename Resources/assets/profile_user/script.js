@@ -16,7 +16,7 @@
  */
 
 /* Статус */
-//let $circle = document.getElementById('user_status_circle');
+let $circle = document.getElementById('user_status_circle');
 
 let $status = document.getElementById('user_profile_form_info_status');
 
@@ -51,16 +51,16 @@ let $idLocation = 'user_profile_form_personal_location';
 let $idLocationHelp = 'user_profile_form_personal_location_help';
 
 
-setTimeout(function GmRrLKUUEw() {
-
-    if (typeof readGeoMaps  === 'function') {
-        readGeoMaps($idLocation, $idLocationHelp);
-        return;
-    }
-
-    setTimeout(GmRrLKUUEw, 100);
-
-}, 100);
+// setTimeout(function GmRrLKUUEw() {
+//
+//     if (typeof readGeoMaps  === 'function') {
+//         readGeoMaps($idLocation, $idLocationHelp);
+//         return;
+//     }
+//
+//     setTimeout(GmRrLKUUEw, 100);
+//
+// }, 100);
 
 
 /* Определяем поле ввода Username */

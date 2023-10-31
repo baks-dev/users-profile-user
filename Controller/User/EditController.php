@@ -53,7 +53,7 @@ final class EditController extends AbstractController
     ): Response
     {
         $Info = $entityManager->getRepository(UserProfileInfo::class)
-            ->findOneBy(['profile' => $Event->getMain()]);
+            ->findOneBy(['profile' => $Event->getProfile()]);
 
         // НЕ является владельцем профиля
         if(!$Info?->isProfileOwnedUser($this->getUsr()))
@@ -75,7 +75,7 @@ final class EditController extends AbstractController
 
             $this->addFlash
             (
-                'user.page.edit',
+                'admin.page.edit',
                 $handle instanceof UserProfile ? 'user.success.edit' : 'user.danger.edit',
                 'user.user.profile',
                 $handle

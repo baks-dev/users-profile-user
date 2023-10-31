@@ -33,13 +33,15 @@ final class UserProfileSettingsType extends StringType
 	
 	public function convertToDatabaseValue($value, AbstractPlatform $platform): mixed
 	{
-		return (string) $value;
+		return $value instanceof UserProfileSettingsIdentifier ? $value->getValue() : $value;
 	}
+	
 	
 	public function convertToPHPValue($value, AbstractPlatform $platform): mixed
 	{
 		return !empty($value) ? new UserProfileSettingsIdentifier() : $value;
 	}
+	
 	
 	public function getName(): string
 	{

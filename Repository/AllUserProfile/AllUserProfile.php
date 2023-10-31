@@ -136,22 +136,10 @@ final class AllUserProfile implements AllUserProfileInterface
 
 		$qb->addSelect('userprofile_profile.username AS user_profile_username');
 		$qb->addSelect('userprofile_profile.location AS user_profile_location');
-
-
-		//$qb->addSelect('userprofile_avatar.name AS user_profile_avatar_name');
+		
+		$qb->addSelect('userprofile_avatar.name AS user_profile_avatar_name');
 		$qb->addSelect('userprofile_avatar.ext AS user_profile_avatar_ext');
 		$qb->addSelect('userprofile_avatar.cdn AS user_profile_avatar_cdn');
-
-
-        $qb->addSelect("
-			CASE
-			   WHEN userprofile_avatar.name IS NOT NULL THEN
-					CONCAT ( '/upload/".UserProfileAvatar::TABLE."' , '/', userprofile_avatar.name)
-			   ELSE NULL
-			END AS user_profile_avatar_name
-		"
-        );
-
 		
 		$qb->leftJoin(
 			'userprofile_event',

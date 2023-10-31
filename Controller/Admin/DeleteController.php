@@ -27,10 +27,8 @@ use BaksDev\Core\Controller\AbstractController;
 use BaksDev\Core\Listeners\Event\Security\RoleSecurity;
 use BaksDev\Users\Profile\UserProfile\Entity\Event\UserProfileEvent;
 use BaksDev\Users\Profile\UserProfile\Entity\Info\Info;
-use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
 use BaksDev\Users\Profile\UserProfile\UseCase\Admin\Delete\DeleteUserProfileDTO;
 use BaksDev\Users\Profile\UserProfile\UseCase\Admin\Delete\DeleteUserProfileForm;
-use BaksDev\Users\Profile\UserProfile\UseCase\Admin\Delete\DeleteUserProfileHandler;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -45,31 +43,39 @@ final class DeleteController extends AbstractController
     public function delete(
         Request $request,
         #[MapEntity] UserProfileEvent $Event,
-        DeleteUserProfileHandler $deleteUserProfileHandler
-    ): Response
-    {
+        // UserProfileAggregate $aggregate,
+        // EntityManagerInterface $entityManager,
+    ): Response {
+        return new Response('OK');
 
-        $DeleteUserProfileDTO = new DeleteUserProfileDTO();
-        $Event->getDto($DeleteUserProfileDTO);
+        $profile = new DeleteUserProfileDTO();
+        $Event->getDto($profile);
 
-        $form = $this->createForm(DeleteUserProfileForm::class, $DeleteUserProfileDTO, [
-            'action' => $this->generateUrl('users-profile-user:admin.delete', ['id' => $DeleteUserProfileDTO->getEvent()]),
+        $Info = $entityManager->getRepository(Info::class)
+            ->findOneBy(['profile' => $Event->getProfile()])
+        ;
+        $Info->getDto($profile->getInfo());
+
+        $form = $this->createForm(DeleteUserProfileForm::class, $profile, [
+            'action' => $this->generateUrl('users-profile-user:admin.delete', ['id' => $profile->getEvent()]),
         ]);
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid() && $form->has('delete'))
-        {
-            $handle = $deleteUserProfileHandler->handle($DeleteUserProfileDTO);
+        if ($form->isSubmitted() && $form->isValid()) {
+            if ($form->has('delete')) {
+                $handle = $aggregate->handle($profile);
 
-            $this->addFlash
-            (
-                'admin.page.delete',
-                $handle instanceof UserProfile ? 'admin.success.delete' : 'admin.danger.delete',
-                'admin.user.profile',
-                $handle
-            );
+                if ($handle) {
+                    $this->addFlash('success', 'admin.success.delete', 'userprofile');
+
+                    return $this->redirectToRoute('users-profile-user:admin.index');
+                }
+            }
+
+            $this->addFlash('danger', 'admin.danger.delete', 'userprofile');
 
             return $this->redirectToRoute('users-profile-user:admin.index');
+            // return $this->redirectToReferer();
         }
 
         return $this->render(

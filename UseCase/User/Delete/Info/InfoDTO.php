@@ -31,28 +31,17 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 final class InfoDTO implements UserProfileInfoInterface
 {
-	/**
-     * Статус активности профиля
-     */
+	/** Статус активности профиля */
 	#[Assert\NotBlank]
 	private readonly UserProfileStatus $status;
 	
-	/**
-     * Пользователь, кому принадлежит профиль
-     */
-    #[Assert\NotBlank]
-    #[Assert\Uuid]
+	/** Пользователь, кому принадлежит профиль */
 	private readonly UserUid $usr;
 	
-	/**
-     * Ссылка на профиль пользователя
-     */
-    #[Assert\NotBlank]
+	/** Ссылка на профиль пользователя */
 	private string $url;
 	
-	/**
-     * Текущий активный профиль, выбранный пользователем
-     */
+	/** Текущий активный профиль, выбранный пользователем */
 	#[Assert\IsFalse]
 	private readonly bool $active;
 	
@@ -62,27 +51,49 @@ final class InfoDTO implements UserProfileInfoInterface
 		$this->status = new UserProfileStatus(UserProfileStatusBlock::class);
 		$this->active = false;
 	}
-
+	
+	/* STATUS */
+	
+	/**
+	 * Обновляем статус на Модерация
+	 *
+	 * @return UserProfileStatus
+	 */
 	public function getStatus() : UserProfileStatus
 	{
 		return $this->status;
 	}
-
+	
+	
+	/* URL */
+	
+	/**
+	 * @return string
+	 */
 	public function getUrl(): string
 	{
-        /** всегда сбрасываем url */
-        $this->url = uniqid($this->url.'_', false);
 		return $this->url;
 	}
-
-
+	
+	
+	public function updateUrlUniq() : void
+	{
+		$this->url = uniqid($this->url.'_', false);
+	}
+	
+	
 	public function getUsr() : UserUid
 	{
 		return $this->usr;
 	}
-
+	
+	
+	/**
+	 * @return bool
+	 */
 	public function getActive() : bool
 	{
 		return $this->active;
 	}
+	
 }

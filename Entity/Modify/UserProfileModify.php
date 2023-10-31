@@ -134,7 +134,7 @@ class UserProfileModify extends EntityEvent
 	}
 	
 	
-	public function equals(mixed $action) : bool
+	public function equals(ModifyActionEnum $action) : bool
 	{
 		return $this->action->equals($action);
 	}
