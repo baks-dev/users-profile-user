@@ -42,7 +42,10 @@
                 </button>
 
                 {# Удалить #}
-                {{ form_widget(form.delete, {label: 'btn.delete'|trans({}, 'core.btn') }) }}
+                {{ form_widget(form.delete, { label: '
+				<span>'~ 'btn.delete'|trans({}, 'core.btn') ~'</span>
+				<span class="spinner-border spinner-border-sm vertical-middle d-none"></span>
+			'}) }}
             </div>
         </div>
     </div>

@@ -20,7 +20,7 @@
         <div class="modal-body">
             <h4>
                 {# Вы уверены, что желаете удалить #}
-                {{ 'admin.form.delete.h4'|trans }} "{{ name }}"?
+                {{ 'Вы действительно желаете удалить профиль "%name%"?'|trans({'%name%' : name}) }}
             </h4>
             <br>
             <p>
@@ -43,7 +43,10 @@
                 </button>
 
                 {# Удалить #}
-                {{ form_row(form.delete, {label: 'btn.delete'|trans({}, 'core.btn') }) }}
+                {{ form_widget(form.delete, { label: '
+				<span>'~ 'btn.delete'|trans({}, 'core.btn') ~'</span>
+				<span class="spinner-border spinner-border-sm vertical-middle d-none"></span>
+			'}) }}
             </div>
         </div>
     </div>
