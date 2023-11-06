@@ -54,7 +54,7 @@ final class EditController extends AbstractController
         $Event->getDto($UserProfileDTO);
 
         $Info = $entityManager->getRepository(UserProfileInfo::class)->findOneBy(
-            ['profile' => $Event->getProfile()]
+            ['profile' => $Event->getMain()]
         );
         $Info->getDto($UserProfileDTO->getInfo());
 

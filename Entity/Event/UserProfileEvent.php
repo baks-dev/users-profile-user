@@ -28,6 +28,7 @@ use BaksDev\Core\Type\Modify\Modify\ModifyActionNew;
 use BaksDev\Core\Type\Modify\Modify\ModifyActionUpdate;
 use BaksDev\Users\Profile\TypeProfile\Type\Id\TypeProfileUid;
 use BaksDev\Users\Profile\UserProfile\Entity\Avatar\UserProfileAvatar;
+use BaksDev\Users\Profile\UserProfile\Entity\Info\UserProfileInfo;
 use BaksDev\Users\Profile\UserProfile\Entity\Modify\UserProfileModify;
 use BaksDev\Users\Profile\UserProfile\Entity\Personal\UserProfilePersonal;
 use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
@@ -113,6 +114,13 @@ class UserProfileEvent extends EntityEvent
     #[ORM\OneToOne(mappedBy: 'event', targetEntity: UserProfileModify::class, cascade: ['all'])]
     private UserProfileModify $modify;
 
+    /**
+     * Персональные данные
+     */
+    #[Assert\Valid]
+    #[ORM\OneToOne(mappedBy: 'event', targetEntity: UserProfileInfo::class, cascade: ['all'])]
+    private ?UserProfileInfo $info = null;
+
 
 	public function __construct()
 	{
@@ -138,7 +146,7 @@ class UserProfileEvent extends EntityEvent
 	}
 	
 	
-	public function getProfile() : ?UserProfileUid
+	public function getMain() : ?UserProfileUid
 	{
 		return $this->profile;
 	}
@@ -148,14 +156,11 @@ class UserProfileEvent extends EntityEvent
 	{
 		return $this->type;
 	}
-	
 
 	public function setMain(UserProfileUid|UserProfile $profile) : void
 	{
 		$this->profile = $profile instanceof UserProfile ? $profile->getId() : $profile;
 	}
-
-
 
 
 	public function getDto($dto): mixed
@@ -181,10 +186,10 @@ class UserProfileEvent extends EntityEvent
 	}
 	
 	
-	public function isModifyActionEquals(ModifyActionEnum $action) : bool
-	{
-		return $this->modify->equals($action);
-	}
+//	public function isModifyActionEquals(ModifyActionEnum $action) : bool
+//	{
+//		return $this->modify->equals($action);
+//	}
 	
 	
 	public function getUploadAvatar() : UserProfileAvatar

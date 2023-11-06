@@ -53,6 +53,11 @@ class UserProfile
         $this->id = new UserProfileUid();
     }
 
+    public function __toString(): string
+    {
+        return (string) $this->id;
+    }
+
     public function getId(): UserProfileUid
     {
         return $this->id;

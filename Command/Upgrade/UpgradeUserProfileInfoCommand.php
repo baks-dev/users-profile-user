@@ -55,8 +55,6 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 #[AutoconfigureTag('baks.project.upgrade')]
 class UpgradeUserProfileInfoCommand extends Command implements ProjectUpgradeInterface
 {
-
-
     private ORMQueryBuilder $ORMQueryBuilder;
 
     public function __construct(

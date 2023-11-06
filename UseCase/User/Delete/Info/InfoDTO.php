@@ -36,9 +36,12 @@ final class InfoDTO implements UserProfileInfoInterface
 	private readonly UserProfileStatus $status;
 	
 	/** Пользователь, кому принадлежит профиль */
+    #[Assert\NotBlank]
+    #[Assert\Uuid]
 	private readonly UserUid $usr;
 	
 	/** Ссылка на профиль пользователя */
+    #[Assert\NotBlank]
 	private string $url;
 	
 	/** Текущий активный профиль, выбранный пользователем */
@@ -72,9 +75,9 @@ final class InfoDTO implements UserProfileInfoInterface
 	 */
 	public function getUrl(): string
 	{
+        $this->updateUrlUniq();
 		return $this->url;
 	}
-	
 	
 	public function updateUrlUniq() : void
 	{

@@ -25,35 +25,44 @@ namespace BaksDev\Users\Profile\UserProfile\UseCase\Admin\Delete\Info;
 
 
 use BaksDev\Users\Profile\UserProfile\Entity\Info\UserProfileInfoInterface;
+use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\UserProfileStatusBlock;
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\UserProfileStatusModeration;
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
 use BaksDev\Users\User\Type\Id\UserUid;
+use Symfony\Component\Validator\Constraints as Assert;
 
 final class InfoDTO implements UserProfileInfoInterface
 {
 	/**
      * Пользователь, кому принадлежит профиль
      */
-	private UserUid $usr;
+    #[Assert\Uuid]
+    #[Assert\NotBlank]
+	private readonly UserUid $usr;
 	
 	/**
      * Статус активности профиля
      */
-	private UserProfileStatus $status;
+    #[Assert\NotBlank]
+	private readonly UserProfileStatus $status;
+
+    /** Текущий активный профиль, выбранный пользователем */
+    #[Assert\IsFalse]
+    private readonly bool $active;
 	
 	/**
      * Ссылка на профиль пользователя
      */
+    #[Assert\NotBlank]
 	private string $url;
-	
 
 	public function __construct() {
-        $this->status = new UserProfileStatus(UserProfileStatusModeration::class);
+        $this->status = new UserProfileStatus(UserProfileStatusBlock::class);
+        $this->active = false;
     }
 	
 	
 	/* USER */
-
 	public function getUsr() : UserUid
 	{
 		return $this->usr;
@@ -75,12 +84,11 @@ final class InfoDTO implements UserProfileInfoInterface
 	{
 		return $this->status;
 	}
-	
-	
-	/* URL */
 
+	/* URL */
 	public function getUrl(): string
 	{
+        $this->updateUrlUniq();
 		return $this->url;
 	}
 
@@ -93,5 +101,4 @@ final class InfoDTO implements UserProfileInfoInterface
 	{
 		$this->url = uniqid($this->url.'_', false);
 	}
-	
 }

@@ -53,7 +53,7 @@ final class EditController extends AbstractController
     ): Response
     {
         $Info = $entityManager->getRepository(UserProfileInfo::class)
-            ->findOneBy(['profile' => $Event->getProfile()]);
+            ->findOneBy(['profile' => $Event->getMain()]);
 
         // НЕ является владельцем профиля
         if(!$Info?->isProfileOwnedUser($this->getUsr()))

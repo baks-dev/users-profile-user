@@ -26,7 +26,11 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DependencyInjection\Attribute\When;
 
-/** @group users-profile-user */
+/**
+ * @group users-profile-user
+ *
+ * @depends BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\Tests\UserNewUserProfileHandleTest::class
+ */
 #[When(env: 'test')]
 final class EditControllerTest extends WebTestCase
 {

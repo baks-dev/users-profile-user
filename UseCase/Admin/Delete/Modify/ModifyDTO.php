@@ -30,15 +30,13 @@ use BaksDev\Users\Profile\UserProfile\Entity\Modify\UserProfileModifyInterface;
 final class ModifyDTO implements UserProfileModifyInterface
 {
 	/** Модификатор */
-	private ModifyAction $action;
-	
-	
+	private readonly ModifyAction $action;
+
 	public function __construct()
 	{
 		$this->action = new ModifyAction(ModifyActionDelete::class);
 	}
-	
-	
+
 	/**
 	 * @return ModifyAction
 	 */
@@ -46,6 +44,6 @@ final class ModifyDTO implements UserProfileModifyInterface
 	{
 		return $this->action;
 	}
-	
+
 }
 

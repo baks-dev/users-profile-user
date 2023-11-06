@@ -57,6 +57,7 @@ use BaksDev\Wildberries\Products\UseCase\Barcode\NewEdit\Tests\NewHandleTest;
  * @group users-profile-user-usecase
  *
  * @depends BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\Tests\UserNewUserProfileHandleTest::class
+ * @depends BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\Tests\UserNewUserProfileHandleTest::class
  * @see UserNewUserProfileHandleTest
  */
 #[When(env: 'test')]

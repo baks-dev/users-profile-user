@@ -81,7 +81,6 @@ final class UserNewUserProfileHandleTest extends KernelTestCase
             $em->remove($remove);
         }
 
-
         $UserProfileEventCollection = $em->getRepository(UserProfileEvent::class)
             ->findBy(['profile' => UserProfileUid::TEST]);
 
@@ -97,8 +96,6 @@ final class UserNewUserProfileHandleTest extends KernelTestCase
     public function testUseCase(): void
     {
         $container = self::getContainer();
-
-
 
         $UserProfileDTO = new UserProfileDTO();
 
@@ -148,7 +145,6 @@ final class UserNewUserProfileHandleTest extends KernelTestCase
         $PersonalDTO->setLocation('coQltgAHLw');
         self::assertEquals('coQltgAHLw', $PersonalDTO->getLocation());
 
-
         /** @var ValidatorCollectionInterface $ValidatorCollection */
         $ValidatorCollection = $container->get(ValidatorCollectionInterface::class);
 
@@ -162,6 +158,7 @@ final class UserNewUserProfileHandleTest extends KernelTestCase
         /** @var UserProfileHandler $UserProfileHandler */
         $UserProfileHandler = self::getContainer()->get(UserProfileHandler::class);
         $handle = $UserProfileHandler->handle($UserProfileDTO);
+
 
         self::assertTrue(($handle instanceof UserProfile), $handle.': Ошибка UserProfile');
 

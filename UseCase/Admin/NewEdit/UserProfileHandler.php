@@ -74,7 +74,7 @@ final class UserProfileHandler extends AbstractHandler
         }
         catch(DomainException $errorUniqid)
         {
-            return $errorUniqid;
+            return $errorUniqid->getMessage();
         }
 
 
@@ -99,10 +99,7 @@ final class UserProfileHandler extends AbstractHandler
             /** @var UserProfileInfo $deactivate */
             foreach($InfoActive as $deactivate)
             {
-                if($deactivate->getEvent() !== $command->getEvent())
-                {
-                    $deactivate->deactivate();
-                }
+                $deactivate->deactivate();
             }
         }
 
@@ -136,7 +133,6 @@ final class UserProfileHandler extends AbstractHandler
 
         return $this->main;
     }
-
 
 
 }

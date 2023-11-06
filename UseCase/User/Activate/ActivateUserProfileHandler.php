@@ -30,16 +30,8 @@ use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
 use BaksDev\Users\Profile\UserProfile\Messenger\UserProfileMessage;
 use DomainException;
 
-//use BaksDev\Users\Profile\UserProfile\Entity;
-//use BaksDev\Users\Profile\UserProfile\Entity as EntityUserProfile;
-//use BaksDev\Users\Profile\UserProfile\Entity\Event\UserProfileEvent;
-//use BaksDev\Users\Profile\UserProfile\Entity\Info\UserProfileInfo;
-//use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
-//use BaksDev\Users\Profile\UserProfile\Messenger\UserProfileMessage;
-
 final class ActivateUserProfileHandler extends AbstractHandler
 {
-
     public function handle(ActivateUserProfileDTO $command): string|UserProfile
     {
         /* Валидация DTO  */
@@ -54,7 +46,7 @@ final class ActivateUserProfileHandler extends AbstractHandler
         }
         catch(DomainException $errorUniqid)
         {
-            return $errorUniqid;
+            return $errorUniqid->getMessage();
         }
 
         $UserProfileInfo = $this->entityManager->getRepository(UserProfileInfo::class)->find(

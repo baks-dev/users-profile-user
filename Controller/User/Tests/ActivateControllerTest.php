@@ -25,19 +25,23 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DependencyInjection\Attribute\When;
 
-/** @group users-profile-user */
+/**
+ * @group users-profile-user
+ *
+ * @depends BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\Tests\UserNewUserProfileHandleTest::class
+ */
 #[When(env: 'test')]
 final class ActivateControllerTest extends WebTestCase
 {
     private const URL = '/user/profile/activate/%s';
-
-    private static ?UserProfileEventUid $identifier;
-
-    public static function setUpBeforeClass(): void
-    {
-        $em = self::getContainer()->get(EntityManagerInterface::class);
-        self::$identifier = $em->getRepository(UserProfile::class)->findOneBy([], ['id' => 'DESC'])?->getEvent();
-    }
+//
+//    private static ?UserProfileEventUid $identifier;
+//
+//    public static function setUpBeforeClass(): void
+//    {
+//        $em = self::getContainer()->get(EntityManagerInterface::class);
+//        self::$identifier = $em->getRepository(UserProfile::class)->findOneBy([], ['id' => 'DESC'])?->getEvent();
+//    }
 
 
 
@@ -45,11 +49,11 @@ final class ActivateControllerTest extends WebTestCase
     /** Доступ по роли ROLE_ADMIN */
     public function testRoleAdminSuccessful(): void
     {
-        // Получаем одно из событий
-        $Event = self::$identifier;
-
-        if ($Event)
-        {
+//        // Получаем одно из событий
+//        $Event = self::$identifier;
+//
+//        if ($Event)
+//        {
             self::ensureKernelShutdown();
             $client = static::createClient();
 
@@ -60,24 +64,24 @@ final class ActivateControllerTest extends WebTestCase
                 $usr = TestUserAccount::getAdmin();
 
                 $client->loginUser($usr, 'user');
-                $client->request('GET', sprintf(self::URL, $Event->getValue()));
+                $client->request('GET', sprintf(self::URL, UserProfileEventUid::TEST));
 
                 self::assertResponseStatusCodeSame(403);
             }
-        } else
-        {
-            self::assertTrue(true);
-        }
+//        } else
+//        {
+//            self::assertTrue(true);
+//        }
     }
 
     /** Доступ по роли ROLE_USER */
     public function testRoleUserSuccessful(): void
     {
-        // Получаем одно из событий
-        $Event = self::$identifier;
-
-        if ($Event)
-        {
+//        // Получаем одно из событий
+//        $Event = self::$identifier;
+//
+//        if ($Event)
+//        {
             self::ensureKernelShutdown();
             $client = static::createClient();
 
@@ -87,25 +91,25 @@ final class ActivateControllerTest extends WebTestCase
 
                 $usr = TestUserAccount::getUsr();
                 $client->loginUser($usr, 'user');
-                $client->request('GET', sprintf(self::URL, $Event->getValue()));
+                $client->request('GET', sprintf(self::URL, UserProfileEventUid::TEST));
 
                 //self::assertResponseIsSuccessful();
                 self::assertResponseStatusCodeSame(403);
             }
-        } else
-        {
-            self::assertTrue(true);
-        }
+//        } else
+//        {
+//            self::assertTrue(true);
+//        }
     }
 
     /** Доступ закрыт без роли */
     public function testGuestDeny(): void
     {
-        // Получаем одно из событий
-        $Event = self::$identifier;
-
-        if ($Event)
-        {
+//        // Получаем одно из событий
+//        $Event = self::$identifier;
+//
+//        if ($Event)
+//        {
             self::ensureKernelShutdown();
             $client = static::createClient();
 
@@ -113,14 +117,14 @@ final class ActivateControllerTest extends WebTestCase
             {
                 $client->setServerParameter('HTTP_USER_AGENT', $device);
 
-                $client->request('GET', sprintf(self::URL, $Event->getValue()));
+                $client->request('GET', sprintf(self::URL, UserProfileEventUid::TEST));
 
                 // Full authentication is required to access this resource
                 self::assertResponseStatusCodeSame(401);
             }
-        } else
-        {
-            self::assertTrue(true);
-        }
+//        } else
+//        {
+//            self::assertTrue(true);
+//        }
     }
 }

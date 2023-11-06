@@ -72,16 +72,16 @@ final class UserProfileHandler extends AbstractHandler
         }
         catch(DomainException $errorUniqid)
         {
-            return $errorUniqid;
+            return $errorUniqid->getMessage();
         }
 
         $UserProfileInfo = $this->entityManager->getRepository(UserProfileInfo::class)->find(
-            $this->event->getProfile()
+            $this->event->getMain()
         );
 
         if(!$UserProfileInfo)
         {
-            $UserProfileInfo = new UserProfileInfo($this->event->getProfile());
+            $UserProfileInfo = new UserProfileInfo($this->event->getMain());
             $this->entityManager->persist($UserProfileInfo);
         }
 

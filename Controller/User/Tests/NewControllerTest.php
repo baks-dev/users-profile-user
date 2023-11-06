@@ -31,24 +31,24 @@ final class NewControllerTest extends WebTestCase
 {
     private const URL = '/user/profile/new/%s';
 
-    private static ?TypeProfileUid $identifier;
-
-    public static function setUpBeforeClass(): void
-    {
-        $em = self::getContainer()->get(EntityManagerInterface::class);
-        self::$identifier = $em->getRepository(TypeProfile::class)->findOneBy([], ['id' => 'DESC'])?->getId();
-    }
+//    private static ?TypeProfileUid $identifier;
+//
+//    public static function setUpBeforeClass(): void
+//    {
+//        $em = self::getContainer()->get(EntityManagerInterface::class);
+//        self::$identifier = $em->getRepository(TypeProfile::class)->findOneBy([], ['id' => 'DESC'])?->getId();
+//    }
 
 
 
     /** Доступ по роли ROLE_ADMIN */
     public function testRoleAdminSuccessful(): void
     {
-        // Получаем одно из событий
-        $Event = self::$identifier;
-
-        if ($Event)
-        {
+//        // Получаем одно из событий
+//        $Event = self::$identifier;
+//
+//        if ($Event)
+//        {
             self::ensureKernelShutdown();
             $client = static::createClient();
 
@@ -59,24 +59,24 @@ final class NewControllerTest extends WebTestCase
                 $usr = TestUserAccount::getAdmin();
 
                 $client->loginUser($usr, 'user');
-                $client->request('GET', sprintf(self::URL, $Event->getValue()));
+                $client->request('GET', sprintf(self::URL, TypeProfileUid::USER));
 
                 self::assertResponseIsSuccessful();
             }
-        } else
-        {
-            self::assertTrue(true);
-        }
+//        } else
+//        {
+//            self::assertTrue(true);
+//        }
     }
 
     /** Доступ закрыт по роли ROLE_USER */
     public function testRoleUserDeny(): void
     {
-        // Получаем одно из событий
-        $Event = self::$identifier;
-
-        if ($Event)
-        {
+//        // Получаем одно из событий
+//        $Event = self::$identifier;
+//
+//        if ($Event)
+//        {
             self::ensureKernelShutdown();
             $client = static::createClient();
 
@@ -86,24 +86,24 @@ final class NewControllerTest extends WebTestCase
 
                 $usr = TestUserAccount::getUsr();
                 $client->loginUser($usr, 'user');
-                $client->request('GET', sprintf(self::URL, $Event->getValue()));
+                $client->request('GET', sprintf(self::URL, TypeProfileUid::USER));
 
                 self::assertResponseIsSuccessful();
             }
-        } else
-        {
-            self::assertTrue(true);
-        }
+//        } else
+//        {
+//            self::assertTrue(true);
+//        }
     }
 
     /** Доступ по без роли */
     public function testGuestDeny(): void
     {
-        // Получаем одно из событий
-        $Event = self::$identifier;
-
-        if ($Event)
-        {
+//        // Получаем одно из событий
+//        $Event = self::$identifier;
+//
+//        if ($Event)
+//        {
             self::ensureKernelShutdown();
             $client = static::createClient();
 
@@ -111,14 +111,14 @@ final class NewControllerTest extends WebTestCase
             {
                 $client->setServerParameter('HTTP_USER_AGENT', $device);
 
-                $client->request('GET', sprintf(self::URL, $Event->getValue()));
+                $client->request('GET', sprintf(self::URL, TypeProfileUid::USER));
 
                 // Full authentication is required to access this resource
                 self::assertResponseStatusCodeSame(401);
             }
-        } else
-        {
-            self::assertTrue(true);
-        }
+//        } else
+//        {
+//            self::assertTrue(true);
+//        }
     }
 }
