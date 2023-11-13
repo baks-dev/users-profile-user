@@ -30,28 +30,63 @@ use Symfony\Component\Uid\AbstractUid;
 final class UserProfileUid extends Uid
 {
     public const TEST = '0188a9a8-7508-7b3e-a0a1-312e03f7bdd9';
-    
+
     public const TYPE = 'user_profile';
 
     private mixed $attr;
 
+    private mixed $option;
+
+    private mixed $property;
+
+    private mixed $characteristic;
+
     public function __construct(
         AbstractUid|string|null $value = null,
-        mixed $attr = null
+        mixed $attr = null,
+        mixed $option = null,
+        mixed $property = null,
+        mixed $characteristic = null,
     )
     {
         parent::__construct($value);
 
         $this->attr = $attr;
+        $this->option = $option;
+        $this->property = $property;
+        $this->characteristic = $characteristic;
     }
 
+    /**
+     * Attr
+     */
     public function getAttr(): mixed
     {
         return $this->attr;
     }
 
-    /*public function getName(): mixed
+    /**
+     * Option
+     */
+    public function getOption(): mixed
     {
-        return $this->attr;
-    }*/
+        return $this->option;
+    }
+
+    /**
+     * Property
+     */
+    public function getProperty(): mixed
+    {
+        return $this->property;
+    }
+
+    /**
+     * Characteristic
+     */
+    public function getCharacteristic(): mixed
+    {
+        return $this->characteristic;
+    }
+
 }

@@ -127,16 +127,10 @@
 	{% if is_granted('ROLE_ADMIN') %}
 
 		<td class="text-center">
-
-			<a href='{{ path(app.current_route, {'authority' : item.id }) }}'
-			   class="badge text-bg-light text-decoration-none"
-			>
+			{# Прейти в режим пользователя #}
+			<a href='{{ path('users-user:admin.switch', { id : item.usr  }) }}' class="badge text-bg-light text-decoration-none">
 				Авторизоваться
 			</a>
-
-			{# Прейти в режим пользователя #}
-			{#<a href='{{ path('core:user.homepage', {'authority' : item.usr }) }}'
-					class="badge bg-light text-dark">Авторизоваться</a>#}
 		</td>
 	{% endif %}
 
