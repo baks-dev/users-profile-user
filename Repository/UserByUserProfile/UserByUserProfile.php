@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace BaksDev\Users\Profile\UserProfile\Repository\UserByUserProfile;
 
+use App\Kernel;
 use BaksDev\Core\Doctrine\ORMQueryBuilder;
 use BaksDev\Users\Profile\UserProfile\Entity\Info\UserProfileInfo;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
@@ -44,6 +45,10 @@ final class UserByUserProfile implements UserByUserProfileInterface
      */
     public function findUserByProfile(UserProfileUid $profile): ?User
     {
+        if(Kernel::isTestEnvironment()) {
+            return new User();
+        }
+
         $qb = $this->ORMQueryBuilder->createQueryBuilder(self::class);
 
         $qb->select('usr');

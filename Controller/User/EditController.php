@@ -75,7 +75,7 @@ final class EditController extends AbstractController
 
             $this->addFlash
             (
-                'admin.page.edit',
+                'user.page.edit',
                 $handle instanceof UserProfile ? 'user.success.edit' : 'user.danger.edit',
                 'user.user.profile',
                 $handle
