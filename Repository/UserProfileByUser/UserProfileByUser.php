@@ -192,10 +192,9 @@ final class UserProfileByUser implements UserProfileByUserInterface
         }
 
         $qb->orderBy('userprofile_event.sort', 'ASC');
-        $qb->addOrderBy('userprofile_event.id', 'ASC');
+        $qb->addOrderBy('userprofile_event.id', 'DESC');
 
         return $this->paginator->fetchAllAssociative($qb);
 
     }
-
 }

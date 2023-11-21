@@ -99,21 +99,6 @@ final class UserProfileHandler extends AbstractHandler
             $infoDTO->updateUrlUniq(); /* Обновляем URL на уникальный с префиксом */
         }
 
-        /* Деактивируем профиль пользователя, Если был другой ранее активный */
-        if($infoDTO->getActive() !== $UserProfileInfo->isNotActiveProfile())
-        {
-            $InfoActive = $this
-                ->entityManager
-                ->getRepository(UserProfileInfo::class)
-                ->findOneBy(['usr' => $infoDTO->getUsr(), 'active' => true]);
-
-            /* Если у текущего пользователя имеется активный профиль - деактивируем */
-            if($InfoActive)
-            {
-                $InfoActive->deactivate();
-            }
-        }
-
 
         /* Загружаем файл аватарки профиля */
         if(method_exists($command, 'getAvatar'))
@@ -128,10 +113,21 @@ final class UserProfileHandler extends AbstractHandler
             }
         }
 
-
         /* Присваиваем событие INFO */
         $UserProfileInfo->setEntity($infoDTO);
         $this->validatorCollection->add($UserProfileInfo);
+
+
+        /* Деактивируем профиль пользователя, Если был другой ранее активный */
+        $InfoActive = $this
+            ->entityManager
+            ->getRepository(UserProfileInfo::class)
+            ->findOneBy(['usr' => $infoDTO->getUsr(), 'active' => true]);
+
+        if($InfoActive && !$InfoActive->getProfile()?->equals($UserProfileInfo->getProfile()))
+        {
+            $InfoActive->deactivate();
+        }
 
 
         /* Валидация всех объектов */

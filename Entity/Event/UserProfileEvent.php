@@ -23,6 +23,7 @@
 
 namespace BaksDev\Users\Profile\UserProfile\Entity\Event;
 
+use App\Kernel;
 use BaksDev\Core\Entity\EntityEvent;
 use BaksDev\Core\Type\Modify\Modify\ModifyActionNew;
 use BaksDev\Core\Type\Modify\Modify\ModifyActionUpdate;
@@ -51,62 +52,62 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(columns: ['type'])]
 class UserProfileEvent extends EntityEvent
 {
-	public const TABLE = 'users_profile_event';
-	
-	/**
+    public const TABLE = 'users_profile_event';
+
+    /**
      * ID
      */
     #[Assert\NotBlank]
     #[Assert\Uuid]
-	#[ORM\Id]
-	#[ORM\Column(type: UserProfileEventUid::TYPE)]
-	private UserProfileEventUid $id;
-	
-	/**
+    #[ORM\Id]
+    #[ORM\Column(type: UserProfileEventUid::TYPE)]
+    private UserProfileEventUid $id;
+
+    /**
      * ID профиля пользователя
      */
     #[Assert\NotBlank]
     #[Assert\Uuid]
-	#[ORM\Column(type: UserProfileUid::TYPE)]
-	private ?UserProfileUid $profile = null;
-	
-	/**
+    #[ORM\Column(type: UserProfileUid::TYPE)]
+    private ?UserProfileUid $profile = null;
+
+    /**
      * Тип профиля
      */
     #[Assert\NotBlank]
     #[Assert\Uuid]
-	#[ORM\Column(type: TypeProfileUid::TYPE)]
-	private TypeProfileUid $type;
-	
-	/**
+    #[ORM\Column(type: TypeProfileUid::TYPE)]
+    private TypeProfileUid $type;
+
+    /**
      * Сортировка
      */
     #[Assert\NotBlank]
     #[Assert\Length(max: 3)]
     #[Assert\Range(max: 999)]
-	#[ORM\Column(type: Types::SMALLINT, options: ['default' => 500])]
-	private int $sort = 500;
-	
-	/**
+    #[ORM\Column(type: Types::SMALLINT, options: ['default' => 500])]
+    private int $sort = 500;
+
+    /**
      * Аватарка профиля
      */
     #[Assert\Valid]
-	#[ORM\OneToOne(mappedBy: 'event', targetEntity: UserProfileAvatar::class, cascade: ['all'])]
-	private ?UserProfileAvatar $avatar = null;
-	
-	/**
+    #[ORM\OneToOne(mappedBy: 'event', targetEntity: UserProfileAvatar::class, cascade: ['all'])]
+    private ?UserProfileAvatar $avatar = null;
+
+    /**
      * Персональные данные
      */
     #[Assert\Valid]
-	#[ORM\OneToOne(mappedBy: 'event', targetEntity: UserProfilePersonal::class, cascade: ['all'])]
-	private ?UserProfilePersonal $personal = null;
+    #[ORM\OneToOne(mappedBy: 'event', targetEntity: UserProfilePersonal::class, cascade: ['all'])]
+    private ?UserProfilePersonal $personal = null;
 
-	/**
+    /**
      * Значения профиля
      */
     #[Assert\Valid]
-	#[ORM\OneToMany(mappedBy: 'event', targetEntity: UserProfileValue::class, cascade: ['all'])]
-	private Collection $value;
+    #[ORM\OneToMany(mappedBy: 'event', targetEntity: UserProfileValue::class, cascade: ['all'])]
+    private Collection $value;
 
     /**
      * Модификатор
@@ -122,85 +123,84 @@ class UserProfileEvent extends EntityEvent
     private ?UserProfileInfo $info = null;
 
 
-	public function __construct()
-	{
-		$this->id = new UserProfileEventUid();
-		$this->modify = new UserProfileModify($this);
-		$this->value = new ArrayCollection();
-		
-	}
+    public function __construct()
+    {
+        $this->id = new UserProfileEventUid();
+        $this->modify = new UserProfileModify($this);
+        $this->value = new ArrayCollection();
+    }
 
-	public function __clone()
-	{
+    public function __clone()
+    {
         $this->id = clone $this->id;
-	}
+    }
 
     public function __toString(): string
     {
         return (string) $this->id;
     }
-	
-	public function getId() : UserProfileEventUid
-	{
-		return $this->id;
-	}
-	
-	
-	public function getMain() : ?UserProfileUid
-	{
-		return $this->profile;
-	}
-	
-	
-	public function getType() : TypeProfileUid
-	{
-		return $this->type;
-	}
 
-	public function setMain(UserProfileUid|UserProfile $profile) : void
-	{
-		$this->profile = $profile instanceof UserProfile ? $profile->getId() : $profile;
-	}
+    public function getId(): UserProfileEventUid
+    {
+        return $this->id;
+    }
 
 
-	public function getDto($dto): mixed
-	{
+    public function getMain(): ?UserProfileUid
+    {
+        return $this->profile;
+    }
+
+
+    public function getType(): TypeProfileUid
+    {
+        return $this->type;
+    }
+
+    public function setMain(UserProfileUid|UserProfile $profile): void
+    {
+        $this->profile = $profile instanceof UserProfile ? $profile->getId() : $profile;
+    }
+
+
+    public function getDto($dto): mixed
+    {
         $dto = is_string($dto) && class_exists($dto) ? new $dto() : $dto;
 
-		if($dto instanceof UserProfileEventInterface || $dto instanceof self)
-		{
-			return parent::getDto($dto);
-		}
-		
-		throw new InvalidArgumentException(sprintf('Class %s interface error', $dto::class));
-	}
+        if($dto instanceof UserProfileEventInterface || $dto instanceof self)
+        {
+            return parent::getDto($dto);
+        }
 
-	public function setEntity($dto): mixed
-	{
-		if($dto instanceof UserProfileEventInterface || $dto instanceof self)
-		{
-			return parent::setEntity($dto);
-		}
-		
-		throw new InvalidArgumentException(sprintf('Class %s interface error', $dto::class));
-	}
-	
-	
-//	public function isModifyActionEquals(ModifyActionEnum $action) : bool
-//	{
-//		return $this->modify->equals($action);
-//	}
-	
-	
-	public function getUploadAvatar() : UserProfileAvatar
-	{
-		return $this->avatar ?: $this->avatar = new UserProfileAvatar($this);
-	}
-	
-	
-	public function getNameUserProfile() : ?string
-	{
-		return $this->personal->name();
-	}
-	
+        throw new InvalidArgumentException(sprintf('Class %s interface error', $dto::class));
+    }
+
+    public function setEntity($dto): mixed
+    {
+        if($dto instanceof UserProfileEventInterface || $dto instanceof self)
+        {
+            return parent::setEntity($dto);
+        }
+
+        throw new InvalidArgumentException(sprintf('Class %s interface error', $dto::class));
+    }
+
+
+    //	public function isModifyActionEquals(ModifyActionEnum $action) : bool
+    //	{
+    //		return $this->modify->equals($action);
+    //	}
+
+
+    public function getUploadAvatar(): UserProfileAvatar
+    {
+        return $this->avatar ?: $this->avatar = new UserProfileAvatar($this);
+    }
+
+
+    public function getNameUserProfile(): ?string
+    {
+        return $this->personal->name();
+    }
+
 }

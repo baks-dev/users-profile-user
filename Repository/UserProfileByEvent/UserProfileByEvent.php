@@ -25,6 +25,8 @@ declare(strict_types=1);
 
 namespace BaksDev\Users\Profile\UserProfile\Repository\UserProfileByEvent;
 
+use App\Kernel;
+use BaksDev\Core\Entity\EntityTestGenerator;
 use BaksDev\Core\Type\Locale\Locale;
 use BaksDev\Users\Profile\TypeProfile\Entity\Section\Fields\Trans\TypeProfileSectionFieldTrans;
 use BaksDev\Users\Profile\TypeProfile\Entity\Section\Fields\TypeProfileSectionField;
@@ -47,6 +49,11 @@ final class UserProfileByEvent implements UserProfileByEventInterface
 
     public function findUserProfileEvent(UserProfileEventUid $event): ?UserProfileEvent
     {
+        if(Kernel::isTestEnvironment())
+        {
+            return EntityTestGenerator::get(UserProfileEvent::class);
+        }
+
         $qb = $this->entityManager->createQueryBuilder();
 
         $qb->select('event');
@@ -57,6 +64,9 @@ final class UserProfileByEvent implements UserProfileByEventInterface
 
         return $qb->getQuery()->getOneOrNullResult();
     }
+
+
+
 
     public function fetchUserProfileAssociative(UserProfileEventUid $event): ?array
     {

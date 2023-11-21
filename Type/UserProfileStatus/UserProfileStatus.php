@@ -24,6 +24,7 @@
 namespace BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus;
 
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\Collection\UserProfileStatusInterface;
+use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\UserProfileStatusActive;
 use InvalidArgumentException;
 
 /**
@@ -32,6 +33,8 @@ use InvalidArgumentException;
 final class UserProfileStatus
 {
     public const TYPE = 'user_profile_status';
+
+    public const TEST = UserProfileStatusActive::class;
 
 
     private UserProfileStatusInterface $status;
