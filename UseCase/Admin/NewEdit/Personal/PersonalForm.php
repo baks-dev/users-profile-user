@@ -23,12 +23,16 @@
 
 namespace BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Personal;
 
+use BaksDev\Core\Type\Gps\GpsLatitude;
+use BaksDev\Core\Type\Gps\GpsLongitude;
 use BaksDev\Reference\Gender\Type\Gender;
 use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Personal\PersonalDTO;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -37,13 +41,42 @@ final class PersonalForm extends AbstractType
 {
 	public function buildForm(FormBuilderInterface $builder, array $options)
 	{
-		/* TextType */
+
 		$builder->add('username', TextType::class);
-		
-		$builder->add('location', TextType::class, ['help' => '&nbsp;', 'help_html' => true,]);
-		
-		/* Тип профиля */
-		$builder
+
+        $builder->add('location', TextType::class, ['attr' => ['data-address' => true]]);
+
+
+        $builder->add('latitude', HiddenType::class, ['required' => false, 'attr' => ['data-latitude' => 'true']]);
+
+        $builder->get('latitude')->addModelTransformer(
+            new CallbackTransformer(
+                function ($gps) {
+                    return $gps instanceof GpsLatitude ? $gps->getValue() : $gps;
+                },
+                function ($gps) {
+                    return new GpsLatitude($gps);
+                }
+            )
+        );
+
+        /* GPS долгота:*/
+
+        $builder->add('longitude', HiddenType::class, ['required' => false, 'attr' => ['data-longitude' => 'true']]);
+
+        $builder->get('longitude')->addModelTransformer(
+            new CallbackTransformer(
+                function ($gps) {
+                    return $gps instanceof GpsLongitude ? $gps->getValue() : $gps;
+                },
+                function ($gps) {
+                    return new GpsLongitude($gps);
+                }
+            )
+        );
+
+
+        $builder
 			->add('gender', ChoiceType::class, [
 				'choices' => Gender::cases(),
 				'choice_value' => function(?Gender $gender) {

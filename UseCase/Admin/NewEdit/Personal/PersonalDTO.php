@@ -23,6 +23,8 @@
 
 namespace BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Personal;
 
+use BaksDev\Core\Type\Gps\GpsLatitude;
+use BaksDev\Core\Type\Gps\GpsLongitude;
 use BaksDev\Reference\Gender\Type\Gender;
 use BaksDev\Reference\Gender\Type\Genders\GenderMen;
 use BaksDev\Users\Profile\UserProfile\Entity\Personal\UserProfilePersonalInterface;
@@ -42,9 +44,23 @@ final class PersonalDTO implements UserProfilePersonalInterface
 	
 	/** Местоположение */
 	private ?string $location = null;
-	
-	
-	public function __construct() { $this->gender = new Gender(GenderMen::class); }
+
+
+    /**
+     * GPS широта.
+     */
+    #[Assert\NotBlank]
+    private ?GpsLatitude $latitude = null;
+
+    /**
+     * GPS долгота.
+     */
+    #[Assert\NotBlank]
+    private ?GpsLongitude $longitude = null;
+
+
+
+    public function __construct() { $this->gender = new Gender(GenderMen::class); }
 	
 	
 	/** Никнейм пользователя */
@@ -100,5 +116,35 @@ final class PersonalDTO implements UserProfilePersonalInterface
 	{
 		$this->location = $location;
 	}
-	
+
+    /**
+     * Latitude
+     */
+    public function getLatitude(): ?GpsLatitude
+    {
+        return $this->latitude;
+    }
+
+    public function setLatitude(?GpsLatitude $latitude): self
+    {
+        $this->latitude = $latitude;
+        return $this;
+    }
+
+    /**
+     * Longitude
+     */
+    public function getLongitude(): ?GpsLongitude
+    {
+        return $this->longitude;
+    }
+
+    public function setLongitude(?GpsLongitude $longitude): self
+    {
+        $this->longitude = $longitude;
+        return $this;
+    }
+
+
+
 }

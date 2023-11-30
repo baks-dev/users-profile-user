@@ -24,6 +24,8 @@
 namespace BaksDev\Users\Profile\UserProfile\Entity\Personal;
 
 use BaksDev\Core\Entity\EntityEvent;
+use BaksDev\Core\Type\Gps\GpsLatitude;
+use BaksDev\Core\Type\Gps\GpsLongitude;
 use BaksDev\Reference\Gender\Type\Gender;
 use BaksDev\Users\Profile\UserProfile\Entity\Event\UserProfileEvent;
 use DateTimeImmutable;
@@ -61,6 +63,14 @@ class UserProfilePersonal extends EntityEvent
 	/** Местоположение */
 	#[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
 	private ?string $location = null;
+
+    /** GPS широта:*/
+    #[ORM\Column(type: GpsLatitude::TYPE, nullable: true)]
+    private ?GpsLatitude $latitude = null;
+
+    /** GPS долгота:*/
+    #[ORM\Column(type: GpsLongitude::TYPE, nullable: true)]
+    private ?GpsLongitude $longitude = null;
 	
 	public function __construct(UserProfileEvent $event)
 	{

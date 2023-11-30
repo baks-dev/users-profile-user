@@ -49,13 +49,16 @@
 <script nonce="{{ csp_nonce() }}" data-src="/assets/plugins/inputmask/inputmask.min.js?v={{ version }}" defer class="lazy"></script>
 <script nonce="{{ csp_nonce() }}" data-src="/assets/profile_user/script.min.js?v={{ version }}" defer class="lazy"></script>
 
+<script nonce="{{ csp_nonce() }}" src="/assets/field_address/script.min.js?v={{ version }}"></script>
+
+
 {% if MAPS_YANDEX_API is defined %}
     <script nonce="{{ csp_nonce() }}" data-src="https://api-maps.yandex.ru/2.1/?apikey={{ MAPS_YANDEX_API }}&lang={{ app.request.locale|lower }}" defer class="lazy"></script>
 {% endif %}
 
-<script nonce="{{ csp_nonce() }}">
+{#<script nonce="{{ csp_nonce() }}">
 $profileCity.addEventListener('input', getCountry.debounce(500));
-	</script>
+	</script>#}
 
 {% endblock %}
 
