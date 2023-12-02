@@ -44,8 +44,8 @@ final class InfoForm extends AbstractType
 	}
 	
 	
-	public function buildForm(FormBuilderInterface $builder, array $options)
-	{
+	public function buildForm(FormBuilderInterface $builder, array $options): void
+    {
 		$builder
 			->add('usr', ChoiceType::class, [
 				'choices' => $this->usersChoice->getChoice(),
@@ -95,8 +95,8 @@ final class InfoForm extends AbstractType
 	}
 	
 	
-	public function configureOptions(OptionsResolver $resolver)
-	{
+	public function configureOptions(OptionsResolver $resolver): void
+    {
 		$resolver->setDefaults([
 			'data_class' => InfoDTO::class,
 		]);

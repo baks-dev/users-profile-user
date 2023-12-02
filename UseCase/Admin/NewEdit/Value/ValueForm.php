@@ -36,22 +36,22 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 final class ValueForm extends AbstractType
 {
 
-    private FieldValueFormInterface $fieldValue;
+    //private FieldValueFormInterface $fieldValue;
 
     private FieldsChoice $fieldsChoice;
 
 
     public function __construct(
-        FieldValueFormInterface $fieldValue,
+        //FieldValueFormInterface $fieldValue,
         FieldsChoice $fieldsChoice,
     )
     {
-        $this->fieldValue = $fieldValue;
+        //$this->fieldValue = $fieldValue;
         $this->fieldsChoice = $fieldsChoice;
     }
 
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
 
         /* TextType */
@@ -112,7 +112,7 @@ final class ValueForm extends AbstractType
     }
 
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults
         (
