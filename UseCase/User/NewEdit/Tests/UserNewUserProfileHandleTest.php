@@ -25,6 +25,8 @@ declare(strict_types=1);
 
 namespace BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\Tests;
 
+use BaksDev\Core\Type\Gps\GpsLatitude;
+use BaksDev\Core\Type\Gps\GpsLongitude;
 use BaksDev\Core\Validator\ValidatorCollectionInterface;
 use BaksDev\Reference\Gender\Type\Genders\Collection\GenderCollection;
 use BaksDev\Users\Profile\TypeProfile\Type\Id\TypeProfileUid;
@@ -137,6 +139,12 @@ final class UserNewUserProfileHandleTest extends KernelTestCase
         $PersonalDTO = $UserProfileDTO->getPersonal();
         $PersonalDTO->setUsername('ZuUXSSPtpW');
         self::assertEquals('ZuUXSSPtpW', $PersonalDTO->getUsername());
+
+        $PersonalDTO->setLongitude(new GpsLongitude(GpsLongitude::TEST));
+        self::assertEquals(GpsLongitude::TEST, $PersonalDTO->getLongitude()->getFloat());
+
+        $PersonalDTO->setLatitude(new GpsLatitude(GpsLatitude::TEST));
+        self::assertEquals(GpsLatitude::TEST, $PersonalDTO->getLatitude()->getFloat());
 
         $birthday = new DateTimeImmutable();
         $PersonalDTO->setBirthday($birthday);
