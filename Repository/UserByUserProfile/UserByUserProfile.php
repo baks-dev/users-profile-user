@@ -45,17 +45,27 @@ final class UserByUserProfile implements UserByUserProfileInterface
      */
     public function findUserByProfile(UserProfileUid $profile): ?User
     {
-        if(Kernel::isTestEnvironment()) {
+        if(Kernel::isTestEnvironment())
+        {
             return new User();
         }
 
         $qb = $this->ORMQueryBuilder->createQueryBuilder(self::class);
 
-        $qb->select('usr');
-        $qb->from(UserProfileInfo::class, 'info');
-        $qb->join(User::class, 'usr', 'WITH', 'usr.id = info.usr');
-        $qb->where('info.profile = :profile')
+        $qb
+            ->from(UserProfileInfo::class, 'info')
+            ->where('info.profile = :profile')
             ->setParameter('profile', $profile, UserProfileUid::TYPE);
+
+        $qb
+            ->select('usr')
+            ->join(
+                User::class,
+                'usr',
+                'WITH',
+                'usr.id = info.usr'
+            );
+
 
         return $qb->getQuery()->getOneOrNullResult();
     }
