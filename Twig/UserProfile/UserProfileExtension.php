@@ -65,10 +65,10 @@ final class UserProfileExtension extends AbstractExtension
 
         try
         {
-            return $twig->render('@Template/UserProfile/user_profile/content.html.twig', ['value' => $data]);
+            return $twig->render('@Template/users-profile-user/user_profile/content.html.twig', ['value' => $data]);
         } catch(LoaderError $loaderError)
         {
-            return $twig->render('@UserProfile/twig/user_profile/content.html.twig', ['value' => $data]);
+            return $twig->render('@users-profile-user/twig/user_profile/content.html.twig', ['value' => $data]);
         }
     }
 
@@ -76,10 +76,10 @@ final class UserProfileExtension extends AbstractExtension
     {
         try
         {
-            return $twig->render('@Template/UserProfile/user_profile/render.html.twig', ['value' => $value]);
+            return $twig->render('@Template/users-profile-user/user_profile/render.html.twig', ['value' => $value]);
         } catch(LoaderError $loaderError)
         {
-            return $twig->render('@UserProfile/twig/user_profile/render.html.twig', ['value' => $value]);
+            return $twig->render('@users-profile-user/twig/user_profile/render.html.twig', ['value' => $value]);
         }
     }
 
@@ -87,10 +87,10 @@ final class UserProfileExtension extends AbstractExtension
     {
         try
         {
-            return $twig->render('@Template/UserProfile/user_profile/template.html.twig', ['value' => $value]);
+            return $twig->render('@Template/users-profile-user/user_profile/template.html.twig', ['value' => $value]);
         } catch(LoaderError $loaderError)
         {
-            return $twig->render('@UserProfile/twig/user_profile/template.html.twig', ['value' => $value]);
+            return $twig->render('@users-profile-user/twig/user_profile/template.html.twig', ['value' => $value]);
         }
     }
 

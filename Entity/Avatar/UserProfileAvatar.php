@@ -81,6 +81,11 @@ class UserProfileAvatar extends EntityEvent implements UploadEntityInterface
     {
         return (string) $this->event;
     }
+
+    public function getId() : UserProfileEventUid
+    {
+        return $this->event->getId();
+    }
 	
 	public function getDto($dto): mixed
 	{
@@ -135,10 +140,7 @@ class UserProfileAvatar extends EntityEvent implements UploadEntityInterface
 	}
 	
 	
-	public function getId() : UserProfileEventUid
-	{
-		return $this->event->getId();
-	}
+
 
     /**
      * Ext

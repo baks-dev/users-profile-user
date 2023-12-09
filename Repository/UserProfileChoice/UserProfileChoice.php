@@ -51,7 +51,7 @@ final class UserProfileChoice implements UserProfileChoiceInterface
      */
     public function getActiveUserProfile(UserUid $usr = null): ?array
     {
-        $select = sprintf('new %s(user_profile.id, personal.username)', UserProfileUid::class);
+        $select = sprintf('new %s(user_profile.id, personal.username, personal.latitude, personal.longitude)', UserProfileUid::class);
 
         $qb = $this->ORMQueryBuilder->createQueryBuilder(self::class);
         $qb->select($select);
