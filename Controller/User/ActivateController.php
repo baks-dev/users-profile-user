@@ -29,11 +29,17 @@ use BaksDev\Core\Listeners\Event\Security\RoleSecurity;
 use BaksDev\Users\Profile\UserProfile\Entity as EntityUserProfile;
 use BaksDev\Users\Profile\UserProfile\UseCase\User\Activate\ActivateUserProfileDTO;
 use BaksDev\Users\Profile\UserProfile\UseCase\User\Activate\ActivateUserProfileHandler;
+use BaksDev\Users\User\Type\Id\UserUid;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
+use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authentication\Token\SwitchUserToken;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 #[AsController]
@@ -42,15 +48,18 @@ final class ActivateController extends AbstractController
 {
     #[Route('/user/profile/activate/{id}', name: 'user.activate', methods: ['GET'])]
     public function activate(
+        Request $request,
         #[MapEntity] EntityUserProfile\Event\UserProfileEvent $Event,
         ActivateUserProfileHandler $handler,
         EntityManagerInterface $entityManager,
-        AppCacheInterface $cache
+        AppCacheInterface $cache,
+        TokenStorageInterface $tokenStorage,
     ): Response
     {
 
         $AppCache = $cache->init('Authority');
-        $AppCache->delete((string) $this->getUsr()?->getId());
+        $AppCache->delete((string) $this->getCurrentUsr());
+
 
         $profile = new ActivateUserProfileDTO();
         $Event->getDto($profile);
@@ -60,9 +69,8 @@ final class ActivateController extends AbstractController
 
         if(
             !$Info
-            || $Info->isNotActiveProfile() // текущий профиль НЕ активен
             || $Info->isNotStatusActive() // профиль НЕ на модерации или заблокирован
-            || !$Info->isProfileOwnedUser($this->getUsr()) // Профиль не принадлежит пользователю
+            || !$Info->isProfileOwnedUser($this->getCurrentUsr()) // Профиль не принадлежит пользователю
         )
         {
             throw new AccessDeniedException();
@@ -73,13 +81,40 @@ final class ActivateController extends AbstractController
 
         if($UserProfile instanceof EntityUserProfile\UserProfile)
         {
+
+            $AppCache = $cache->init((string) $this->getCurrentUsr());
+            $AppCache->clear();
+
+
+            /**
+             * Если пользователь был авторизован по доверенности -
+             * сбрасываем и присваиваем активный профиль с соответствующими правами
+             */
+
+            $token = $tokenStorage->getToken();
+
+            if($token instanceof SwitchUserToken)
+            {
+                $CurrentUsr = $token->getOriginalToken()->getUser();
+
+                if($CurrentUsr)
+                {
+                    $impersonationToken = new  UsernamePasswordToken(
+                        $CurrentUsr,
+                        "user",
+                        $CurrentUsr->getRoles()
+                    );
+
+                    $tokenStorage->setToken($impersonationToken);
+                }
+            }
+
             $this->addFlash('success', 'user.success.activate', 'user.user.profile');
         }
         else
         {
             $this->addFlash('danger', 'user.danger.delete', 'user.user.profile', $UserProfile);
         }
-        
 
         return $this->redirectToReferer();
     }
