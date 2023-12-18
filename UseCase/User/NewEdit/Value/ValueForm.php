@@ -70,7 +70,6 @@ final class ValueForm extends AbstractType
 
                     if(isset($fields[(string) $data->getField()]))
                     {
-
                         /** @var FieldValueFormDTO $field */
                         $field = end($fields[(string) $data->getField()]);
                         $fieldType = $this->fieldsChoice->getChoice($field->getType());
@@ -102,11 +101,15 @@ final class ValueForm extends AbstractType
                     }
                     else
                     {
-                        $form->add
-                        (
-                            'value',
-                            TextType::class, ['label' => false]
-                        );
+
+                        /** Удаляем элементы, которые были удалены  */
+                        $form->remove('value');
+
+//                        $form->add
+//                        (
+//                            'value',
+//                            TextType::class, ['label' => false]
+//                        );
                     }
                 }
 

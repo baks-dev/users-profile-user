@@ -2,9 +2,7 @@
 
 {% set section = null %}
 
-{% for value in form.value %}
-	
-	
+{% for value in form.value|filter(v => v.vars.data.section is not null) %}
 
 	{% if section != value.vars.data.section %}
 		{% set section = value.vars.data.section %}
@@ -14,7 +12,7 @@
 			</div></div>
 		{% endif %}
 		
-		
+
 		{# Открываем новую секцию #}
 		<div class="card border-light">
 		
@@ -37,7 +35,12 @@
 	
 	{{ form_widget(value) }}
 	
-	{# Закрываем секцию, eсли цикл последний #}
-	{% if loop.last %}</div></div>{% endif %}
 
 {% endfor %}
+
+
+
+	{# Закрываем секцию, eсли такова имеется #}
+	{% if section is not null %}
+		</div></div>
+	{% endif %}

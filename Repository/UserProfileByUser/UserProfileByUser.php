@@ -23,15 +23,11 @@
 
 namespace BaksDev\Users\Profile\UserProfile\Repository\UserProfileByUser;
 
-//use BaksDev\Auth\Email\Entity as EntityAccountEmail;
 use BaksDev\Auth\Email\Entity\Account;
 use BaksDev\Auth\Email\Entity\Event\AccountEvent;
 use BaksDev\Core\Doctrine\DBALQueryBuilder;
 use BaksDev\Core\Form\Search\SearchDTO;
 use BaksDev\Core\Services\Paginator\PaginatorInterface;
-//use BaksDev\Users\Profile\TypeProfile\Entity as EntityTypeProfile;
-//use BaksDev\Users\Profile\UserProfile\Entity as EntityUserProfile;
-use BaksDev\Users\Profile\TypeProfile\Entity\Event\TypeProfileEvent;
 use BaksDev\Users\Profile\TypeProfile\Entity\Trans\TypeProfileTrans;
 use BaksDev\Users\Profile\TypeProfile\Entity\TypeProfile;
 use BaksDev\Users\Profile\UserProfile\Entity\Avatar\UserProfileAvatar;
@@ -71,69 +67,69 @@ final class UserProfileByUser implements UserProfileByUserInterface
 
     public function findAllUserProfile(?UserProfileStatus $status = null): PaginatorInterface
     {
-
         $usr = $this->security->getUser();
 
-        $qb = $this->DBALQueryBuilder
+        $dbal = $this->DBALQueryBuilder
             ->createQueryBuilder(self::class)
-            ->bindLocal()
-        ;
+            ->bindLocal();
 
-        $qb->select('userprofile.id');
-        $qb->addSelect('userprofile.event');
-        $qb->from(UserProfile::TABLE, 'userprofile');
+        $dbal
+            ->addSelect('userprofile.id')
+            ->addSelect('userprofile.event')
+            ->from(UserProfile::class, 'userprofile');
 
         /* INFO */
 
-        $qb->addSelect('info.url');
-        $qb->addSelect('info.usr');
-        $qb->addSelect('info.status');
-        $qb->addSelect('info.active');
 
-        $qb->join(
-            'userprofile',
-            UserProfileInfo::TABLE,
-            'info',
-            'info.profile = userprofile.id AND
-          info.usr = :usr
-          '.($status ? 'AND info.status = :status' : '')
-        );
+        $dbal
+            ->addSelect('info.url')
+            ->addSelect('info.usr')
+            ->addSelect('info.status')
+            ->addSelect('info.active')
+            ->join(
+                'userprofile',
+                UserProfileInfo::class,
+                'info',
+                'info.profile = userprofile.id AND info.usr = :usr '.($status ? 'AND info.status = :status' : '')
+            );
 
-        $qb->setParameter('usr', $usr?->getId(), UserUid::TYPE);
+        $dbal->setParameter('usr', $usr?->getId(), UserUid::TYPE);
 
         if($status)
         {
-            $qb->setParameter('status', $status, UserProfileStatus::TYPE);
+            $dbal->setParameter('status', $status, UserProfileStatus::TYPE);
         }
 
-        $qb->addSelect('userprofile_event.sort');
-        $qb->join(
-            'userprofile',
-            UserProfileEvent::TABLE,
-            'userprofile_event',
-            'userprofile_event.id = userprofile.event'
-        );
+        $dbal
+            ->addSelect('userprofile_event.sort')
+            ->join(
+                'userprofile',
+                UserProfileEvent::class,
+                'userprofile_event',
+                'userprofile_event.id = userprofile.event'
+            );
 
         /* PERSONAL */
 
-        $qb->addSelect('personal.username');
-        $qb->addSelect('personal.location');
+        $dbal
+            ->addSelect('personal.username')
+            ->addSelect('personal.location')
+            ->join(
+                'userprofile',
+                UserProfilePersonal::class,
+                'personal',
+                'personal.event = userprofile.event'
+            );
 
-        $qb->join(
-            'userprofile',
-            UserProfilePersonal::TABLE,
-            'personal',
-            'personal.event = userprofile.event'
-        );
 
         /* AVATAR */
-        $qb->addSelect("CONCAT('/upload/".UserProfileAvatar::TABLE."' , '/', avatar.name) AS avatar_name");
-        $qb->addSelect('avatar.ext AS avatar_ext');
-        $qb->addSelect('avatar.cdn AS avatar_cdn');
+        $dbal->addSelect("CONCAT('/upload/".UserProfileAvatar::TABLE."' , '/', avatar.name) AS avatar_name");
+        $dbal->addSelect('avatar.ext AS avatar_ext');
+        $dbal->addSelect('avatar.cdn AS avatar_cdn');
 
-        $qb->leftJoin(
+        $dbal->leftJoin(
             'userprofile_event',
-            UserProfileAvatar::TABLE,
+            UserProfileAvatar::class,
             'avatar',
             'avatar.event = userprofile_event.id'
         );
@@ -141,60 +137,64 @@ final class UserProfileByUser implements UserProfileByUserInterface
         /** Аккаунт пользователя */
 
         /* ACCOUNT */
-        $qb->join('info', Account::TABLE, 'account', 'account.id = info.usr');
+        $dbal->join('info', Account::class, 'account', 'account.id = info.usr');
 
         /* ACCOUNT EVENT */
-        $qb->addSelect('account_event.id as account_id');
-        $qb->addSelect('account_event.email');
-        $qb->leftJoin(
-            'account',
-            AccountEvent::TABLE,
-            'account_event',
-            'account_event.id = account.event'
-        );
+        $dbal
+            ->addSelect('account_event.id as account_id')
+            ->addSelect('account_event.email')
+            ->leftJoin(
+                'account',
+                AccountEvent::class,
+                'account_event',
+                'account_event.id = account.event'
+            );
 
         /** Тип профиля */
 
         /* TypeProfile */
-        $qb->join(
+        $dbal->join(
             'userprofile_event',
-            TypeProfile::TABLE,
+            TypeProfile::class,
             'type',
             'type.id = userprofile_event.type'
         );
 
         /* TypeProfileEvent */
-        $qb->join(
-            'type',
-            TypeProfileEvent::TABLE,
-            'type_event',
-            'type_event.id = type.event'
-        );
+        //        $qb->join(
+        //            'type',
+        //            TypeProfileEvent::class,
+        //            'type_event',
+        //            'type_event.id = type.event'
+        //        );
 
         /* TypeProfileTrans */
-        $qb->addSelect('type_trans.name as profile_type');
-        $qb->join(
-            'type_event',
-            TypeProfileTrans::TABLE,
-            'type_trans',
-            'type_trans.event = type_event.id AND type_trans.local = :local'
-        );
+        $dbal
+            ->addSelect('type_trans.name as profile_type')
+            ->join(
+                'type',
+                TypeProfileTrans::class,
+                'type_trans',
+                'type_trans.event = type.event AND type_trans.local = :local'
+            );
 
 
         /* Поиск */
         if($this->search?->getQuery())
         {
-            $qb
+            $dbal
                 ->createSearchQueryBuilder($this->search)
                 ->addSearchLike('personal.username')
-                ->addSearchLike('personal.location')
-            ;
+                ->addSearchLike('personal.location');
         }
 
-        $qb->orderBy('userprofile_event.sort', 'ASC');
-        $qb->addOrderBy('userprofile_event.id', 'DESC');
 
-        return $this->paginator->fetchAllAssociative($qb);
+        $dbal->addOrderBy('userprofile_event.sort', 'ASC');
+        $dbal->addOrderBy('info.active', 'DESC');
+        $dbal->addOrderBy('info.status', 'ASC');
+        $dbal->addOrderBy('userprofile_event.id', 'DESC');
 
+
+        return $this->paginator->fetchAllAssociative($dbal);
     }
 }

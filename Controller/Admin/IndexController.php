@@ -28,6 +28,7 @@ use BaksDev\Core\Form\Search\SearchDTO;
 use BaksDev\Core\Form\Search\SearchForm;
 use BaksDev\Core\Listeners\Event\Security\RoleSecurity;
 use BaksDev\Users\Profile\TypeProfile\Repository\AllProfileType\AllProfileTypeInterface;
+use BaksDev\Users\Profile\TypeProfile\Repository\TypeProfileChoice\TypeProfileChoiceInterface;
 use BaksDev\Users\Profile\UserProfile\Repository\AllUserProfile\AllUserProfileInterface;
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
 use Symfony\Component\HttpFoundation\Request;
@@ -46,11 +47,13 @@ final class IndexController extends AbstractController
     public function index(
         Request $request,
         AllUserProfileInterface $allUserProfile,
-        AllProfileTypeInterface $allTypeProfile, // Типы профилей
+        TypeProfileChoiceInterface $typeProfileChoice,
+        //AllProfileTypeInterface $allTypeProfile, // Типы профилей
         int $page = 0,
-    ): Response {
+    ): Response
+    {
         // Список доступных типов профилей
-        $profile = $allTypeProfile->get()->getData();
+        $profile = $typeProfileChoice->getUsersTypeProfileChoice();
 
         // Поиск
         $search = new SearchDTO();

@@ -51,9 +51,7 @@ final class UserProfileForm extends AbstractType
 	
 	public function buildForm(FormBuilderInterface $builder, array $options) : void
 	{
-		
-		
-		
+
 		$builder->add('sort', IntegerType::class);
 		
 		$builder->add('personal', Personal\PersonalForm::class);
@@ -61,6 +59,7 @@ final class UserProfileForm extends AbstractType
 		$builder->add('avatar', Avatar\AvatarForm::class);
 		
 		$profileType = $options['data']->getType();
+
 		$fields = $this->fieldValue->get($profileType);
 		
 		$builder->add('value', CollectionType::class, [
@@ -78,33 +77,33 @@ final class UserProfileForm extends AbstractType
 				
 				/** @var UserProfileDTO $data */
 				$data = $event->getData();
-				
+
 				/** @var FieldValueFormDTO $field */
 				foreach($fields as $field)
 				{
 					$field = end($field);
-					
-					$new = true;
-					
-					/** @var ValueDTO $value */
-					foreach($data->getValue() as $value)
-					{
-						if($value->getField()->equals($field->getField()))
-						{
-							$value->updSection($field);
-							$new = false;
-							break;
-						}
-					}
-					
-					if($new)
-					{
-						$value = new ValueDTO();
-						$value->setField($field->getField());
-						$value->updSection($field);
-						$data->addValue($value);
-					}
+
+                    $value = $data->getValue()->filter(function(ValueDTO $element) use ($field) {
+                        return $element->getField()->equals($field->getField());
+                    });
+
+                    if($value->isEmpty())
+                    {
+                        $value = new ValueDTO();
+                        $value->setField($field->getField());
+                        $value->updSection($field);
+                        $data->addValue($value);
+                        continue;
+                    }
+
+                    /** @var ValueDTO $current */
+                    $current = $value->current();
+                    $current->updSection($field);
 				}
+
+
+
+
 			}
 		);
 		

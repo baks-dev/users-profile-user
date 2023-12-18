@@ -28,6 +28,8 @@ use BaksDev\Core\Form\Search\SearchDTO;
 use BaksDev\Core\Form\Search\SearchForm;
 use BaksDev\Core\Listeners\Event\Security\RoleSecurity;
 use BaksDev\Users\Profile\TypeProfile\Repository\AllProfileType\AllProfileTypeInterface;
+use BaksDev\Users\Profile\TypeProfile\Repository\PublicTypeProfile\PublicTypeProfileInterface;
+use BaksDev\Users\Profile\TypeProfile\Repository\TypeProfileChoice\TypeProfileChoiceInterface;
 use BaksDev\Users\Profile\UserProfile\Repository\UserProfileByUser\UserProfileByUserInterface;
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
 use Symfony\Component\HttpFoundation\Request;
@@ -42,15 +44,16 @@ final class IndexController extends AbstractController
 {
     #[Route('/user/profiles/{page<\d+>}', name: 'user.index', methods: ['GET', 'POST'])]
     public function index(
-        CsrfTokenManagerInterface $csrfTokenManager,
         Request $request,
         UserProfileByUserInterface $userProfileByUser,
-        AllProfileTypeInterface $allProfileType, // Типы профилей
+        TypeProfileChoiceInterface $typeProfileChoice,
         int $page = 0,
     ): Response
     {
-        // Список доступных типов профилей
-        $profile = $allProfileType->get()->getData();
+        // Список публичных типов профилей
+        $profile = $typeProfileChoice->getUsersTypeProfileChoice();
+
+        //dd($profile);
 
         // Поиск
         $search = new SearchDTO();
@@ -58,18 +61,16 @@ final class IndexController extends AbstractController
         $searchForm->handleRequest($request);
 
         // Получаем список
-        $status = !$request->get('status') ? null : new UserProfileStatus($request->get('status'));
-
+        //$status = !$request->get('status') ? null : new UserProfileStatus($request->get('status'));
 
         $query = $userProfileByUser
             ->search($search)
-            ->findAllUserProfile($status)
-        ;
+            ->findAllUserProfile();
 
         return $this->render(
             [
                 'profiles' => $profile,
-                'status' => $status,
+                //'status' => $status,
                 'query' => $query,
                 'search' => $searchForm->createView(),
             ]

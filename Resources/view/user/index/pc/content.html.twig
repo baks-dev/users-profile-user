@@ -20,43 +20,28 @@
 
             <div class="w-100 d-flex align-items-center gap-3 justify-content-end">
 
-                {% if profiles %}
+                {% for profile in profiles %}
 
-                    {% if profiles|length == 1 %}
-
-                            {% for profile in profiles %}
-                                <a href="{{ path('users-profile-user:user.newedit.new', { id : profile.id }) }}"
-                                   class="btn btn-danger"
-                                >
-                                    Добавить профиль
-                                </a>
-                            {% endfor %}
-
-                    {% else %}
-
+                    {% if loop.first %}
                         <span class="h5 mb-0">Добавить профиль: </span>
-
-                        {# Добавить профиль #}
-                        <div class="btn-group ms-10">
-                            {% for profile in profiles %}
-                                <a href="{{ path('users-profile-user:user.newedit.new', { id : profile.id }) }}"
-                                   class="btn btn-danger"
-                                   data-bs-toggle="tooltip"
-                                   data-bs-placement="bottom"
-                                   data-bs-delay='{"show":600,"hide":100}'
-                                   title="{{ profile.description }}"
-                                >
-                                    {{ profile.name }}
-                                </a>
-                            {% endfor %}
-                        </div>
-
                     {% endif %}
 
-                {% endif %}
-
+                    {# Добавить профиль #}
+                    <div class="btn-group ms-10">
+                        {% for profile in profiles %}
+                            <a href="{{ path('users-profile-user:user.newedit.new', { id : profile.value }) }}"
+                               class="btn btn-danger"
+                               data-bs-toggle="tooltip"
+                               data-bs-placement="bottom"
+                               data-bs-delay='{"show":600,"hide":100}'
+                               title="{{ profile.getOption() }}"
+                            >
+                                {{ profile.getAttr() }}
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
             </div>
-
         </div>
 
         <div class="border  border-light  rounded-4 p-3 p-3">

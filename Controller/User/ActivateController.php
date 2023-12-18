@@ -29,6 +29,7 @@ use BaksDev\Core\Listeners\Event\Security\RoleSecurity;
 use BaksDev\Users\Profile\UserProfile\Entity as EntityUserProfile;
 use BaksDev\Users\Profile\UserProfile\UseCase\User\Activate\ActivateUserProfileDTO;
 use BaksDev\Users\Profile\UserProfile\UseCase\User\Activate\ActivateUserProfileHandler;
+use BaksDev\Users\User\Repository\GetUserById\GetUserById;
 use BaksDev\Users\User\Type\Id\UserUid;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
@@ -37,6 +38,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\SwitchUserToken;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
@@ -54,6 +56,8 @@ final class ActivateController extends AbstractController
         EntityManagerInterface $entityManager,
         AppCacheInterface $cache,
         TokenStorageInterface $tokenStorage,
+        GetUserById $getUserById,
+        RouterInterface $router,
     ): Response
     {
 
@@ -96,24 +100,28 @@ final class ActivateController extends AbstractController
             if($token instanceof SwitchUserToken)
             {
                 $CurrentUsr = $token->getOriginalToken()->getUser();
+            }
+            else
+            {
+                $CurrentUsr = $getUserById->get($this->getCurrentUsr());
+            }
 
-                if($CurrentUsr)
-                {
-                    $impersonationToken = new  UsernamePasswordToken(
-                        $CurrentUsr,
-                        "user",
-                        $CurrentUsr->getRoles()
-                    );
+            if($CurrentUsr)
+            {
+                $impersonationToken = new  UsernamePasswordToken(
+                    $CurrentUsr,
+                    "user",
+                    $CurrentUsr->getRoles()
+                );
 
-                    $tokenStorage->setToken($impersonationToken);
-                }
+                $tokenStorage->setToken($impersonationToken);
             }
 
             $this->addFlash('success', 'user.success.activate', 'user.user.profile');
         }
         else
         {
-            $this->addFlash('danger', 'user.danger.delete', 'user.user.profile', $UserProfile);
+            $this->addFlash('danger', 'user.danger.activate', 'user.user.profile', $UserProfile);
         }
 
         return $this->redirectToReferer();
