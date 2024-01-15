@@ -6,7 +6,8 @@
 
 	{% if section != value.vars.data.section %}
 		{% set section = value.vars.data.section %}
-		
+
+
 		{# Закрываем секцию, eсли она не первая в цикле #}
 		{% if loop.first != true %}
 			</div></div>
@@ -34,6 +35,8 @@
 	{#{{ render_field(value.vars.data.type, value.value) }}#}
 	
 	{{ form_widget(value) }}
+
+			{#{{ dump(value) }}#}
 	
 
 {% endfor %}

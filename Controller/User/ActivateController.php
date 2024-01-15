@@ -89,7 +89,6 @@ final class ActivateController extends AbstractController
             $AppCache = $cache->init((string) $this->getCurrentUsr());
             $AppCache->clear();
 
-
             /**
              * Если пользователь был авторизован по доверенности -
              * сбрасываем и присваиваем активный профиль с соответствующими правами
@@ -116,6 +115,9 @@ final class ActivateController extends AbstractController
 
                 $tokenStorage->setToken($impersonationToken);
             }
+
+
+
 
             $this->addFlash('success', 'user.success.activate', 'user.user.profile');
         }

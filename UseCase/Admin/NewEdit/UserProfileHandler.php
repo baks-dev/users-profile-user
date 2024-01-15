@@ -104,17 +104,21 @@ final class UserProfileHandler extends AbstractHandler
         }
 
 
+
         /* Загружаем файл аватарки профиля */
 
-        /** @var UserProfileAvatar $UserProfileAvatar */
-        $UserProfileAvatar = $this->event->getAvatar();
-        /** @var AvatarDTO $AvatarDTO */
-        $AvatarDTO = $UserProfileAvatar?->getEntityDto();
-
-        if($UserProfileAvatar && $AvatarDTO?->file !== null)
+        if(method_exists($command, 'getAvatar'))
         {
-            $this->imageUpload->upload($AvatarDTO->file, $UserProfileAvatar);
+            $Avatar = $command->getAvatar();
+
+            if($Avatar && $Avatar->file !== null)
+            {
+                /** @var UserProfileAvatar $CoverDTO */
+                $UserProfileAvatar = $this->event->getUploadAvatar();
+                $this->imageUpload->upload($Avatar->file, $UserProfileAvatar);
+            }
         }
+
 
 
         /** Валидация всех объектов */
