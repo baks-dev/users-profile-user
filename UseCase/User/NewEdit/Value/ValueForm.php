@@ -66,13 +66,14 @@ final class ValueForm extends AbstractType
 
                 if($data)
                 {
-                    $fields = $options['fields'];
+                    //$fields = $options['fields'];
 
                     $field = $this->fieldValue->getFieldById($data->getField());
-                    $fieldType = $this->fieldsChoice->getChoice($field->getType());
 
                     if($field)
                     {
+                        $fieldType = $this->fieldsChoice->getChoice($field->getType());
+
                         if($fieldType)
                         {
                             $form->add

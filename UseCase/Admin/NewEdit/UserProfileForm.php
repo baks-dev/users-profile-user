@@ -80,7 +80,7 @@ final class UserProfileForm extends AbstractType
 				/** @var FieldValueFormDTO $field */
 				foreach($fields as $field)
 				{
-					$field = end($field);
+					//$field = end($field);
 					
 					$new = true;
 					
