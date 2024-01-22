@@ -26,6 +26,8 @@ namespace BaksDev\Users\Profile\UserProfile\Command\Upgrade;
 use BaksDev\Auth\Email\Repository\AccountEventActiveByEmail\AccountEventActiveByEmailInterface;
 use BaksDev\Auth\Email\Type\Email\AccountEmail;
 use BaksDev\Core\Command\Update\ProjectUpgradeInterface;
+use BaksDev\Core\Type\Gps\GpsLatitude;
+use BaksDev\Core\Type\Gps\GpsLongitude;
 use BaksDev\Users\Profile\TypeProfile\Type\Id\TypeProfileUid;
 use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
 use BaksDev\Users\Profile\UserProfile\Repository\ExistUserProfileByUser\ExistUserProfileByUserInterface;
@@ -108,6 +110,8 @@ class UpgradeUserProfileAdminCommand extends Command implements ProjectUpgradeIn
 
                 $PersonalDTO = $UserProfileDTO->getPersonal();
                 $PersonalDTO->setUsername($AccountEmail->getUserName());
+                $PersonalDTO->setLongitude(new GpsLongitude(GpsLongitude::TEST));
+                $PersonalDTO->setLatitude(new GpsLatitude(GpsLatitude::TEST));
 
                 $UserProfile = $this->userProfileHandler->handle($UserProfileDTO);
 
