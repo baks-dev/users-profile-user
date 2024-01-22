@@ -77,7 +77,6 @@ final class UserProfileForm extends AbstractType
 				
 				/** @var UserProfileDTO $data */
 				$data = $event->getData();
-                //dd($fields);
 
 				/** @var FieldValueFormDTO $field */
 				foreach($fields as $field)
@@ -87,6 +86,7 @@ final class UserProfileForm extends AbstractType
                     $value = $data->getValue()->filter(function(ValueDTO $element) use ($field) {
                         return $element->getField()->equals($field->getField());
                     });
+
 
                     if($value->isEmpty())
                     {

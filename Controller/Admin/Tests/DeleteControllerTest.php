@@ -49,11 +49,7 @@ final class DeleteControllerTest extends WebTestCase
     /** Доступ по роли */
     public function testRoleSuccessful(): void
     {
-//        // Получаем одно из событий
-//        $Event = self::$identifier;
-//
-//        if ($Event)
-//        {
+
             self::ensureKernelShutdown();
             $client = static::createClient();
 
@@ -67,10 +63,7 @@ final class DeleteControllerTest extends WebTestCase
 
                 self::assertResponseIsSuccessful();
             }
-//        } else
-//        {
-//            self::assertTrue(true);
-//        }
+
     }
 
     /** Доступ по роли ROLE_ADMIN */

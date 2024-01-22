@@ -38,14 +38,13 @@ final class EditControllerTest extends WebTestCase
 
     private const ROLE = 'ROLE_USERPROFILE_EDIT';
 
-    private static ?UserProfileEventUid $identifier;
+    private static ?UserProfileEventUid $identifier = null;
 
     public static function setUpBeforeClass(): void
     {
         $em = self::getContainer()->get(EntityManagerInterface::class);
         self::$identifier = $em->getRepository(UserProfile::class)->findOneBy([], ['id' => 'DESC'])?->getEvent();
     }
-
 
 
     /** Доступ по роли */
@@ -70,10 +69,9 @@ final class EditControllerTest extends WebTestCase
 
                 self::assertResponseIsSuccessful();
             }
-        } else
-        {
-            self::assertTrue(true);
         }
+
+        self::assertTrue(true);
     }
 
     /** Доступ по роли ROLE_ADMIN */
@@ -98,10 +96,9 @@ final class EditControllerTest extends WebTestCase
 
                 self::assertResponseIsSuccessful();
             }
-        } else
-        {
-            self::assertTrue(true);
         }
+
+        self::assertTrue(true);
     }
 
     /** Доступ закрыт по роли ROLE_USER */
@@ -125,10 +122,9 @@ final class EditControllerTest extends WebTestCase
 
                 self::assertResponseStatusCodeSame(403);
             }
-        } else
-        {
-            self::assertTrue(true);
         }
+
+        self::assertTrue(true);
     }
 
     /** Доступ по без роли */
@@ -151,9 +147,8 @@ final class EditControllerTest extends WebTestCase
                 // Full authentication is required to access this resource
                 self::assertResponseStatusCodeSame(401);
             }
-        } else
-        {
-            self::assertTrue(true);
         }
+
+        self::assertTrue(true);
     }
 }

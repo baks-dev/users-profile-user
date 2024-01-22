@@ -35,18 +35,17 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class ValueForm extends AbstractType
 {
-
-    //private FieldValueFormInterface $fieldValue;
+    private FieldValueFormInterface $fieldValue;
 
     private FieldsChoice $fieldsChoice;
 
 
     public function __construct(
-        //FieldValueFormInterface $fieldValue,
+        FieldValueFormInterface $fieldValue,
         FieldsChoice $fieldsChoice,
     )
     {
-        //$this->fieldValue = $fieldValue;
+        $this->fieldValue = $fieldValue;
         $this->fieldsChoice = $fieldsChoice;
     }
 
@@ -67,48 +66,44 @@ final class ValueForm extends AbstractType
                 if($data)
                 {
 
-                    $fields = $options['fields'];
+                    $field = $this->fieldValue->getFieldById($data->getField());
 
-                    $fieldType = false;
-                    $field = null;
-
-                    if(isset($fields[(string) $data->getField()]))
+                    if($field)
                     {
-                        /** @var FieldValueFormDTO $field */
-                        $field = end($fields[(string) $data->getField()]);
                         $fieldType = $this->fieldsChoice->getChoice($field->getType());
-                    }
 
-
-                    if($fieldType)
-                    {
-                        $form->add
-                        (
-                            'value',
-                            $fieldType->form(),
-                            [
-                                'label' => $field->getFieldName(),
-                                'required' => $field->isRequired(),
-                            ]
-                        );
+                        if($fieldType)
+                        {
+                            $form->add
+                            (
+                                'value',
+                                $fieldType->form(),
+                                [
+                                    'label' => $field->getFieldName(),
+                                    'required' => $field->isRequired(),
+                                ]
+                            );
+                        }
+                        else
+                        {
+                            $form->add
+                            (
+                                'value',
+                                TextType::class,
+                                [
+                                    'label' => $field->getFieldName(),
+                                    'required' => $field->isRequired(),
+                                ]
+                            );
+                        }
                     }
                     else
                     {
-                        $form->add
-                        (
-                            'value',
-                            TextType::class,
-                            [
-                                'label' => $field?->getFieldName(),
-                                'required' => $field && $field->isRequired(),
-                            ]
-                        );
+                        $form->remove('value');
                     }
                 }
-
             }
         );
-
     }
 
 

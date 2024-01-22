@@ -70,6 +70,7 @@ final class ValueForm extends AbstractType
 
                     $field = $this->fieldValue->getFieldById($data->getField());
 
+
                     if($field)
                     {
                         $fieldType = $this->fieldsChoice->getChoice($field->getType());
