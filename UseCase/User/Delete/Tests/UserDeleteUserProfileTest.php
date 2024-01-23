@@ -131,6 +131,9 @@ final class UserDeleteUserProfileTest extends KernelTestCase
         $UserProfile = $em->getRepository(UserProfile::class)
             ->find(UserProfileUid::TEST);
         self::assertNull($UserProfile);
+
+        $em->clear();
+        //$em->close();
     }
 
     /**
@@ -168,5 +171,8 @@ final class UserDeleteUserProfileTest extends KernelTestCase
         }
 
         $em->flush();
+
+        $em->clear();
+        //$em->close();
     }
 }

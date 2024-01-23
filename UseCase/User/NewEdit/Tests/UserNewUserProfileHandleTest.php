@@ -92,6 +92,8 @@ final class UserNewUserProfileHandleTest extends KernelTestCase
         }
 
         $em->flush();
+
+        $em->clear();
     }
 
 
@@ -181,5 +183,8 @@ final class UserNewUserProfileHandleTest extends KernelTestCase
         $UserProfile = $em->getRepository(UserProfile::class)
             ->find(UserProfileUid::TEST);
         self::assertNotNull($UserProfile);
+
+        $em->clear();
+        //$em->close();
     }
 }

@@ -206,7 +206,6 @@ final class CurrentUserProfile implements CurrentUserProfileInterface
             'profiletype_trans.event = profiletype_event.id AND profiletype_trans.local = :local'
         );
 
-
         /* Кешируем результат DBAL */
         return $qb->enableCache('users-profile-user', 3600)->fetchAssociative();
     }

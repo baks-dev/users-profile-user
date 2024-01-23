@@ -65,6 +65,8 @@ final class UserActivateUserProfileHandleTest extends KernelTestCase
 
         /** @var EntityManagerInterface $em */
         //$em = $container->get(EntityManagerInterface::class);
+        // $em->clear();
+        // //$em->close();
 
         /** @var ORMQueryBuilder $ORMQueryBuilder */
         $ORMQueryBuilder = $container->get(ORMQueryBuilder::class);
@@ -146,5 +148,7 @@ final class UserActivateUserProfileHandleTest extends KernelTestCase
         $handle = $UserProfileHandler->handle($ActivateUserProfileDTO);
 
         self::assertTrue(($handle instanceof UserProfile), $handle.': Ошибка UserProfile');
+
+
     }
 }

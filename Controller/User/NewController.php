@@ -23,6 +23,7 @@
 
 namespace BaksDev\Users\Profile\UserProfile\Controller\User;
 
+use BaksDev\Core\Cache\AppCacheInterface;
 use BaksDev\Core\Controller\AbstractController;
 use BaksDev\Core\Listeners\Event\Security\RoleSecurity;
 use BaksDev\Users\Profile\TypeProfile\Entity\TypeProfile;
@@ -32,11 +33,16 @@ use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\UserProfileS
 use BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\UserProfileDTO;
 use BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\UserProfileForm;
 use BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\UserProfileHandler;
+use BaksDev\Users\User\Entity\User;
+use BaksDev\Users\User\Repository\GetUserById\GetUserById;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authentication\Token\SwitchUserToken;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 #[AsController]
 #[RoleSecurity('ROLE_USER')]
@@ -47,6 +53,9 @@ final class NewController extends AbstractController
         Request $request,
         #[MapEntity] TypeProfile $type,
         UserProfileHandler $UserProfileHandler,
+        TokenStorageInterface $tokenStorage,
+        GetUserById $getUserById,
+        AppCacheInterface $cache,
     ): Response
     {
         $UserProfileDTO = new UserProfileDTO();
@@ -65,7 +74,32 @@ final class NewController extends AbstractController
 
         if($form->isSubmitted() && $form->isValid() && $form->has('Save'))
         {
+
             $handle = $UserProfileHandler->handle($UserProfileDTO);
+
+            /** сбрасываем и присваиваем активный профиль с соответствующими только с правами ROLE_USER */
+
+            if($handle instanceof  UserProfile)
+            {
+
+                $AppCache = $cache->init('Authority');
+                $AppCache->delete((string) $this->getCurrentUsr());
+
+                $AppCache = $cache->init((string) $this->getCurrentUsr());
+                $AppCache->clear();
+
+                /** @var User $CurrentUsr */
+                $CurrentUsr = $getUserById->get($this->getCurrentUsr());
+                //$CurrentUsr->setRole(['ROLE_USER']);
+
+                $impersonationToken = new  UsernamePasswordToken(
+                    $CurrentUsr,
+                    "user",
+                    ['ROLE_USER']
+                );
+
+                $tokenStorage->setToken($impersonationToken);
+            }
 
             $this->addFlash
             (

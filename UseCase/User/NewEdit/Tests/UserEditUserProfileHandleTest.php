@@ -140,5 +140,8 @@ final class UserEditUserProfileHandleTest extends KernelTestCase
         $handle = $UserProfileHandler->handle($UserProfileDTO);
 
         self::assertTrue(($handle instanceof UserProfile), $handle.': Ошибка UserProfile');
+
+        $em->clear();
+        //$em->close();
     }
 }
