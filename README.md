@@ -1,4 +1,4 @@
-# BaksDev UserProfile
+# BaksDev Profile Users
 
 ![Version](https://img.shields.io/badge/version-7.0.12-blue) ![php 8.2+](https://img.shields.io/badge/php-min%208.1-red.svg)
 
