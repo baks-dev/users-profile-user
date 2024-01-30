@@ -33,11 +33,17 @@ return static function(FrameworkConfig $framework) {
         ->transport('users-profile-user')
         ->dsn('%env(MESSENGER_TRANSPORT_DSN)%')
         ->options(['queue_name' => 'users-profile-user'])
+        ->failureTransport('failed-users-profile-user')
         ->retryStrategy()
         ->maxRetries(3)
         ->delay(1000)
         ->maxDelay(0)
         ->multiplier(3) // увеличиваем задержку перед каждой повторной попыткой
-        ->service(null);
+        ->service(null)
+
+    ;
+
+    $messenger->transport('failed-users-profile-user')
+        ->dsn('%env(MESSENGER_TRANSPORT_DSN)%');
 
 };
