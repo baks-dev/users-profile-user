@@ -83,7 +83,7 @@ final class CurrentUserProfile implements CurrentUserProfileInterface
      * profile_avatar_cdn - фгаг загрузки файла на CDN
      */
 
-    public function fetchProfileAssociative(UserUid $usr, bool $authority = true): ?array
+    public function fetchProfileAssociative(UserUid $usr, bool $authority = true): bool|array
     {
         $qb = $this->DBALQueryBuilder
             ->createQueryBuilder(self::class)
