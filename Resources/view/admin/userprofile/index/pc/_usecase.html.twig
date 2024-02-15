@@ -26,7 +26,7 @@
 		{% if  is_granted('ROLE_ADMIN') or is_granted('ROLE_USERPROFILE_DELETE') %}
 			<li>
 				<a data-href="{{ path('users-profile-user:admin.userprofile.delete', { id: item.event }) }}"
-						class="dropdown-item modal-link"
+						class="dropdown-item modal-link disabled"
 						data-bs-toggle="modal" data-bs-target="#modal"
 				>
 					{{ 'btn.delete'|trans({}, 'core.btn') }}

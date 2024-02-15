@@ -46,7 +46,7 @@ final class CurrentUserProfileDTO
     private string $username;
 
     /** Местоположение */
-    private string $location;
+    private ?string $location;
 
     /** Аватарка профиля */
     private ?string $avatar;
@@ -78,7 +78,7 @@ final class CurrentUserProfileDTO
         UserUid $usr,
 
         string $username,
-        string $location,
+        ?string $location,
 
         ?string $avatar,
         ?string $ext,
