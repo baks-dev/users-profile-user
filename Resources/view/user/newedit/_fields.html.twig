@@ -29,15 +29,8 @@
 		<div class="card-body">
 	
 	{% endif %}
-	
-	{# РЕНДЕР ПОЛЕЙ #}
-	{# {{ render_field(value.vars.data.type, value.value) }} #}
-	{#{{ render_field(value.vars.data.type, value.value) }}#}
-	
-	{{ form_widget(value) }}
 
-			{#{{ dump(value) }}#}
-	
+	{{ form_widget(value) }}
 
 {% endfor %}
 

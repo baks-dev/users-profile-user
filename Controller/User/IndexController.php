@@ -53,16 +53,12 @@ final class IndexController extends AbstractController
         // Список публичных типов профилей
         $profile = $typeProfileChoice->getUsersTypeProfileChoice();
 
-        //dd($profile);
-
         // Поиск
         $search = new SearchDTO();
         $searchForm = $this->createForm(SearchForm::class, $search);
         $searchForm->handleRequest($request);
 
         // Получаем список
-        //$status = !$request->get('status') ? null : new UserProfileStatus($request->get('status'));
-
         $query = $userProfileByUser
             ->search($search)
             ->findAllUserProfile();
@@ -70,7 +66,6 @@ final class IndexController extends AbstractController
         return $this->render(
             [
                 'profiles' => $profile,
-                //'status' => $status,
                 'query' => $query,
                 'search' => $searchForm->createView(),
             ]
