@@ -78,8 +78,6 @@ final class UserProfileByUser implements UserProfileByUserInterface
             ->addSelect('userprofile.event')
             ->from(UserProfile::class, 'userprofile');
 
-        /* INFO */
-
 
         $dbal
             ->addSelect('info.url')
@@ -109,7 +107,6 @@ final class UserProfileByUser implements UserProfileByUserInterface
                 'userprofile_event.id = userprofile.event'
             );
 
-        /* PERSONAL */
 
         $dbal
             ->addSelect('personal.username')
@@ -121,25 +118,26 @@ final class UserProfileByUser implements UserProfileByUserInterface
                 'personal.event = userprofile.event'
             );
 
-
-        /* AVATAR */
-        $dbal->addSelect("CONCAT('/upload/".UserProfileAvatar::TABLE."' , '/', avatar.name) AS avatar_name");
-        $dbal->addSelect('avatar.ext AS avatar_ext');
-        $dbal->addSelect('avatar.cdn AS avatar_cdn');
-
-        $dbal->leftJoin(
-            'userprofile_event',
-            UserProfileAvatar::class,
-            'avatar',
-            'avatar.event = userprofile_event.id'
-        );
+        $dbal
+            ->addSelect("CONCAT('/upload/".$dbal->table(UserProfileAvatar::class)."' , '/', avatar.name) AS avatar_name")
+            ->addSelect('avatar.ext AS avatar_ext')
+            ->addSelect('avatar.cdn AS avatar_cdn')
+            ->leftJoin(
+                'userprofile_event',
+                UserProfileAvatar::class,
+                'avatar',
+                'avatar.event = userprofile_event.id'
+            );
 
         /** Аккаунт пользователя */
 
-        /* ACCOUNT */
-        $dbal->join('info', Account::class, 'account', 'account.id = info.usr');
+        $dbal->leftJoin(
+            'info',
+            Account::class,
+            'account',
+            'account.id = info.usr'
+        );
 
-        /* ACCOUNT EVENT */
         $dbal
             ->addSelect('account_event.id as account_id')
             ->addSelect('account_event.email')
@@ -150,9 +148,9 @@ final class UserProfileByUser implements UserProfileByUserInterface
                 'account_event.id = account.event'
             );
 
+
         /** Тип профиля */
 
-        /* TypeProfile */
         $dbal->join(
             'userprofile_event',
             TypeProfile::class,
@@ -160,15 +158,7 @@ final class UserProfileByUser implements UserProfileByUserInterface
             'type.id = userprofile_event.type'
         );
 
-        /* TypeProfileEvent */
-        //        $qb->join(
-        //            'type',
-        //            TypeProfileEvent::class,
-        //            'type_event',
-        //            'type_event.id = type.event'
-        //        );
 
-        /* TypeProfileTrans */
         $dbal
             ->addSelect('type_trans.name as profile_type')
             ->join(
@@ -193,7 +183,6 @@ final class UserProfileByUser implements UserProfileByUserInterface
         $dbal->addOrderBy('info.active', 'DESC');
         $dbal->addOrderBy('info.status', 'ASC');
         $dbal->addOrderBy('userprofile_event.id', 'DESC');
-
 
         return $this->paginator->fetchAllAssociative($dbal);
     }
