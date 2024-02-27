@@ -64,9 +64,6 @@ final class UserProfileListener
         $token = $this->security->getToken();
         $usr = $token instanceof SwitchUserToken ? $token->getOriginalToken()->getUser() : $token?->getUser();
 
-
-
-
         if($usr)
         {
             $data = null;
