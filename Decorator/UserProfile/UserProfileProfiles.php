@@ -46,8 +46,7 @@ final class UserProfileProfiles implements UserProfileInterface
     /** Возвращает значение (value) */
     public function getValue(UserUid $usr): bool|array
     {
-        $current = $this->currentAllUserProfiles->fetchUserProfilesAllAssociative($usr);
-        return count($current) > 1 ? $current : false;
+        return $this->currentAllUserProfiles->fetchUserProfilesAllAssociative($usr);
     }
 
     public static function priority(): int
