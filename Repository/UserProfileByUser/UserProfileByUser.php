@@ -38,6 +38,7 @@ use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
 use BaksDev\Users\User\Type\Id\UserUid;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\Security\Core\Authentication\Token\SwitchUserToken;
 
 final class UserProfileByUser implements UserProfileByUserInterface
 {
@@ -65,9 +66,12 @@ final class UserProfileByUser implements UserProfileByUserInterface
         return $this;
     }
 
+
     public function findAllUserProfile(?UserProfileStatus $status = null): PaginatorInterface
     {
-        $usr = $this->security->getUser();
+        /* Показываем только собственные профили пользователя */
+        $token = $this->security->getToken();
+        $usr = $token instanceof SwitchUserToken ? $token->getOriginalToken()->getUser() : $this->security->getUser();
 
         $dbal = $this->DBALQueryBuilder
             ->createQueryBuilder(self::class)
