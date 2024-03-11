@@ -10,12 +10,6 @@
 	{{ 'user.page.index'|trans }}
 {% endblock %}
 
-{# ---- CSS ------------------------------------------------------------ #}
-{% block stylesheets %}
-	{# <link href="{{ path(app.request.attributes.get('_route')~'.css') }}" rel="stylesheet"> #}
-{% endblock %}
-
-
 
 {# ---- КОНТЕНТ-БЛОК ------------------------------------------------------------ #}
 {% block content %}
@@ -25,5 +19,5 @@
 
 
 {% block javascript %}
-<script async nonce="{{ csp_nonce() }}" data-src="/assets/js/copy.min.js?v={{ version }}" class="lazy"></script>
+<script nonce='{{ csp_nonce() }}' async  data-src="/assets/js/copy.min.js?v={{ version }}" class="lazy"></script>
 {% endblock %}

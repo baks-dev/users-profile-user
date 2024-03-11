@@ -72,6 +72,12 @@ final class CreateUserProfileByRegistration
 
         $this->entityManager->clear();
         $AccountEvent = $this->entityManager->getRepository(AccountEvent::class)->find($message->getEvent());
+
+        if(!$AccountEvent)
+        {
+            return;
+        }
+
         $AccountEmail = $AccountEvent->getEmail();
 
         /** Создаем профиль пользователя по умолчанию */
@@ -81,7 +87,6 @@ final class CreateUserProfileByRegistration
 
         /** @var InfoDTO $InfoDTO */
         $InfoDTO = $UserProfileDTO->getInfo();
-        $InfoDTO->activate();
         $InfoDTO->setUrl(uniqid('', false));
         $InfoDTO->setUsr($UserUid);
         $InfoDTO->setStatus(new UserProfileStatus(UserProfileStatusActive::class));
