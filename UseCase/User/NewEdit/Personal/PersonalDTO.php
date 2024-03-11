@@ -31,6 +31,7 @@ use BaksDev\Reference\Gender\Type\Gender;
 use DateTimeImmutable;
 use Symfony\Component\Validator\Constraints as Assert;
 
+/** @see UserProfilePersonal */
 final class PersonalDTO implements UserProfilePersonalInterface
 {
 	/** Никнейм пользователя */
@@ -51,13 +52,13 @@ final class PersonalDTO implements UserProfilePersonalInterface
     /**
      * GPS широта.
      */
-    #[Assert\NotBlank]
+    //#[Assert\NotBlank]
     private ?GpsLatitude $latitude = null;
 
     /**
      * GPS долгота.
      */
-    #[Assert\NotBlank]
+    //#[Assert\NotBlank]
     private ?GpsLongitude $longitude = null;
 	
 	

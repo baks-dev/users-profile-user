@@ -99,7 +99,6 @@ final class UserProfileHandler extends AbstractHandler
             $infoDTO->updateUrlUniq(); /* Обновляем URL на уникальный с префиксом */
         }
 
-
         /* Загружаем файл аватарки профиля */
         if(method_exists($command, 'getAvatar'))
         {
