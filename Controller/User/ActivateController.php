@@ -85,7 +85,6 @@ final class ActivateController extends AbstractController
 
         if($UserProfile instanceof EntityUserProfile\UserProfile)
         {
-
             $AppCache = $cache->init((string) $this->getCurrentUsr());
             $AppCache->clear();
 
@@ -116,14 +115,7 @@ final class ActivateController extends AbstractController
                 $tokenStorage->setToken($impersonationToken);
             }
 
-
-
-
             $this->addFlash('success', 'user.success.activate', 'user.user.profile');
-        }
-        else
-        {
-            $this->addFlash('danger', 'user.danger.activate', 'user.user.profile', $UserProfile);
         }
 
         return $this->redirectToReferer();
