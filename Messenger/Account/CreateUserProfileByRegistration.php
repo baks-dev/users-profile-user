@@ -57,7 +57,7 @@ final class CreateUserProfileByRegistration
         $this->userVerify = $userVerify;
     }
 
-    /**
+    /**куы
      * Создаем профиль пользователя после регистрации с типом "Пользователь"
      */
     public function __invoke(ConfirmationAccountMessage $message): void
@@ -71,6 +71,7 @@ final class CreateUserProfileByRegistration
         }
 
         $this->entityManager->clear();
+
         $AccountEvent = $this->entityManager->getRepository(AccountEvent::class)->find($message->getEvent());
 
         if(!$AccountEvent)
