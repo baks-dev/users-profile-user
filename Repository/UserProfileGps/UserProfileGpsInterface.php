@@ -27,5 +27,5 @@ use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 
 interface UserProfileGpsInterface
 {
-    public function findUserProfileGps(UserProfileUid $profile): array|bool;
+    public function findUserProfileGps(UserProfileUid|string $profile): array|bool;
 }

@@ -41,8 +41,13 @@ final class UserProfileGps implements UserProfileGpsInterface
         $this->DBALQueryBuilder = $DBALQueryBuilder;
     }
 
-    public function findUserProfileGps(UserProfileUid $profile): array|bool
+    public function findUserProfileGps(UserProfileUid|string $profile): array|bool
     {
+        if(is_string($profile))
+        {
+            $profile = new UserProfileUid($profile);
+        }
+
         $dbal = $this->DBALQueryBuilder->createQueryBuilder(self::class);
 
         $dbal
