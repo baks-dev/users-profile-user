@@ -30,7 +30,7 @@ use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\UserProfileS
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
 use BaksDev\Users\User\Type\Id\UserUid;
 
-final class CurrentAllUserProfilesByUser implements CurrentAllUserProfilesByUserInterface
+final class CurrentAllUserProfilesByUserRepository implements CurrentAllUserProfilesByUserInterface
 {
 
     private DBALQueryBuilder $DBALQueryBuilder;

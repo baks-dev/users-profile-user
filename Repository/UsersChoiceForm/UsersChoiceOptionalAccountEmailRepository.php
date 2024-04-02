@@ -32,7 +32,7 @@ use BaksDev\Users\User\Entity\User;
 use BaksDev\Users\User\Type\Id\UserUid;
 use Doctrine\ORM\EntityManagerInterface;
 
-final class UsersChoiceOptionalAccountEmail implements UsersChoiceOptionalAccountEmailInterface
+final class UsersChoiceOptionalAccountEmailRepository implements UsersChoiceOptionalAccountEmailInterface
 {
     private EntityManagerInterface $entityManager;
 

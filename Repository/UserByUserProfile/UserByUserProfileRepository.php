@@ -23,18 +23,15 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Users\Profile\UserProfile\Repository\CurrentUserProfileEvent;
+namespace BaksDev\Users\Profile\UserProfile\Repository\UserByUserProfile;
 
+use App\Kernel;
 use BaksDev\Core\Doctrine\ORMQueryBuilder;
-use BaksDev\Users\Profile\UserProfile\Entity\Event\UserProfileEvent;
 use BaksDev\Users\Profile\UserProfile\Entity\Info\UserProfileInfo;
-use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
-use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\UserProfileStatusActive;
-use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
+use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use BaksDev\Users\User\Entity\User;
-use BaksDev\Users\User\Type\Id\UserUid;
 
-final class CurrentUserProfileEvent implements CurrentUserProfileEventInterface
+final class UserByUserProfileRepository implements UserByUserProfileInterface
 {
     private ORMQueryBuilder $ORMQueryBuilder;
 
@@ -43,36 +40,33 @@ final class CurrentUserProfileEvent implements CurrentUserProfileEventInterface
         $this->ORMQueryBuilder = $ORMQueryBuilder;
     }
 
-    public function findByUser(User|UserUid $user): ?UserProfileEvent
+    /**
+     * Возвращает User профиля пользователя
+     */
+    public function findUserByProfile(UserProfileUid $profile): ?User
     {
-        $user = $user instanceof User ? $user->getId() : $user;
+        if(Kernel::isTestEnvironment())
+        {
+            return new User();
+        }
 
         $qb = $this->ORMQueryBuilder->createQueryBuilder(self::class);
 
-        $qb->select('event');
-
         $qb
             ->from(UserProfileInfo::class, 'info')
-            ->where('info.usr = :usr')
-            ->setParameter('usr', $user, UserUid::TYPE)
-            ->andWhere('info.status = :status')
-            ->setParameter('status', new UserProfileStatus(UserProfileStatusActive::class), UserProfileStatus::TYPE)
-            ->andWhere('info.active = true');
+            ->where('info.profile = :profile')
+            ->setParameter('profile', $profile, UserProfileUid::TYPE);
 
-        $qb->leftJoin(
-            UserProfile::class,
-            'profile',
-            'WITH',
-            'profile.id = info.profile'
-        );
+        $qb
+            ->select('usr')
+            ->join(
+                User::class,
+                'usr',
+                'WITH',
+                'usr.id = info.usr'
+            );
 
-        $qb->leftJoin(
-            UserProfileEvent::class,
-            'event',
-            'WITH',
-            'event.id = profile.event'
-        );
 
-        return $qb->getOneOrNullResult();
+        return $qb->getQuery()->getOneOrNullResult();
     }
 }

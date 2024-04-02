@@ -40,7 +40,7 @@ use BaksDev\Users\User\Type\Id\UserUid;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Authentication\Token\SwitchUserToken;
 
-final class UserProfileByUser implements UserProfileByUserInterface
+final class UserProfileByUserRepository implements UserProfileByUserInterface
 {
 
     private PaginatorInterface $paginator;

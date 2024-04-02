@@ -38,7 +38,7 @@ use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use Generator;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-final class UserProfileByAuthority implements UserProfileByAuthorityInterface
+final class UserProfileByAuthorityRepository implements UserProfileByAuthorityInterface
 {
     private DBALQueryBuilder $DBALQueryBuilder;
 

@@ -34,18 +34,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class FieldValueForm implements FieldValueFormInterface
 {
-    private EntityManagerInterface $entityManager;
-
-    private TranslatorInterface $translator;
-
-
-//    public function __construct(EntityManagerInterface $entityManager, TranslatorInterface $translator)
-//    {
-//        $this->entityManager = $entityManager;
-//        $this->translator = $translator;
-//    }
     private ORMQueryBuilder $ORMQueryBuilder;
-
 
     public function __construct(ORMQueryBuilder $ORMQueryBuilder) {
         $this->ORMQueryBuilder = $ORMQueryBuilder;
@@ -57,12 +46,6 @@ final class FieldValueForm implements FieldValueFormInterface
             ->createQueryBuilder(self::class)
             ->bindLocal()
         ;
-
-        /** ЛОКАЛЬ */
-        //$locale = new Locale($this->translator->getLocale());
-       // $qb->setParameter('local', $locale, Locale::TYPE);
-
-        //$qb->select('profile, event');
 
         $select = sprintf(
 

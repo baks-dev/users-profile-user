@@ -34,7 +34,7 @@ use BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\UserProfileDTO;
 use BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\UserProfileForm;
 use BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\UserProfileHandler;
 use BaksDev\Users\User\Entity\User;
-use BaksDev\Users\User\Repository\GetUserById\GetUserById;
+use BaksDev\Users\User\Repository\GetUserById\GetUserByIdRepository;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -54,7 +54,7 @@ final class NewController extends AbstractController
         #[MapEntity] TypeProfile $type,
         UserProfileHandler $UserProfileHandler,
         TokenStorageInterface $tokenStorage,
-        GetUserById $getUserById,
+        GetUserByIdRepository $getUserById,
         AppCacheInterface $cache,
     ): Response
     {

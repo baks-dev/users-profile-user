@@ -30,7 +30,7 @@ use BaksDev\Users\Profile\UserProfile\Entity\Personal\UserProfilePersonal;
 use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 
-final class UserProfileGps implements UserProfileGpsInterface
+final class UserProfileGpsRepository implements UserProfileGpsInterface
 {
     private DBALQueryBuilder $DBALQueryBuilder;
 

@@ -36,7 +36,7 @@ use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\UserProfileS
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
 use BaksDev\Users\User\Type\Id\UserUid;
 
-final class UserProfileChoice implements UserProfileChoiceInterface
+final class UserProfileChoiceRepository implements UserProfileChoiceInterface
 {
 
     private ORMQueryBuilder $ORMQueryBuilder;

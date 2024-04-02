@@ -36,7 +36,7 @@ use BaksDev\Users\Profile\UserProfile\Type\Event\UserProfileEventUid;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-final class UserProfileByEvent implements UserProfileByEventInterface
+final class UserProfileByEventRepository implements UserProfileByEventInterface
 {
     private EntityManagerInterface $entityManager;
     private TranslatorInterface $translator;

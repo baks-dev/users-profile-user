@@ -33,7 +33,7 @@ use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\UserProfileS
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
-final class AdminUserProfile implements AdminUserProfileInterface
+final class AdminUserProfileRepository implements AdminUserProfileInterface
 {
     private DBALQueryBuilder $DBALQueryBuilder;
     private string $HOST;

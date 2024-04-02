@@ -43,7 +43,7 @@ use BaksDev\Users\User\Type\Id\UserUid;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
-final class CurrentUserProfile implements CurrentUserProfileInterface
+final class CurrentUserProfileRepository implements CurrentUserProfileInterface
 {
     private ORMQueryBuilder $ORMQueryBuilder;
     private DBALQueryBuilder $DBALQueryBuilder;

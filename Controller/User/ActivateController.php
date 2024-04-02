@@ -29,7 +29,7 @@ use BaksDev\Core\Listeners\Event\Security\RoleSecurity;
 use BaksDev\Users\Profile\UserProfile\Entity as EntityUserProfile;
 use BaksDev\Users\Profile\UserProfile\UseCase\User\Activate\ActivateUserProfileDTO;
 use BaksDev\Users\Profile\UserProfile\UseCase\User\Activate\ActivateUserProfileHandler;
-use BaksDev\Users\User\Repository\GetUserById\GetUserById;
+use BaksDev\Users\User\Repository\GetUserById\GetUserByIdRepository;
 use BaksDev\Users\User\Type\Id\UserUid;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
@@ -56,7 +56,7 @@ final class ActivateController extends AbstractController
         EntityManagerInterface $entityManager,
         AppCacheInterface $cache,
         TokenStorageInterface $tokenStorage,
-        GetUserById $getUserById,
+        GetUserByIdRepository $getUserById,
         RouterInterface $router,
     ): Response
     {

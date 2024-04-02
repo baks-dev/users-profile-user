@@ -39,7 +39,7 @@ use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-final class UserProfileById implements UserProfileByIdInterface
+final class UserProfileByIdRepository implements UserProfileByIdInterface
 {
 
     private DBALQueryBuilder $DBALQueryBuilder;

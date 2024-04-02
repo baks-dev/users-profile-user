@@ -43,7 +43,7 @@ use BaksDev\Users\Profile\UserProfile\Entity\Personal\UserProfilePersonal;
 use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
 
-final class AllUserProfile implements AllUserProfileInterface
+final class AllUserProfileRepository implements AllUserProfileInterface
 {
 
     private Paginator $paginator;

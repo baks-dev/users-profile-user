@@ -21,52 +21,37 @@
  *  THE SOFTWARE.
  */
 
-declare(strict_types=1);
+namespace BaksDev\Users\Profile\UserProfile\Repository\UniqProfileUrl;
 
-namespace BaksDev\Users\Profile\UserProfile\Repository\UserByUserProfile;
-
-use App\Kernel;
-use BaksDev\Core\Doctrine\ORMQueryBuilder;
 use BaksDev\Users\Profile\UserProfile\Entity\Info\UserProfileInfo;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
-use BaksDev\Users\User\Entity\User;
+use Doctrine\DBAL\Connection;
 
-final class UserByUserProfile implements UserByUserProfileInterface
+final class UniqProfileUrlRepository implements UniqProfileUrlInterface
 {
-    private ORMQueryBuilder $ORMQueryBuilder;
-
-    public function __construct(ORMQueryBuilder $ORMQueryBuilder)
-    {
-        $this->ORMQueryBuilder = $ORMQueryBuilder;
-    }
-
-    /**
-     * Возвращает User профиля пользователя
-     */
-    public function findUserByProfile(UserProfileUid $profile): ?User
-    {
-        if(Kernel::isTestEnvironment())
-        {
-            return new User();
-        }
-
-        $qb = $this->ORMQueryBuilder->createQueryBuilder(self::class);
-
-        $qb
-            ->from(UserProfileInfo::class, 'info')
-            ->where('info.profile = :profile')
-            ->setParameter('profile', $profile, UserProfileUid::TYPE);
-
-        $qb
-            ->select('usr')
-            ->join(
-                User::class,
-                'usr',
-                'WITH',
-                'usr.id = info.usr'
-            );
-
-
-        return $qb->getQuery()->getOneOrNullResult();
-    }
+	private Connection $connection;
+	
+	
+	public function __construct(Connection $connection)
+	{
+		$this->connection = $connection;
+	}
+	
+	
+	public function exist(string $url, UserProfileUid $profile) : bool
+	{
+		$qbSub = $this->connection->createQueryBuilder();
+		$qbSub->select('1');
+		$qbSub->from(UserProfileInfo::TABLE, 'info');
+		$qbSub->where('info.url = :url');
+		$qbSub->andWhere('info.profile != :profile');
+		
+		$qb = $this->connection->createQueryBuilder();
+		$qb->select('EXISTS('.$qbSub->getSQL().')');
+		$qb->setParameter('url', $url);
+		$qb->setParameter('profile', $profile);
+		
+		return (bool) $qb->executeQuery()->fetchOne();
+	}
+	
 }

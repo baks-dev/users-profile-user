@@ -29,7 +29,7 @@ use BaksDev\Core\Doctrine\DBALQueryBuilder;
 use BaksDev\Users\Profile\UserProfile\Entity\Info\UserProfileInfo;
 use BaksDev\Users\User\Type\Id\UserUid;
 
-final class ExistUserProfileByUser implements ExistUserProfileByUserInterface
+final class ExistUserProfileByUserRepository implements ExistUserProfileByUserInterface
 {
     private DBALQueryBuilder $DBALQueryBuilder;
 
