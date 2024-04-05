@@ -91,19 +91,15 @@ final class UserProfileHandler extends AbstractHandler
 
 
         /* Если у текущего пользователя имеется активный профиль - деактивируем */
-        $InfoActive = $this->entityManager->getRepository(UserProfileInfo::class)
-            ->findBy(['usr' => $infoDTO->getUsr(), 'active' => true]);
+        $InfoActive = $this
+            ->entityManager
+            ->getRepository(UserProfileInfo::class)
+            ->findOneBy(['usr' => $infoDTO->getUsr(), 'active' => true]);
 
-        if($InfoActive)
+        if($InfoActive && !$InfoActive->getProfile()?->equals($this->main->getId()))
         {
-            /** @var UserProfileInfo $deactivate */
-            foreach($InfoActive as $deactivate)
-            {
-                $deactivate->deactivate();
-            }
+            $InfoActive->deactivate();
         }
-
-
 
         /* Загружаем файл аватарки профиля */
 

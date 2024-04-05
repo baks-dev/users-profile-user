@@ -123,7 +123,8 @@ final class UserProfileHandler extends AbstractHandler
             ->getRepository(UserProfileInfo::class)
             ->findOneBy(['usr' => $infoDTO->getUsr(), 'active' => true]);
 
-        if($InfoActive && !$InfoActive->getProfile()?->equals($UserProfileInfo->getProfile()))
+        //if($InfoActive && !$InfoActive->getProfile()?->equals($UserProfileInfo->getProfile()))
+        if($InfoActive && !$InfoActive->getProfile()?->equals($this->main->getId()))
         {
             $InfoActive->deactivate();
         }
