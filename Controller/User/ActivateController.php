@@ -27,6 +27,7 @@ use BaksDev\Core\Cache\AppCacheInterface;
 use BaksDev\Core\Controller\AbstractController;
 use BaksDev\Core\Listeners\Event\Security\RoleSecurity;
 use BaksDev\Users\Profile\UserProfile\Entity as EntityUserProfile;
+use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use BaksDev\Users\Profile\UserProfile\UseCase\User\Activate\ActivateUserProfileDTO;
 use BaksDev\Users\Profile\UserProfile\UseCase\User\Activate\ActivateUserProfileHandler;
 use BaksDev\Users\User\Repository\GetUserById\GetUserByIdRepository;
@@ -63,7 +64,7 @@ final class ActivateController extends AbstractController
 
         $AppCache = $cache->init('Authority');
         $AppCache->delete((string) $this->getCurrentUsr());
-
+        $AppCache->getItem((string) $this->getCurrentUsr());
 
         $profile = new ActivateUserProfileDTO();
         $Event->getDto($profile);
@@ -98,6 +99,7 @@ final class ActivateController extends AbstractController
             if($token instanceof SwitchUserToken)
             {
                 $CurrentUsr = $token->getOriginalToken()->getUser();
+                $CurrentUsr?->setProfile($UserProfile->getId());
             }
             else
             {
@@ -106,6 +108,10 @@ final class ActivateController extends AbstractController
 
             if($CurrentUsr)
             {
+
+                $AppCache = $cache->init((string) $CurrentUsr);
+                $AppCache->clear();
+
                 $impersonationToken = new  UsernamePasswordToken(
                     $CurrentUsr,
                     "user",

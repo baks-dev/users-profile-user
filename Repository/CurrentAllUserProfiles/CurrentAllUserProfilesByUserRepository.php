@@ -28,25 +28,32 @@ use BaksDev\Core\Doctrine\ORMQueryBuilder;
 use BaksDev\Users\Profile\UserProfile\Entity;
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\UserProfileStatusActive;
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
+use BaksDev\Users\User\Entity\User;
 use BaksDev\Users\User\Type\Id\UserUid;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authentication\Token\SwitchUserToken;
 
 final class CurrentAllUserProfilesByUserRepository implements CurrentAllUserProfilesByUserInterface
 {
 
     private DBALQueryBuilder $DBALQueryBuilder;
     private ORMQueryBuilder $ORMQueryBuilder;
+    private TokenStorageInterface $tokenStorage;
 
     public function __construct(
         DBALQueryBuilder $DBALQueryBuilder,
-        ORMQueryBuilder $ORMQueryBuilder
+        ORMQueryBuilder $ORMQueryBuilder,
+        TokenStorageInterface $tokenStorage,
     )
     {
 
         $this->DBALQueryBuilder = $DBALQueryBuilder;
         $this->ORMQueryBuilder = $ORMQueryBuilder;
+        $this->tokenStorage = $tokenStorage;
     }
 
-    /** Список профилей пользователя в меню.
+    /**
+     * Список личных профилей пользователя в меню.
      *
      * Возвращает массив с ключами: <br>
      * user_profile_event - идентификатор события для активации профиля <br>
@@ -54,13 +61,39 @@ final class CurrentAllUserProfilesByUserRepository implements CurrentAllUserProf
      */
     public function fetchUserProfilesAllAssociative(UserUid $usr): ?array
     {
+
+        $token = $this->tokenStorage->getToken();
+
+        /** @var User $usr */
+        $User = $token?->getUser();
+
+        if(!$User)
+        {
+            return null;
+        }
+
+        $UserUid = $User->getId();
+
+        if($token instanceof SwitchUserToken)
+        {
+            /** @var User $originalUser */
+            $originalUser = $token->getOriginalToken()->getUser();
+            $UserUid = $originalUser->getId();
+
+        }
+
+        //dump((string) $UserUid);
+
         $qb = $this->DBALQueryBuilder->createQueryBuilder(self::class);
 
         $qb->addSelect('userprofile.id AS user_profile_id');
         $qb->addSelect('userprofile.event AS user_profile_event');
 
         $qb->from(Entity\Info\UserProfileInfo::TABLE, 'userprofile_info');
-        $qb->where('userprofile_info.usr = :usr AND userprofile_info.status = :status');
+        $qb->where('userprofile_info.usr = :usr AND userprofile_info.status = :status AND userprofile_info.active IS NOT TRUE');
+
+        $qb->setParameter('usr', $UserUid, UserUid::TYPE);
+        $qb->setParameter('status', new UserProfileStatus(UserProfileStatusActive::class), UserProfileStatus::TYPE);
 
         $qb->join(
             'userprofile_info',
@@ -69,8 +102,6 @@ final class CurrentAllUserProfilesByUserRepository implements CurrentAllUserProf
             'userprofile.id = userprofile_info.profile'
         );
 
-        $qb->setParameter('usr', $usr, UserUid::TYPE);
-        $qb->setParameter('status', new UserProfileStatus(UserProfileStatusActive::class), UserProfileStatus::TYPE);
 
         $qb->join(
             'userprofile',
@@ -96,9 +127,5 @@ final class CurrentAllUserProfilesByUserRepository implements CurrentAllUserProf
         return $qb->enableCache('users-profile-user', 86400)->fetchAllAssociative();
 
     }
-
-
-
-
 
 }
