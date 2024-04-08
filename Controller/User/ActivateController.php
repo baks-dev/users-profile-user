@@ -57,11 +57,9 @@ final class ActivateController extends AbstractController
         EntityManagerInterface $entityManager,
         AppCacheInterface $cache,
         TokenStorageInterface $tokenStorage,
-        GetUserByIdRepository $getUserById,
-        RouterInterface $router,
+        GetUserByIdRepository $getUserById
     ): Response
     {
-
         $AppCache = $cache->init('Authority');
         $AppCache->delete((string) $this->getCurrentUsr());
         $AppCache->getItem((string) $this->getCurrentUsr());
@@ -108,7 +106,6 @@ final class ActivateController extends AbstractController
 
             if($CurrentUsr)
             {
-
                 $AppCache = $cache->init((string) $CurrentUsr);
                 $AppCache->clear();
 

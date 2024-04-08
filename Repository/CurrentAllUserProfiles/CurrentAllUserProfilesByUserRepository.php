@@ -90,7 +90,7 @@ final class CurrentAllUserProfilesByUserRepository implements CurrentAllUserProf
         $qb->addSelect('userprofile.event AS user_profile_event');
 
         $qb->from(Entity\Info\UserProfileInfo::TABLE, 'userprofile_info');
-        $qb->where('userprofile_info.usr = :usr AND userprofile_info.status = :status AND userprofile_info.active IS NOT TRUE');
+        $qb->where('userprofile_info.usr = :usr AND userprofile_info.status = :status');
 
         $qb->setParameter('usr', $UserUid, UserUid::TYPE);
         $qb->setParameter('status', new UserProfileStatus(UserProfileStatusActive::class), UserProfileStatus::TYPE);
