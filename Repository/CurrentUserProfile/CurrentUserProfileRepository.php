@@ -145,7 +145,7 @@ final class CurrentUserProfileRepository implements CurrentUserProfileInterface
 
         $qb->addSelect('profile.id AS user_profile_id'); /* ID профиля */
         $qb->addSelect('profile.event AS user_profile_event'); /* ID события профиля */
-        $qb->join(
+        $qb->leftJoin(
             'profile_info',
             UserProfile::TABLE,
             'profile',
@@ -155,7 +155,7 @@ final class CurrentUserProfileRepository implements CurrentUserProfileInterface
 
         /* Тип профиля */
         $qb->addSelect('profile_event.type as profile_type_id');
-        $qb->join(
+        $qb->leftJoin(
             'profile',
             UserProfileEvent::TABLE,
             'profile_event',
@@ -164,7 +164,7 @@ final class CurrentUserProfileRepository implements CurrentUserProfileInterface
 
         $qb->addSelect('profile_personal.username AS profile_username'); /* Username */
 
-        $qb->join(
+        $qb->leftJoin(
             'profile',
             UserProfilePersonal::TABLE,
             'profile_personal',
@@ -184,14 +184,14 @@ final class CurrentUserProfileRepository implements CurrentUserProfileInterface
         );
 
 
-        $qb->join(
+        $qb->leftJoin(
             'profile_event',
             TypeProfile::TABLE,
             'profiletype',
             'profiletype.id = profile_event.type'
         );
 
-        $qb->join(
+        $qb->leftJoin(
             'profiletype',
             TypeProfileEvent::TABLE,
             'profiletype_event',
@@ -263,7 +263,7 @@ final class CurrentUserProfileRepository implements CurrentUserProfileInterface
 
         $qb->setParameter('profile_status', new UserProfileStatus(UserProfileStatusActive::class), UserProfileStatus::TYPE);
 
-        $qb->join(
+        $qb->leftJoin(
 
             UserProfile::class,
             'profile',
@@ -271,7 +271,7 @@ final class CurrentUserProfileRepository implements CurrentUserProfileInterface
             'profile.id = profile_info.profile'
         );
 
-        $qb->join(
+        $qb->leftJoin(
 
             UserProfileEvent::class,
             'profile_event',
@@ -279,7 +279,7 @@ final class CurrentUserProfileRepository implements CurrentUserProfileInterface
             'profile_event.id = profile.event'
         );
 
-        $qb->join(
+        $qb->leftJoin(
 
             UserProfilePersonal::class,
             'profile_personal',
@@ -297,14 +297,14 @@ final class CurrentUserProfileRepository implements CurrentUserProfileInterface
 
         /* Тип профиля */
 
-        $qb->join(
+        $qb->leftJoin(
             TypeProfile::class,
             'profiletype',
             'WITH',
             'profiletype.id = profile_event.type'
         );
 
-        $qb->join(
+        $qb->leftJoin(
 
             TypeProfileEvent::class,
             'profiletype_event',
