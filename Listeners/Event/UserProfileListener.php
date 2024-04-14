@@ -30,6 +30,7 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\SwitchUserToken;
 use Twig\Environment;
 
@@ -39,29 +40,27 @@ use Twig\Environment;
 #[AsEventListener(event: ControllerEvent::class)]
 final class UserProfileListener
 {
-    //private TokenStorageInterface $tokenStorage;
+    private TokenStorageInterface $tokenStorage;
     private Environment $twig;
     private iterable $profiles;
     private Security $security;
 
     public function __construct(
         #[TaggedIterator('baks.user.profile', defaultPriorityMethod: 'priority')] iterable $profiles,
-        //TokenStorageInterface $tokenStorage,
-        Security $security,
+        TokenStorageInterface $tokenStorage,
         Environment $twig,
     )
     {
-        //$this->tokenStorage = $tokenStorage;
+        $this->tokenStorage = $tokenStorage;
         $this->twig = $twig;
         $this->profiles = $profiles;
-        $this->security = $security;
     }
 
     public function onKernelController(ControllerEvent $event): void
     {
         /** @var User $usr */
-        //$usr = $this->tokenStorage->getToken()?->getUser();
-        $token = $this->security->getToken();
+        $token = $this->tokenStorage->getToken();
+
         $usr = $token instanceof SwitchUserToken ? $token->getOriginalToken()->getUser() : $token?->getUser();
 
         if($usr)
