@@ -26,8 +26,8 @@ declare(strict_types=1);
 namespace BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\Tests;
 
 use BaksDev\Core\Validator\ValidatorCollectionInterface;
-use BaksDev\Products\Category\Type\Id\ProductCategoryUid;
-use BaksDev\Products\Category\Type\Section\Field\Id\ProductCategorySectionFieldUid;
+use BaksDev\Products\Category\Type\Id\CategoryProductUid;
+use BaksDev\Products\Category\Type\Section\Field\Id\CategoryProductSectionFieldUid;
 use BaksDev\Users\Profile\TypeProfile\Type\Id\TypeProfileUid;
 use BaksDev\Users\Profile\TypeProfile\Type\Section\Field\Id\TypeProfileSectionFieldUid;
 use BaksDev\Users\Profile\UserProfile\Entity\Event\UserProfileEvent;

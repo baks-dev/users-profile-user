@@ -27,8 +27,8 @@ namespace BaksDev\Users\Profile\UserProfile\UseCase\User\Delete\Tests;
 
 use BaksDev\Core\Doctrine\ORMQueryBuilder;
 use BaksDev\Core\Validator\ValidatorCollectionInterface;
-use BaksDev\Products\Category\Type\Id\ProductCategoryUid;
-use BaksDev\Products\Category\Type\Section\Field\Id\ProductCategorySectionFieldUid;
+use BaksDev\Products\Category\Type\Id\CategoryProductUid;
+use BaksDev\Products\Category\Type\Section\Field\Id\CategoryProductSectionFieldUid;
 use BaksDev\Reference\Gender\Type\Genders\Collection\GenderCollection;
 use BaksDev\Users\Profile\TypeProfile\Type\Id\TypeProfileUid;
 use BaksDev\Users\Profile\TypeProfile\Type\Section\Field\Id\TypeProfileSectionFieldUid;

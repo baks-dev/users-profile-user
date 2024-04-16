@@ -1,6 +1,6 @@
 # BaksDev Profile Users
 
-[![Version](https://img.shields.io/badge/version-7.0.39-blue)](https://github.com/baks-dev/users-profile-user/releases)
+[![Version](https://img.shields.io/badge/version-7.0.40-blue)](https://github.com/baks-dev/users-profile-user/releases)
 ![php 8.2+](https://img.shields.io/badge/php-min%208.1-red.svg)
 
 Модуль профилей пользователя
