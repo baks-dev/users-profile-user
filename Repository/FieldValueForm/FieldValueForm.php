@@ -104,7 +104,7 @@ final class FieldValueForm implements FieldValueFormInterface
         ///$qb->orderBy('section.sort');
         //$qb->addOrderBy('field.sort');
 
-        return $qb->enableCache('users-profile-user', 86400)->getOneOrNullResult();
+        return $qb->enableCache('users-profile-type', 86400)->getOneOrNullResult();
     }
 
 
