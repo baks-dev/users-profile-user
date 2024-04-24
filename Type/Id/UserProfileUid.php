@@ -41,6 +41,14 @@ final class UserProfileUid extends Uid
 
     private mixed $characteristic;
 
+    /*
+           $dbal->addSelect(' AS value');
+           $dbal->addSelect(' AS attr');
+           $dbal->addSelect(' AS option');
+           $dbal->addSelect(' AS property');
+           $dbal->addSelect(' AS characteristic');
+    */
+
     public function __construct(
         AbstractUid|self|string|null $value = null,
         mixed $attr = null,
