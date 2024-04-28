@@ -24,10 +24,13 @@
 namespace BaksDev\Users\Profile\UserProfile\Repository\CurrentUserProfileEvent;
 
 use BaksDev\Users\Profile\UserProfile\Entity\Event\UserProfileEvent;
+use BaksDev\Users\Profile\UserProfile\Type\Event\UserProfileEventUid;
 use BaksDev\Users\User\Entity\User;
 use BaksDev\Users\User\Type\Id\UserUid;
 
 interface CurrentUserProfileEventInterface
 {
     public function findByUser(User|UserUid $user): ?UserProfileEvent;
+
+    public function findByEvent(UserProfileEventUid|string $event): ?UserProfileEvent;
 }

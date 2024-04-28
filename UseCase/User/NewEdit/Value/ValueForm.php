@@ -32,6 +32,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
 
 final class ValueForm extends AbstractType
 {
@@ -75,30 +76,54 @@ final class ValueForm extends AbstractType
                     {
                         $fieldType = $this->fieldsChoice->getChoice($field->getType());
 
+
+
                         if($fieldType)
                         {
-                            $form->add
-                            (
-                                'value',
-                                $fieldType->form(),
-                                [
-                                    'label' => $field->getFieldName(),
-                                    'required' => $field->isRequired(),
-                                ]
-                            );
+
+                            $option['label'] = $field->getFieldName();
+                            $option['required'] = $field->isRequired();
+                            $option['help'] = $field->getFieldDescription();
+
+                            if($field->isRequired())
+                            {
+                                $option['constraints'][] = new Assert\NotBlank();
+                            }
+
+                            if($fieldType->constraints())
+                            {
+                                foreach($fieldType->constraints() as $constraint)
+                                {
+                                    $option['constraints'][] = $constraint;
+                                }
+                            }
+
+                            $form->add('value', $fieldType->form(), $option);
+
+
+
+//                            $form->add
+//                            (
+//                                'value',
+//                                $fieldType->form(),
+//                                [
+//                                    'label' => $field->getFieldName(),
+//                                    'required' => $field->isRequired(),
+//                                ]
+//                            );
                         }
-                        else
-                        {
-                            $form->add
-                            (
-                                'value',
-                                TextType::class,
-                                [
-                                    'label' => $field->getFieldName(),
-                                    'required' => $field->isRequired(),
-                                ]
-                            );
-                        }
+//                        else
+//                        {
+//                            $form->add
+//                            (
+//                                'value',
+//                                TextType::class,
+//                                [
+//                                    'label' => $field->getFieldName(),
+//                                    'required' => $field->isRequired(),
+//                                ]
+//                            );
+//                        }
                     }
                     else
                     {

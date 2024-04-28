@@ -4,7 +4,9 @@
 
 {% for value in form.value|filter(v => v.vars.data.section is not null) %}
 
+
 	{% if section != value.vars.data.section %}
+
 		{% set section = value.vars.data.section %}
 
 
@@ -33,7 +35,6 @@
 	{{ form_widget(value) }}
 
 {% endfor %}
-
 
 
 	{# Закрываем секцию, eсли такова имеется #}

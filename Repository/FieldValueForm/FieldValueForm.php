@@ -24,28 +24,42 @@
 namespace BaksDev\Users\Profile\UserProfile\Repository\FieldValueForm;
 
 use BaksDev\Core\Doctrine\ORMQueryBuilder;
-use BaksDev\Users\Profile\TypeProfile\Entity;
+use BaksDev\Users\Profile\TypeProfile\Entity\Event\TypeProfileEvent;
+use BaksDev\Users\Profile\TypeProfile\Entity\Section\Fields\Trans\TypeProfileSectionFieldTrans;
+use BaksDev\Users\Profile\TypeProfile\Entity\Section\Fields\TypeProfileSectionField;
+use BaksDev\Users\Profile\TypeProfile\Entity\Section\Trans\TypeProfileSectionTrans;
+use BaksDev\Users\Profile\TypeProfile\Entity\Section\TypeProfileSection;
+use BaksDev\Users\Profile\TypeProfile\Entity\TypeProfile;
 use BaksDev\Users\Profile\TypeProfile\Type\Id\TypeProfileUid;
-use BaksDev\Core\Type\Locale\Locale;
 use BaksDev\Users\Profile\TypeProfile\Type\Section\Field\Id\TypeProfileSectionFieldUid;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use BaksDev\Users\Profile\UserProfile\Entity\Info\UserProfileInfo;
+use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
+use BaksDev\Users\Profile\UserProfile\Entity\Value\UserProfileValue;
+use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\UserProfileStatusActive;
+use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
+use BaksDev\Users\User\Entity\User;
+use BaksDev\Users\User\Type\Id\UserUid;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 final class FieldValueForm implements FieldValueFormInterface
 {
     private ORMQueryBuilder $ORMQueryBuilder;
 
-    public function __construct(ORMQueryBuilder $ORMQueryBuilder) {
+    private UserUid|User|string|null $user = null;
+
+    public function __construct(
+        ORMQueryBuilder $ORMQueryBuilder
+    )
+    {
         $this->ORMQueryBuilder = $ORMQueryBuilder;
     }
+
 
     public function getFieldById(TypeProfileSectionFieldUid $field)
     {
         $qb = $this->ORMQueryBuilder
             ->createQueryBuilder(self::class)
-            ->bindLocal()
-        ;
+            ->bindLocal();
 
         $select = sprintf(
 
@@ -71,19 +85,18 @@ final class FieldValueForm implements FieldValueFormInterface
         $qb->select($select);
 
         $qb
-            ->from(Entity\Section\Fields\TypeProfileSectionField::class, 'field')
+            ->from(TypeProfileSectionField::class, 'field')
             ->where('field.id = :field')
-            ->setParameter('field', $field)
-        ;
+            ->setParameter('field', $field);
 
-        $qb->join(Entity\Section\TypeProfileSection::class,
+        $qb->join(TypeProfileSection::class,
             'section',
             'WITH',
             'section.id = field.section'
         );
 
         $qb->join(
-            Entity\Section\Trans\TypeProfileSectionTrans::class,
+            TypeProfileSectionTrans::class,
             'section_trans',
             'WITH',
             'section_trans.section = section.id AND section_trans.local = :local'
@@ -92,7 +105,7 @@ final class FieldValueForm implements FieldValueFormInterface
         //$qb->join(Entity\Section\Fields\Field::class, 'field', 'WITH', 'field.section = section.id');
 
         $qb->join(
-            Entity\Section\Fields\Trans\TypeProfileSectionFieldTrans::class,
+            TypeProfileSectionFieldTrans::class,
             'field_trans',
             'WITH',
             'field_trans.field = field.id AND field_trans.local = :local'
@@ -112,8 +125,7 @@ final class FieldValueForm implements FieldValueFormInterface
     {
         $qb = $this->ORMQueryBuilder
             ->createQueryBuilder(self::class)
-            ->bindLocal()
-        ;
+            ->bindLocal();
 
         $select = sprintf(
 
@@ -139,17 +151,17 @@ final class FieldValueForm implements FieldValueFormInterface
 
         $qb->select($select);
 
-        $qb->from(Entity\Section\Fields\TypeProfileSectionField::class, 'field', 'field.id');
+        $qb->from(TypeProfileSectionField::class, 'field', 'field.id');
 
 
-        $qb->join(Entity\Section\TypeProfileSection::class,
+        $qb->join(TypeProfileSection::class,
             'section',
             'WITH',
             'section.id = field.section'
         );
 
         $qb->join(
-            Entity\Section\Trans\TypeProfileSectionTrans::class,
+            TypeProfileSectionTrans::class,
             'section_trans',
             'WITH',
             'section_trans.section = section.id AND section_trans.local = :local'
@@ -157,7 +169,7 @@ final class FieldValueForm implements FieldValueFormInterface
 
 
         $qb->join(
-            Entity\Section\Fields\Trans\TypeProfileSectionFieldTrans::class,
+            TypeProfileSectionFieldTrans::class,
             'field_trans',
             'WITH',
             'field_trans.field = field.id AND field_trans.local = :local'
@@ -174,8 +186,29 @@ final class FieldValueForm implements FieldValueFormInterface
     }
 
 
+    public function userFilter(User|UserUid|string $user) : self
+    {
+        if($user instanceof User)
+        {
+            $user = $user->getId();
+        }
+
+        if(is_string($user))
+        {
+            $user = new UserUid($user);
+        }
+
+
+        $this->user = $user;
+
+        return $this;
+    }
+
     public function get(TypeProfileUid $profile)
     {
+
+        //$User = $this->tokenStorage->getToken()?->getUser();
+
         //$qb = $this->entityManager->createQueryBuilder();
 
         /** ЛОКАЛЬ */
@@ -186,8 +219,7 @@ final class FieldValueForm implements FieldValueFormInterface
 
         $qb = $this->ORMQueryBuilder
             ->createQueryBuilder(self::class)
-            ->bindLocal()
-        ;
+            ->bindLocal();
 
         $select = sprintf(
 
@@ -216,18 +248,29 @@ final class FieldValueForm implements FieldValueFormInterface
         //$qb->addSelect('field.id');
         //$qb->from(Entity\Section\Fields\TypeProfileSectionField::class, 'field', 'field.id');
 
-        $qb->from(Entity\Section\Fields\TypeProfileSectionField::class, 'field');
+        $qb->from(TypeProfileSectionField::class, 'field');
 
-        $qb->join(Entity\TypeProfile::class, 'profile', 'WITH', 'profile.id = :profile');
-        $qb->join(Entity\Event\TypeProfileEvent::class, 'event', 'WITH', 'event.id = profile.event');
+        $qb->join(TypeProfile::class,
+            'profile',
+            'WITH',
+            'profile.id = :profile'
+        );
 
-        $qb->join(Entity\Section\TypeProfileSection::class,
+        $qb->join(
+            TypeProfileEvent::class,
+            'event',
+            'WITH',
+            'event.id = profile.event'
+        );
+
+        $qb->join(TypeProfileSection::class,
             'section',
             'WITH',
             'section.id = field.section AND  section.event = event.id'
         );
+
         $qb->join(
-            Entity\Section\Trans\TypeProfileSectionTrans::class,
+            TypeProfileSectionTrans::class,
             'section_trans',
             'WITH',
             'section_trans.section = section.id AND section_trans.local = :local'
@@ -236,7 +279,7 @@ final class FieldValueForm implements FieldValueFormInterface
         //$qb->join(Entity\Section\Fields\Field::class, 'field', 'WITH', 'field.section = section.id');
 
         $qb->join(
-            Entity\Section\Fields\Trans\TypeProfileSectionFieldTrans::class,
+            TypeProfileSectionFieldTrans::class,
             'field_trans',
             'WITH',
             'field_trans.field = field.id AND field_trans.local = :local'
@@ -248,6 +291,48 @@ final class FieldValueForm implements FieldValueFormInterface
         $qb->orderBy('section.sort');
         $qb->addOrderBy('field.sort');
 
+
+        /** Если пользователь авторизован - проверяем заполненные поля */
+        if($this->user)
+        {
+            $qb
+                ->leftJoin(
+                    UserProfileInfo::class,
+                    'profile_info',
+                    'WITH',
+                    '
+                profile_info.usr = :user AND 
+                profile_info.status = :active AND 
+                profile_info.active = true
+            ')
+                ->setParameter('user', $this->user, UserUid::TYPE)
+                ->setParameter('active', new UserProfileStatus(UserProfileStatusActive::class), UserProfileStatus::TYPE);
+
+
+            $qb
+                ->leftJoin(
+
+                    UserProfile::class,
+                    'user_profile',
+                    'WITH',
+                    'user_profile.id = profile_info.profile'
+                );
+
+
+            /* NOT EXIST PROFILE VALUES */
+            $subQueryBuilder = $this->ORMQueryBuilder->createQueryBuilder(self::class);
+            $subQueryBuilder
+                ->select('1')
+                ->from(UserProfileValue::class, 'user_profile_value')
+                ->where('user_profile_value.event = user_profile.event AND user_profile_value.field = field.id')
+            ;
+
+            //$qb->andWhere($qb->expr()->exists($subQueryBuilder->getDQL()));
+            $qb->andWhere($qb->expr()->not($qb->expr()->exists($subQueryBuilder->getDQL())));
+
+        }
+
+
         return $qb->enableCache('users-profile-user', 86400)->getResult();
         //return $qb->getQuery()->getResult();
 
@@ -258,8 +343,7 @@ final class FieldValueForm implements FieldValueFormInterface
     {
         $qb = $this->ORMQueryBuilder
             ->createQueryBuilder(self::class)
-            ->bindLocal()
-        ;
+            ->bindLocal();
 
         /** ЛОКАЛЬ */
         //$locale = new Locale($this->translator->getLocale());
@@ -296,10 +380,10 @@ final class FieldValueForm implements FieldValueFormInterface
 
         /* FIELD */
         //$qb->from(Entity\Section\Fields\TypeProfileSectionField::class, 'field', 'field.id');
-        $qb->from(Entity\Section\Fields\TypeProfileSectionField::class, 'field');
+        $qb->from(TypeProfileSectionField::class, 'field');
 
         $qb->leftJoin(
-            Entity\Section\Fields\Trans\TypeProfileSectionFieldTrans::class,
+            TypeProfileSectionFieldTrans::class,
             'field_trans',
             'WITH',
             'field_trans.field = field.id AND field_trans.local = :local'
@@ -307,24 +391,34 @@ final class FieldValueForm implements FieldValueFormInterface
 
         /* SECTION */
 
-        $qb->join(Entity\Section\TypeProfileSection::class,
+        $qb->join(TypeProfileSection::class,
             'section',
             'WITH',
             'section.id = field.section'
         );
 
         $qb->leftJoin(
-            Entity\Section\Trans\TypeProfileSectionTrans::class,
+            TypeProfileSectionTrans::class,
             'section_trans',
             'WITH',
             'section_trans.section = section.id AND section_trans.local = :local'
         );
 
 
-        $qb->join(Entity\Event\TypeProfileEvent::class, 'event', 'WITH', 'event.id = section.event');
+        $qb->join(
+            TypeProfileEvent::class,
+            'event',
+            'WITH',
+            'event.id = section.event'
+        );
 
 
-        $qb->join(Entity\TypeProfile::class, 'profile', 'WITH', 'profile.id =  event.profile');
+        $qb->join(
+            TypeProfile::class,
+            'profile',
+            'WITH',
+            'profile.id =  event.profile'
+        );
 
 
         //$qb->where('profile.id = :profile');

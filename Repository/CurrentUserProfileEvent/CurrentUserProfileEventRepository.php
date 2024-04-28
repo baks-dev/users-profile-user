@@ -29,6 +29,7 @@ use BaksDev\Core\Doctrine\ORMQueryBuilder;
 use BaksDev\Users\Profile\UserProfile\Entity\Event\UserProfileEvent;
 use BaksDev\Users\Profile\UserProfile\Entity\Info\UserProfileInfo;
 use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
+use BaksDev\Users\Profile\UserProfile\Type\Event\UserProfileEventUid;
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\UserProfileStatusActive;
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
 use BaksDev\Users\User\Entity\User;
@@ -75,4 +76,41 @@ final class CurrentUserProfileEventRepository implements CurrentUserProfileEvent
 
         return $qb->getOneOrNullResult();
     }
+
+
+    public function findByEvent(UserProfileEventUid|string $event): ?UserProfileEvent
+    {
+        if(is_string($event))
+        {
+            $event = new UserProfileEventUid($event);
+        }
+
+        $qb = $this->ORMQueryBuilder->createQueryBuilder(self::class);
+
+        $qb->select('event');
+
+        $qb
+            ->from(UserProfileEvent::class, 'event_param')
+            ->where('event_param.id = :event')
+            ->setParameter('event', $event, UserProfileEventUid::TYPE)
+        ;
+
+        $qb->leftJoin(
+            UserProfile::class,
+            'profile',
+            'WITH',
+            'profile.id = event_param.profile'
+        );
+
+        $qb->leftJoin(
+            UserProfileEvent::class,
+            'event',
+            'WITH',
+            'event.id = profile.event'
+        );
+
+        return $qb->getOneOrNullResult();
+    }
+
+
 }
