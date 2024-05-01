@@ -1,5 +1,5 @@
 {% trans_default_domain('user.userprofile') %}
 
 {% for item in value %}
-    <div>{{ item.profile_value|call_twig_func(item.profile_type, item.name) }}</div>
+    <div>{{ item.profile_value|call_twig_func(item.profile_type~'_render', item.profile_value) }}</div>
 {% endfor %}

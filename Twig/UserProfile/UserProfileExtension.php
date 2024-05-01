@@ -61,12 +61,13 @@ final class UserProfileExtension extends AbstractExtension
 
     public function content(Environment $twig, string $value): string
     {
-        $data = $this->profileByEvent->fetchUserProfileAssociative(new UserProfileEventUid($value));
+        $data = $this->profileByEvent->fetchUserProfileAssociative($value);
 
         try
         {
             return $twig->render('@Template/users-profile-user/user_profile/content.html.twig', ['value' => $data]);
-        } catch(LoaderError $loaderError)
+        }
+        catch(LoaderError $loaderError)
         {
             return $twig->render('@users-profile-user/twig/user_profile/content.html.twig', ['value' => $data]);
         }
@@ -74,23 +75,28 @@ final class UserProfileExtension extends AbstractExtension
 
     public function render(Environment $twig, $value): string
     {
+        $data = $this->profileByEvent->fetchUserProfileAssociative($value);
+
         try
         {
-            return $twig->render('@Template/users-profile-user/user_profile/render.html.twig', ['value' => $value]);
-        } catch(LoaderError $loaderError)
+            return $twig->render('@Template/users-profile-user/user_profile/render.html.twig', ['value' => $data]);
+        }
+        catch(LoaderError $loaderError)
         {
-            return $twig->render('@users-profile-user/twig/user_profile/render.html.twig', ['value' => $value]);
+            return $twig->render('@users-profile-user/twig/user_profile/render.html.twig', ['value' => $data]);
         }
     }
 
     public function template(Environment $twig, $value): string
     {
+        $data = $this->profileByEvent->fetchUserProfileAssociative($value);
+
         try
         {
-            return $twig->render('@Template/users-profile-user/user_profile/template.html.twig', ['value' => $value]);
+            return $twig->render('@Template/users-profile-user/user_profile/template.html.twig', ['value' => $data]);
         } catch(LoaderError $loaderError)
         {
-            return $twig->render('@users-profile-user/twig/user_profile/template.html.twig', ['value' => $value]);
+            return $twig->render('@users-profile-user/twig/user_profile/template.html.twig', ['value' => $data]);
         }
     }
 

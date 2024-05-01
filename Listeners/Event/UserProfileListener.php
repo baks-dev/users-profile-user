@@ -61,7 +61,10 @@ final class UserProfileListener
         /** @var User $usr */
         $token = $this->tokenStorage->getToken();
 
-        $usr = $token instanceof SwitchUserToken ? $token->getOriginalToken()->getUser() : $token?->getUser();
+        // - $usr = $token instanceof SwitchUserToken ? $token->getOriginalToken()->getUser() : $token?->getUser();
+        // + $usr = $token?->getUser();
+
+        $usr = $token?->getUser();
 
         if($usr)
         {
@@ -74,7 +77,6 @@ final class UserProfileListener
                     $data[$profile::KEY] = $profile->getValue($usr->getId());
                 }
             }
-
 
             $this->twig->addGlobal('baks_profile', $data);
         }

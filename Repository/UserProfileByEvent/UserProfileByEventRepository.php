@@ -52,11 +52,16 @@ final class UserProfileByEventRepository implements UserProfileByEventInterface
         $this->DBALQueryBuilder = $DBALQueryBuilder;
     }
 
-    public function findUserProfileEvent(UserProfileEventUid $event): ?UserProfileEvent
+    public function findUserProfileEvent(UserProfileEventUid|string $event): ?UserProfileEvent
     {
         if(Kernel::isTestEnvironment())
         {
             return EntityTestGenerator::get(UserProfileEvent::class);
+        }
+
+        if(is_string($event))
+        {
+            $event = new UserProfileEventUid($event);
         }
 
         $orm = $this->ORMQueryBuilder->createQueryBuilder(self::class);
@@ -71,8 +76,13 @@ final class UserProfileByEventRepository implements UserProfileByEventInterface
     }
 
 
-    public function fetchUserProfileAssociative(UserProfileEventUid $event): ?array
+    public function fetchUserProfileAssociative(UserProfileEventUid|string $event): ?array
     {
+        if(is_string($event))
+        {
+            $event = new UserProfileEventUid($event);
+        }
+
         $dbal = $this->DBALQueryBuilder
             ->createQueryBuilder(self::class)
             ->bindLocal();
@@ -99,7 +109,7 @@ final class UserProfileByEventRepository implements UserProfileByEventInterface
                 'user_profile_value',
                 TypeProfileSectionField::class,
                 'user_profile_field',
-                'type.id = user_profile_value.field AND user_profile_field.card = true'
+                'user_profile_field.id = user_profile_value.field AND user_profile_field.card = true'
             );
 
 

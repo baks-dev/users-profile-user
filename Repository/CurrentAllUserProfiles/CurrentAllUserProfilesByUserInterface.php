@@ -34,6 +34,8 @@ interface CurrentAllUserProfilesByUserInterface
 	 * user_profile_username - username профиля <br>
 	 *
 	 */
-	public function fetchUserProfilesAllAssociative(UserUid $usr) : ?array;
-	
+	// - public function fetchUserProfilesAllAssociative(UserUid $usr) : ?array;
+	// + public function fetchUserProfilesAllAssociative() : ?array;
+	public function fetchUserProfilesAllAssociative() : ?array;
+
 }

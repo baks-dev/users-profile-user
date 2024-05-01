@@ -28,8 +28,8 @@ use BaksDev\Users\Profile\UserProfile\Type\Event\UserProfileEventUid;
 
 interface UserProfileByEventInterface
 {
-	public function findUserProfileEvent(UserProfileEventUid $event) : ?UserProfileEvent;
+	public function findUserProfileEvent(UserProfileEventUid|string $event) : ?UserProfileEvent;
 
-    public function fetchUserProfileAssociative(UserProfileEventUid $event) : ?array;
+    public function fetchUserProfileAssociative(UserProfileEventUid|string $event) : ?array;
 	
 }

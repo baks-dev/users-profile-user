@@ -61,7 +61,11 @@ final class CurrentAllUserProfilesByUserRepository implements CurrentAllUserProf
      * user_profile_event - идентификатор события для активации профиля <br>
      * user_profile_username - username профиля <br>
      */
-    public function fetchUserProfilesAllAssociative(UserUid $usr): ?array
+
+    // - public function fetchUserProfilesAllAssociative(UserUid $usr): ?array
+    // + public function fetchUserProfilesAllAssociative(): ?array
+
+    public function fetchUserProfilesAllAssociative(): ?array
     {
 
         $token = $this->tokenStorage->getToken();
