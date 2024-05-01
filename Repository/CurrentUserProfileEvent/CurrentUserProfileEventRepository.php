@@ -44,37 +44,50 @@ final class CurrentUserProfileEventRepository implements CurrentUserProfileEvent
         $this->ORMQueryBuilder = $ORMQueryBuilder;
     }
 
-    public function findByUser(User|UserUid $user): ?UserProfileEvent
+    public function findByUser(User|UserUid|string $user): ?UserProfileEvent
     {
-        $user = $user instanceof User ? $user->getId() : $user;
+        if(is_string($user))
+        {
+            $user = new UserUid($user);
+        }
 
-        $qb = $this->ORMQueryBuilder->createQueryBuilder(self::class);
+        if($user instanceof User)
+        {
+            $user = $user->getId();
+        }
 
-        $qb->select('event');
+        $orm = $this->ORMQueryBuilder->createQueryBuilder(self::class);
 
-        $qb
+        $orm->select('event');
+
+        $orm
             ->from(UserProfileInfo::class, 'info')
-            ->where('info.usr = :usr')
-            ->setParameter('usr', $user, UserUid::TYPE)
-            ->andWhere('info.status = :status')
-            ->setParameter('status', new UserProfileStatus(UserProfileStatusActive::class), UserProfileStatus::TYPE)
             ->andWhere('info.active = true');
 
-        $qb->leftJoin(
+        $orm->andWhere('info.usr = :usr')
+            ->setParameter('usr', $user, UserUid::TYPE);
+
+        $orm->andWhere('info.status = :status')
+            ->setParameter(
+                'status',
+                new UserProfileStatus(UserProfileStatusActive::class),
+                UserProfileStatus::TYPE);
+
+        $orm->leftJoin(
             UserProfile::class,
             'profile',
             'WITH',
             'profile.id = info.profile'
         );
 
-        $qb->leftJoin(
+        $orm->leftJoin(
             UserProfileEvent::class,
             'event',
             'WITH',
             'event.id = profile.event'
         );
 
-        return $qb->getOneOrNullResult();
+        return $orm->getOneOrNullResult();
     }
 
 
@@ -85,31 +98,30 @@ final class CurrentUserProfileEventRepository implements CurrentUserProfileEvent
             $event = new UserProfileEventUid($event);
         }
 
-        $qb = $this->ORMQueryBuilder->createQueryBuilder(self::class);
+        $orm = $this->ORMQueryBuilder->createQueryBuilder(self::class);
 
-        $qb->select('event');
+        $orm->select('event');
 
-        $qb
+        $orm
             ->from(UserProfileEvent::class, 'event_param')
             ->where('event_param.id = :event')
-            ->setParameter('event', $event, UserProfileEventUid::TYPE)
-        ;
+            ->setParameter('event', $event, UserProfileEventUid::TYPE);
 
-        $qb->leftJoin(
+        $orm->leftJoin(
             UserProfile::class,
             'profile',
             'WITH',
             'profile.id = event_param.profile'
         );
 
-        $qb->leftJoin(
+        $orm->leftJoin(
             UserProfileEvent::class,
             'event',
             'WITH',
             'event.id = profile.event'
         );
 
-        return $qb->getOneOrNullResult();
+        return $orm->getOneOrNullResult();
     }
 
 

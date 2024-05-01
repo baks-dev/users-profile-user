@@ -23,35 +23,36 @@
 
 namespace BaksDev\Users\Profile\UserProfile\Repository\UniqProfileUrl;
 
+use BaksDev\Core\Doctrine\DBALQueryBuilder;
 use BaksDev\Users\Profile\UserProfile\Entity\Info\UserProfileInfo;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use Doctrine\DBAL\Connection;
 
 final class UniqProfileUrlRepository implements UniqProfileUrlInterface
 {
-	private Connection $connection;
-	
-	
-	public function __construct(Connection $connection)
-	{
-		$this->connection = $connection;
-	}
-	
-	
-	public function exist(string $url, UserProfileUid $profile) : bool
-	{
-		$qbSub = $this->connection->createQueryBuilder();
-		$qbSub->select('1');
-		$qbSub->from(UserProfileInfo::TABLE, 'info');
-		$qbSub->where('info.url = :url');
-		$qbSub->andWhere('info.profile != :profile');
-		
-		$qb = $this->connection->createQueryBuilder();
-		$qb->select('EXISTS('.$qbSub->getSQL().')');
-		$qb->setParameter('url', $url);
-		$qb->setParameter('profile', $profile);
-		
-		return (bool) $qb->executeQuery()->fetchOne();
-	}
-	
+    private DBALQueryBuilder $DBALQueryBuilder;
+
+    public function __construct(DBALQueryBuilder $DBALQueryBuilder,)
+    {
+        $this->DBALQueryBuilder = $DBALQueryBuilder;
+    }
+
+    public function exist(string $url, UserProfileUid $profile): bool
+    {
+        $dbal = $this->DBALQueryBuilder->createQueryBuilder(self::class);
+
+        $dbal
+            ->from(UserProfileInfo::class, 'info');
+
+
+        $dbal->where('info.url = :url')
+            ->setParameter('url', $url);
+
+        $dbal
+            ->andWhere('info.profile != :profile')
+            ->setParameter('profile', $profile);
+
+        return $dbal->fetchExist();
+    }
+
 }

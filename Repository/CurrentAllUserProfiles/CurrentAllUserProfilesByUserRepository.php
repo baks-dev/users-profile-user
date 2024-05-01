@@ -25,7 +25,11 @@ namespace BaksDev\Users\Profile\UserProfile\Repository\CurrentAllUserProfiles;
 
 use BaksDev\Core\Doctrine\DBALQueryBuilder;
 use BaksDev\Core\Doctrine\ORMQueryBuilder;
-use BaksDev\Users\Profile\UserProfile\Entity;
+
+use BaksDev\Users\Profile\UserProfile\Entity\Event\UserProfileEvent;
+use BaksDev\Users\Profile\UserProfile\Entity\Info\UserProfileInfo;
+use BaksDev\Users\Profile\UserProfile\Entity\Personal\UserProfilePersonal;
+use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\UserProfileStatusActive;
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
 use BaksDev\Users\User\Entity\User;
@@ -37,18 +41,16 @@ final class CurrentAllUserProfilesByUserRepository implements CurrentAllUserProf
 {
 
     private DBALQueryBuilder $DBALQueryBuilder;
-    private ORMQueryBuilder $ORMQueryBuilder;
+
     private TokenStorageInterface $tokenStorage;
 
     public function __construct(
         DBALQueryBuilder $DBALQueryBuilder,
-        ORMQueryBuilder $ORMQueryBuilder,
         TokenStorageInterface $tokenStorage,
     )
     {
 
         $this->DBALQueryBuilder = $DBALQueryBuilder;
-        $this->ORMQueryBuilder = $ORMQueryBuilder;
         $this->tokenStorage = $tokenStorage;
     }
 
@@ -82,49 +84,49 @@ final class CurrentAllUserProfilesByUserRepository implements CurrentAllUserProf
 
         }
 
-        //dump((string) $UserUid);
+        $dbal = $this->DBALQueryBuilder->createQueryBuilder(self::class);
 
-        $qb = $this->DBALQueryBuilder->createQueryBuilder(self::class);
+        $dbal->from(UserProfileInfo::class, 'user_profile_info');
 
-        $qb->addSelect('userprofile.id AS user_profile_id');
-        $qb->addSelect('userprofile.event AS user_profile_event');
+        $dbal
+            ->where('user_profile_info.usr = :usr')
+            ->setParameter('usr', $UserUid, UserUid::TYPE);
 
-        $qb->from(Entity\Info\UserProfileInfo::TABLE, 'userprofile_info');
-        $qb->where('userprofile_info.usr = :usr AND userprofile_info.status = :status');
+        $dbal
+            ->andWhere('user_profile_info.status = :status')
+            ->setParameter('status', new UserProfileStatus(UserProfileStatusActive::class), UserProfileStatus::TYPE);
 
-        $qb->setParameter('usr', $UserUid, UserUid::TYPE);
-        $qb->setParameter('status', new UserProfileStatus(UserProfileStatusActive::class), UserProfileStatus::TYPE);
 
-        $qb->join(
-            'userprofile_info',
-            Entity\UserProfile::TABLE,
-            'userprofile',
-            'userprofile.id = userprofile_info.profile'
+        $dbal
+            ->addSelect('user_profile.id AS user_profile_id')
+            ->addSelect('user_profile.event AS user_profile_event')
+            ->join(
+                'user_profile_info',
+                UserProfile::class,
+                'user_profile',
+                'user_profile.id = user_profile_info.profile'
+            );
+
+
+        $dbal->leftJoin(
+            'user_profile',
+            UserProfileEvent::class,
+            'user_profile_event',
+            'user_profile_event.id = user_profile.event'
         );
 
+        $dbal
+            ->addSelect('user_profile_profile.username AS user_profile_username')
+            ->leftJoin(
+                'user_profile',
+                UserProfilePersonal::class,
+                'user_profile_profile',
+                'user_profile_profile.event = user_profile.event'
+            );
 
-        $qb->join(
-            'userprofile',
-            Entity\Event\UserProfileEvent::TABLE,
-            'userprofile_event',
-            'userprofile_event.id = userprofile.event'
-        );
+        $dbal->orderBy('user_profile_event.sort', 'ASC');
 
-        $qb->addSelect('userprofile_profile.username AS user_profile_username');
-
-        // Профиль
-        $qb->join(
-            'userprofile',
-            Entity\Personal\UserProfilePersonal::TABLE,
-            'userprofile_profile',
-            'userprofile_profile.event = userprofile.event'
-        );
-
-        $qb->orderBy('userprofile_event.sort', 'ASC');
-
-
-        /* Кешируем результат DBAL */
-        return $qb->enableCache('users-profile-user', 86400)->fetchAllAssociative();
+        return $dbal->enableCache('users-profile-user', 86400)->fetchAllAssociative();
 
     }
 

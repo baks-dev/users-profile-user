@@ -87,7 +87,7 @@ final class UserProfileByIdRepository implements UserProfileByIdInterface
             ->addSelect('type_trans.name')
             ->leftJoin(
                 'type',
-                TypeProfileSectionFieldTrans::TABLE,
+                TypeProfileSectionFieldTrans::class,
                 'type_trans',
                 'type_trans.field = type.id AND type_trans.local = :local'
             );

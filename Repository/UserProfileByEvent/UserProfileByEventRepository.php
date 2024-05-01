@@ -26,6 +26,8 @@ declare(strict_types=1);
 namespace BaksDev\Users\Profile\UserProfile\Repository\UserProfileByEvent;
 
 use App\Kernel;
+use BaksDev\Core\Doctrine\DBALQueryBuilder;
+use BaksDev\Core\Doctrine\ORMQueryBuilder;
 use BaksDev\Core\Entity\EntityTestGenerator;
 use BaksDev\Core\Type\Locale\Locale;
 use BaksDev\Users\Profile\TypeProfile\Entity\Section\Fields\Trans\TypeProfileSectionFieldTrans;
@@ -40,11 +42,20 @@ final class UserProfileByEventRepository implements UserProfileByEventInterface
 {
     private EntityManagerInterface $entityManager;
     private TranslatorInterface $translator;
+    private ORMQueryBuilder $ORMQueryBuilder;
+    private DBALQueryBuilder $DBALQueryBuilder;
 
-    public function __construct(EntityManagerInterface $entityManager, TranslatorInterface $translator)
+    public function __construct(
+        ORMQueryBuilder $ORMQueryBuilder,
+        DBALQueryBuilder $DBALQueryBuilder,
+        EntityManagerInterface $entityManager,
+        TranslatorInterface $translator
+    )
     {
         $this->entityManager = $entityManager;
         $this->translator = $translator;
+        $this->ORMQueryBuilder = $ORMQueryBuilder;
+        $this->DBALQueryBuilder = $DBALQueryBuilder;
     }
 
     public function findUserProfileEvent(UserProfileEventUid $event): ?UserProfileEvent
@@ -54,46 +65,62 @@ final class UserProfileByEventRepository implements UserProfileByEventInterface
             return EntityTestGenerator::get(UserProfileEvent::class);
         }
 
-        $qb = $this->entityManager->createQueryBuilder();
+        $orm = $this->ORMQueryBuilder->createQueryBuilder(self::class);
 
-        $qb->select('event');
-        $qb->from(UserProfileEvent::class, 'event');
+        $orm
+            ->select('event')
+            ->from(UserProfileEvent::class, 'event')
+            ->where('event.id = :event')
+            ->setParameter('event', $event, UserProfileEventUid::TYPE);
 
-        $qb->where('event.id = :event');
-        $qb->setParameter('event', $event, UserProfileEventUid::TYPE);
-
-        return $qb->getQuery()->getOneOrNullResult();
+        return $orm->getOneOrNullResult();
     }
-
-
 
 
     public function fetchUserProfileAssociative(UserProfileEventUid $event): ?array
     {
-        $qb = $this->entityManager->getConnection()->createQueryBuilder();
+        $dbal = $this->DBALQueryBuilder
+            ->createQueryBuilder(self::class)
+            ->bindLocal();
 
-        $qb->select('event.sort');
-        $qb->from(UserProfileEvent::TABLE, 'event');
+        $dbal
+            ->select('event.sort')
+            ->from(UserProfileEvent::class, 'event')
+            ->where('event.id = :event')
+            ->setParameter('event', $event, UserProfileEventUid::TYPE);
 
-        $qb->addSelect('value.value AS profile_value');
-        $qb->leftJoin('event', UserProfileValue::TABLE, 'value', 'value.event = event.id');
 
-        $qb->addSelect('type.type AS profile_type');
-        $qb->join('value', TypeProfileSectionField::TABLE, 'type', 'type.id = value.field AND type.card = true');
-        
-        $qb->addSelect('type_trans.name');
-        $qb->leftJoin(
-            'type',
-            TypeProfileSectionFieldTrans::TABLE,
-            'type_trans',
-            'type_trans.field = type.id AND type_trans.local = :local'
+        $dbal->addSelect('user_profile_value.value AS profile_value');
+
+        $dbal->leftJoin(
+            'event',
+            UserProfileValue::class,
+            'user_profile_value',
+            'user_profile_value.event = event.id'
         );
 
-        $qb->setParameter('local', new Locale($this->translator->getLocale()), Locale::TYPE);
+        $dbal
+            ->addSelect('user_profile_field.type AS profile_type')
+            ->join(
+                'user_profile_value',
+                TypeProfileSectionField::class,
+                'user_profile_field',
+                'type.id = user_profile_value.field AND user_profile_field.card = true'
+            );
 
-        $qb->where('event.id = :event');
-        $qb->setParameter('event', $event, UserProfileEventUid::TYPE);
 
-        return $qb->fetchAllAssociative();
+        $dbal
+            ->addSelect('user_profile_field_trans.name')
+            ->leftJoin(
+                'user_profile_field',
+                TypeProfileSectionFieldTrans::class,
+                'user_profile_field_trans',
+                '
+                user_profile_field_trans.field = user_profile_field.id 
+                AND user_profile_field_trans.local = :local'
+            );
+
+
+        return $dbal->fetchAllAssociative();
     }
 }

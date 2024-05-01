@@ -170,10 +170,9 @@ final class UserProfileByAuthorityRepository implements UserProfileByAuthorityIn
             );
 
         $dbal
-            //->addSelect('users_profile_personal.username AS users_profile_username')
             ->leftJoin(
                 'users_profile',
-                UserProfilePersonal::TABLE,
+                UserProfilePersonal::class,
                 'users_profile_personal',
                 'users_profile_personal.event = users_profile.event'
             );

@@ -48,24 +48,18 @@ final class CurrentUserProfileRepository implements CurrentUserProfileInterface
     private ORMQueryBuilder $ORMQueryBuilder;
     private DBALQueryBuilder $DBALQueryBuilder;
     private string $CDN_HOST;
-    private Security $security;
     private AppCacheInterface $cache;
-
 
     public function __construct(
         #[Autowire(env: 'CDN_HOST')] string $CDN_HOST,
         ORMQueryBuilder $ORMQueryBuilder,
         DBALQueryBuilder $DBALQueryBuilder,
-        Security $security,
         AppCacheInterface $cache
-
     )
     {
-
         $this->ORMQueryBuilder = $ORMQueryBuilder;
         $this->DBALQueryBuilder = $DBALQueryBuilder;
         $this->CDN_HOST = $CDN_HOST;
-        $this->security = $security;
         $this->cache = $cache;
     }
 
@@ -75,151 +69,153 @@ final class CurrentUserProfileRepository implements CurrentUserProfileInterface
      * Возвращает массив с ключами:
      *
      * profile_url - адрес персональной страницы <br>
-     * profile_username - username провфиля <br>
-     * profile_type - Тип провфиля <br>
+     * profile_username - username профиля <br>
+     * profile_type - Тип профиля <br>
      * profile_avatar_name - название файла аватарки профиля <br>
      * profile_avatar_dir - директория файла аватарки <br>
      * profile_avatar_ext - расширение файла <br>
-     * profile_avatar_cdn - фгаг загрузки файла на CDN
+     * profile_avatar_cdn - флаг загрузки файла на CDN
      */
 
     public function fetchProfileAssociative(UserUid $usr, bool $authority = true): bool|array
     {
-        $qb = $this->DBALQueryBuilder
+        $dbal = $this->DBALQueryBuilder
             ->createQueryBuilder(self::class)
             ->bindLocal();
-        
+
+        /** Если пользователь олицетворен - подгружаем профиль самозванца */
         if($authority)
         {
-            /** Если пользовтаель олицетворен - подгружаем профиль самозванца */
             $AppCache = $this->cache->init('Authority');
             $authority = ($AppCache->getItem((string) $usr))->get();
-
         }
 
+        /* PROFILE */
+        $dbal->addSelect('profile_info.url AS profile_url');  /* URL профиля */
+        $dbal->addSelect('profile_info.discount AS profile_discount');  /* URL профиля */
 
-        if($authority)
+        if(empty($authority))
         {
-
             /* Пользователь */
-            $qb->from(User::TABLE, 'users');
+            $dbal
+                ->from(User::class, 'users')
+                ->where('users.usr = :usr')
+                ->setParameter('usr', $usr, UserUid::TYPE);
 
-            /* PROFILE */
-            $qb->addSelect('profile_info.url AS profile_url');  /* URL профиля */
-            $qb->addSelect('profile_info.discount AS profile_discount');  /* URL профиля */
-            $qb->from(UserProfileInfo::TABLE, 'profile_info');
-
-
-            $qb->andWhere('profile_info.profile = :authority')
-            ->setParameter('authority', $authority, UserProfileUid::TYPE);
-
-            $qb->andWhere('profile_info.status = :profile_status');
-
+            $dbal->join(
+                'users',
+                UserProfileInfo::class,
+                'profile_info',
+                'profile_info.usr = users.usr 
+                AND profile_info.status = :profile_status 
+                AND profile_info.active = true'
+            );
         }
         else
         {
+            $dbal
+                ->from(UserProfileInfo::class, 'profile_info')
+                ->andWhere(' profile_info.active = true')
+                ->andWhere('profile_info.status = :profile_status');
+
+            $dbal
+                ->andWhere('profile_info.profile = :authority')
+                ->setParameter('authority', $authority, UserProfileUid::TYPE);
+
+
             /* Пользователь */
-            $qb->from(User::TABLE, 'users');
-
-            $qb->where('users.usr = :usr');
-            $qb->setParameter('usr', $usr, UserUid::TYPE);
-
-
-            /* PROFILE */
-            $qb->addSelect('profile_info.url AS profile_url');  /* URL профиля */
-            $qb->addSelect('profile_info.discount AS profile_discount');  /* URL профиля */
-            $qb->join(
-                'users',
-                UserProfileInfo::TABLE,
+            $dbal->join(
                 'profile_info',
-                'profile_info.usr = users.usr AND profile_info.status = :profile_status AND profile_info.active = true'
+                User::class,
+                'users',
+                'users.usr = profile_info.usr'
             );
         }
 
-
-        $qb->setParameter('profile_status', new UserProfileStatus(UserProfileStatusActive::class), UserProfileStatus::TYPE);
-
-
-
-
-
-        $qb->addSelect('profile.id AS user_profile_id'); /* ID профиля */
-        $qb->addSelect('profile.event AS user_profile_event'); /* ID события профиля */
-        $qb->leftJoin(
-            'profile_info',
-            UserProfile::TABLE,
-            'profile',
-            'profile.id = profile_info.profile'
+        $dbal->setParameter(
+            'profile_status',
+            new UserProfileStatus(UserProfileStatusActive::class),
+            UserProfileStatus::TYPE
         );
+
+
+        $dbal
+            ->addSelect('profile.id AS user_profile_id')
+            ->addSelect('profile.event AS user_profile_event')
+            ->leftJoin(
+                'profile_info',
+                UserProfile::class,
+                'profile',
+                'profile.id = profile_info.profile'
+            );
 
 
         /* Тип профиля */
-        $qb->addSelect('profile_event.type as profile_type_id');
-        $qb->leftJoin(
-            'profile',
-            UserProfileEvent::TABLE,
+        $dbal
+            ->addSelect('profile_event.type as profile_type_id')
+            ->leftJoin(
+                'profile',
+                UserProfileEvent::class,
+                'profile_event',
+                'profile_event.id = profile.event'
+            );
+
+        $dbal
+            ->addSelect('profile_personal.username AS profile_username')
+            ->leftJoin(
+                'profile',
+                UserProfilePersonal::class,
+                'profile_personal',
+                'profile_personal.event = profile.event'
+            );
+
+        $dbal
+            ->addSelect('profile_avatar.ext AS profile_avatar_ext')
+            ->addSelect('profile_avatar.cdn AS profile_avatar_cdn')
+            ->addSelect("CONCAT ( '/upload/".$dbal->table(UserProfileAvatar::class)."' , '/', profile_avatar.name) AS profile_avatar_name")
+            ->leftJoin(
+                'profile_event',
+                UserProfileAvatar::class,
+                'profile_avatar',
+                'profile_avatar.event = profile_event.id'
+            );
+
+
+        $dbal->leftJoin(
             'profile_event',
-            'profile_event.id = profile.event'
+            TypeProfile::class,
+            'profile_type',
+            'profile_type.id = profile_event.type'
         );
 
-        $qb->addSelect('profile_personal.username AS profile_username'); /* Username */
+        /*$dbal->leftJoin(
+            'profile_type',
+            TypeProfileEvent::class,
+            'profile_type_event',
+            'profile_type_event.id = profile_type.event'
+        );*/
 
-        $qb->leftJoin(
-            'profile',
-            UserProfilePersonal::TABLE,
-            'profile_personal',
-            'profile_personal.event = profile.event'
-        );
-
-        $qb->addSelect('profile_avatar.ext AS profile_avatar_ext');
-        $qb->addSelect('profile_avatar.cdn AS profile_avatar_cdn');
-        $qb->addSelect("CONCAT ( '/upload/".UserProfileAvatar::TABLE."' , '/', profile_avatar.name) AS profile_avatar_name");
-
-
-        $qb->leftJoin(
-            'profile_event',
-            UserProfileAvatar::TABLE,
-            'profile_avatar',
-            'profile_avatar.event = profile_event.id'
-        );
-
-
-        $qb->leftJoin(
-            'profile_event',
-            TypeProfile::TABLE,
-            'profiletype',
-            'profiletype.id = profile_event.type'
-        );
-
-        $qb->leftJoin(
-            'profiletype',
-            TypeProfileEvent::TABLE,
-            'profiletype_event',
-            'profiletype_event.id = profiletype.event'
-        );
-
-        $qb->addSelect('profiletype_trans.name as profile_type');
-        $qb->leftJoin(
-            'profiletype_event',
-            TypeProfileTrans::TABLE,
-            'profiletype_trans',
-            'profiletype_trans.event = profiletype_event.id AND profiletype_trans.local = :local'
-        );
+        $dbal
+            ->addSelect('profile_type_trans.name as profile_type')
+            ->leftJoin(
+                'profile_type',
+                TypeProfileTrans::class,
+                'profile_type_trans',
+                'profile_type_trans.event = profile_type.event AND profile_type_trans.local = :local'
+            );
 
         /* Кешируем результат DBAL */
-        return $qb->enableCache('users-profile-user', 3600)->fetchAssociative();
+        return $dbal->enableCache('users-profile-user', 3600)->fetchAssociative();
     }
-
 
 
     public function getCurrentUserProfile(UserUid $usr): ?CurrentUserProfileDTO
     {
-        $qb = $this->ORMQueryBuilder
+        $orm = $this->ORMQueryBuilder
             ->createQueryBuilder(self::class)
-            ->bindLocal()
-        ;
+            ->bindLocal();
 
-        $sealect = sprintf("new %s(
+        $select = sprintf("new %s(
 			profile.id,
 			profile.event,
 			
@@ -228,7 +224,7 @@ final class CurrentUserProfileRepository implements CurrentUserProfileInterface
 			profile_personal.username,
 			profile_personal.location,
 			
-			CONCAT('/upload/".UserProfileAvatar::TABLE."' , '/', profile_avatar.name),
+			CONCAT('/upload/".$orm->table(UserProfileAvatar::class)."' , '/', profile_avatar.name),
 			profile_avatar.ext ,
 			profile_avatar.cdn,
 			'%s',
@@ -236,51 +232,48 @@ final class CurrentUserProfileRepository implements CurrentUserProfileInterface
 			profile_info.url,
 			profile_info.discount,
 			
-			profiletype.id,
-			profiletype_trans.name
+			profile_type.id,
+			profile_type_trans.name
 		)",
             CurrentUserProfileDTO::class,
             $this->CDN_HOST
         );
 
-        $qb->select($sealect);
+        $orm->select($select);
 
         /* Пользователь */
-        $qb->from(User::class, 'users');
+        $orm
+            ->from(User::class, 'users')
+            ->where('users.id = :usr')
+            ->setParameter('usr', $usr, UserUid::TYPE);
 
         /* PROFILE */
 
-        $qb->join(
-
-            UserProfileInfo::class,
-            'profile_info',
-            'WITH',
-            '
+        $orm
+            ->join(
+                UserProfileInfo::class,
+                'profile_info',
+                'WITH',
+                '
 				profile_info.usr = users.id AND
 				profile_info.status = :profile_status AND
 				profile_info.active = true
-		');
+		')
+            ->setParameter(
+                'profile_status',
+                new UserProfileStatus(UserProfileStatusActive::class),
+                UserProfileStatus::TYPE
+            );
 
-        $qb->setParameter('profile_status', new UserProfileStatus(UserProfileStatusActive::class), UserProfileStatus::TYPE);
-
-        $qb->leftJoin(
-
+        $orm->leftJoin(
             UserProfile::class,
             'profile',
             'WITH',
             'profile.id = profile_info.profile'
         );
 
-        $qb->leftJoin(
 
-            UserProfileEvent::class,
-            'profile_event',
-            'WITH',
-            'profile_event.id = profile.event'
-        );
-
-        $qb->leftJoin(
-
+        $orm->leftJoin(
             UserProfilePersonal::class,
             'profile_personal',
             'WITH',
@@ -288,46 +281,48 @@ final class CurrentUserProfileRepository implements CurrentUserProfileInterface
         );
 
 
-        $qb->leftJoin(
+        $orm->leftJoin(
             UserProfileAvatar::class,
             'profile_avatar',
             'WITH',
-            'profile_avatar.event = profile_event.id'
+            'profile_avatar.event = profile.event'
+        );
+
+
+        $orm->leftJoin(
+            UserProfileEvent::class,
+            'profile_event',
+            'WITH',
+            'profile_event.id = profile.event'
         );
 
         /* Тип профиля */
 
-        $qb->leftJoin(
+        $orm->leftJoin(
             TypeProfile::class,
-            'profiletype',
+            'profile_type',
             'WITH',
-            'profiletype.id = profile_event.type'
+            'profile_type.id = profile_event.type'
         );
 
-        $qb->leftJoin(
+        /*orm->leftJoin(
 
             TypeProfileEvent::class,
-            'profiletype_event',
+            'profile_type_event',
             'WITH',
-            'profiletype_event.id = profiletype.event'
+            'profile_type_event.id = profile_type.event'
+        );*/
+
+        $orm->leftJoin(
+            TypeProfileTrans::class,
+            'profile_type_trans',
+            'WITH',
+            'profile_type_trans.event = profile_type.event AND profile_type_trans.local = :local'
         );
 
-        $qb->leftJoin(
 
-            TypeProfileTrans::class,
-            'profiletype_trans',
-            'WITH',
-            'profiletype_trans.event = profiletype_event.id AND profiletype_trans.local = :local'
-        )
-            ;
-
-
-        $qb->where('users.id = :usr');
-        $qb->setParameter('usr', $usr, UserUid::TYPE);
-
-     
         /* Кешируем результат ORM */
-        return $qb->enableCache('users-profile-user', 3600)->getOneOrNullResult();
+        return $orm->enableCache('users-profile-user', 3600)->getOneOrNullResult();
 
     }
 }

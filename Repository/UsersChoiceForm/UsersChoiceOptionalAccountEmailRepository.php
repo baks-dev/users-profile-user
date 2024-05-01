@@ -58,18 +58,32 @@ final class UsersChoiceOptionalAccountEmailRepository implements UsersChoiceOpti
 
         $qb->from(User::class, 'users', 'users.id');
 
-        $qb->join(Account::class, 'account', 'WITH', 'account.id = users.id');
+        $qb->join(
+            Account::class,
+            'account',
+            'WITH',
+            'account.id = users.id'
+        );
 
-        $qb->join(AccountEvent::class, 'account_event', 'WITH', 'account_event.id = account.event');
+        $qb->join(
+            AccountEvent::class,
+            'account_event',
+            'WITH',
+            'account_event.id = account.event'
+        );
 
         $qb->join(
             AccountStatus::class,
             'account_status',
             'WITH',
-            'account_status.event = account_event.id AND account_status.status = :status'
-        );
-
-        $qb->setParameter('status', $this->status, EmailStatus::TYPE);
+            'account_status.event = account_event.id 
+            AND account_status.status = :status'
+        )
+            ->setParameter(
+                'status',
+                $this->status,
+                EmailStatus::TYPE
+            );
 
         return $qb->getQuery()->getResult();
     }

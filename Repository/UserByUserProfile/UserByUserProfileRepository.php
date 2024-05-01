@@ -43,21 +43,26 @@ final class UserByUserProfileRepository implements UserByUserProfileInterface
     /**
      * Возвращает User профиля пользователя
      */
-    public function findUserByProfile(UserProfileUid $profile): ?User
+    public function findUserByProfile(UserProfileUid|string $profile): ?User
     {
         if(Kernel::isTestEnvironment())
         {
             return new User();
         }
 
-        $qb = $this->ORMQueryBuilder->createQueryBuilder(self::class);
+        if(is_string($profile))
+        {
+            $profile = new UserProfileUid($profile);
+        }
 
-        $qb
+        $orm = $this->ORMQueryBuilder->createQueryBuilder(self::class);
+
+        $orm
             ->from(UserProfileInfo::class, 'info')
             ->where('info.profile = :profile')
             ->setParameter('profile', $profile, UserProfileUid::TYPE);
 
-        $qb
+        $orm
             ->select('usr')
             ->join(
                 User::class,
@@ -67,6 +72,6 @@ final class UserByUserProfileRepository implements UserByUserProfileInterface
             );
 
 
-        return $qb->getQuery()->getOneOrNullResult();
+        return $orm->getQuery()->getOneOrNullResult();
     }
 }

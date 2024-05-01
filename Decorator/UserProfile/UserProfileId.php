@@ -52,6 +52,7 @@ final class UserProfileId implements UserProfileInterface
     public function getValue(UserUid $usr): bool|string
     {
         $current = $this->currentUserProfile->fetchProfileAssociative($usr);
+
         return $current['user_profile_id'] ?? false;
     }
 

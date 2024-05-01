@@ -75,6 +75,7 @@ final class UserProfileListener
                 }
             }
 
+
             $this->twig->addGlobal('baks_profile', $data);
         }
     }

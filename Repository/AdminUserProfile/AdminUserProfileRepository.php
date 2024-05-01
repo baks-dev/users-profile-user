@@ -54,27 +54,27 @@ final class AdminUserProfileRepository implements AdminUserProfileInterface
      */
     public function fetchUserProfile(): ?UserProfileUid
     {
-        $qb = $this->DBALQueryBuilder->createQueryBuilder(self::class);
+        $dbal = $this->DBALQueryBuilder->createQueryBuilder(self::class);
 
-        $qb
-            ->from(AccountEvent::TABLE, 'users_event')
+        $dbal
+            ->from(AccountEvent::class, 'users_event')
             ->where('users_event.email = :email')
             ->setParameter('email', new AccountEmail('admin@'.$this->HOST), AccountEmail::TYPE);
 
-        $qb->join(
+        $dbal->join(
             'users_event',
-            Account::TABLE,
+            Account::class,
             'account',
             '
                 account.event = users_event.id
             '
         );
 
-        $qb
+        $dbal
             ->addSelect('profile.id')
             ->join(
             'users_event',
-            UserProfileEntity\Info\UserProfileInfo::TABLE,
+            UserProfileEntity\Info\UserProfileInfo::class,
             'profile_info',
             '
                 profile_info.usr = users_event.account AND 
@@ -85,14 +85,14 @@ final class AdminUserProfileRepository implements AdminUserProfileInterface
             ->setParameter('profile_status', new UserProfileStatus(UserProfileStatusActive::class), UserProfileStatus::TYPE);
 
 
-        $qb->join(
+        $dbal->join(
             'profile_info',
-            UserProfileEntity\UserProfile::TABLE,
+            UserProfileEntity\UserProfile::class,
             'profile',
             'profile.id = profile_info.profile'
         );
 
-        $profile = $qb->fetchOne();
+        $profile = $dbal->fetchOne();
 
         /* Кешируем результат DBAL */
         return $profile ? new UserProfileUid($profile) : null;

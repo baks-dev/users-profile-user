@@ -135,7 +135,7 @@ final class UserProfileChoiceRepository implements UserProfileChoiceInterface
             ->from(UserProfile::class, 'user_profile')
         ;
 
-        /** Получаем активный профиль текущего пользовтаеля */
+        /** Получаем активный профиль текущего пользователя */
 
         $dbal->join(
             'user_profile',
@@ -199,6 +199,7 @@ final class UserProfileChoiceRepository implements UserProfileChoiceInterface
             'status.event = account.event AND status.status = :account_status');
 
         $dbal->setParameter('account_status', new EmailStatus(EmailStatusActive::class), EmailStatus::TYPE);
+
 
         $dbal
             ->addSelect('user_profile.id AS value')

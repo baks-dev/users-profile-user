@@ -85,81 +85,85 @@ final class AllUserProfileRepository implements AllUserProfileInterface
 
     public function fetchUserProfileAllAssociative(SearchDTO $search, ?UserProfileStatus $status): Paginator
     {
-        $qb = $this->DBALQueryBuilder
+        $dbal = $this->DBALQueryBuilder
             ->createQueryBuilder(self::class)
             ->bindLocal();
 
-        $qb->addSelect('userprofile.id');
-        $qb->addSelect('userprofile.event');
-        $qb->from(UserProfile::TABLE, 'userprofile');
+        $dbal
+            ->addSelect('user_profile.id')
+            ->addSelect('user_profile.event')
+            ->from(UserProfile::class, 'user_profile');
 
         /* INFO */
-        $qb->join(
-            'userprofile',
-            UserProfileInfo::TABLE,
-            'userprofile_info',
-            'userprofile_info.profile = userprofile.id '.($status ? 'AND userprofile_info.status = :status' : '')
-        );
+
+
+        $dbal
+            ->addSelect('user_profile_info.url AS user_profile_url')
+            ->addSelect('user_profile_info.usr')
+            ->addSelect('user_profile_info.status AS user_profile_status')
+            ->addSelect('user_profile_info.active AS user_profile_active')
+            ->join(
+                'user_profile',
+                UserProfileInfo::class,
+                'user_profile_info',
+                'user_profile_info.profile = user_profile.id '.($status ? 'AND user_profile_info.status = :status' : '')
+            );
 
         if($status)
         {
-            $qb->setParameter('status', $status, UserProfileStatus::TYPE);
+            $dbal->setParameter('status', $status, UserProfileStatus::TYPE);
         }
 
-        $qb->addSelect('userprofile_info.url AS user_profile_url');
-        $qb->addSelect('userprofile_info.usr');
-        $qb->addSelect('userprofile_info.status AS user_profile_status');
-        $qb->addSelect('userprofile_info.active AS user_profile_active');
-
-        $qb->join(
-            'userprofile',
-            UserProfileEvent::TABLE,
-            'userprofile_event',
-            'userprofile_event.id = userprofile.event'
-        );
 
         /* Модификатор */
-        $qb->leftJoin(
-            'userprofile',
-            UserProfileModify::TABLE,
-            'userprofile_modify',
-            'userprofile_modify.event = userprofile.event'
+        $dbal->leftJoin(
+            'user_profile',
+            UserProfileModify::class,
+            'user_profile_modify',
+            'user_profile_modify.event = user_profile.event'
         );
 
 
         /* Профиль */
-        $qb->join(
-            'userprofile',
-            UserProfilePersonal::TABLE,
-            'userprofile_profile',
-            'userprofile_profile.event = userprofile.event'
-        );
+        $dbal
+            ->addSelect('user_profile_personal.username AS user_profile_username')
+            ->addSelect('user_profile_personal.location AS user_profile_location')
+            ->join(
+                'user_profile',
+                UserProfilePersonal::class,
+                'user_profile_personal',
+                'user_profile_personal.event = user_profile.event'
+            );
 
-        $qb->addSelect('userprofile_profile.username AS user_profile_username');
-        $qb->addSelect('userprofile_profile.location AS user_profile_location');
 
-        $qb->addSelect('userprofile_avatar.name AS user_profile_avatar_name');
-        $qb->addSelect('userprofile_avatar.ext AS user_profile_avatar_ext');
-        $qb->addSelect('userprofile_avatar.cdn AS user_profile_avatar_cdn');
-
-        $qb->leftJoin(
-            'userprofile_event',
-            UserProfileAvatar::TABLE,
-            'userprofile_avatar',
-            'userprofile_avatar.event = userprofile_event.id'
-        );
+        $dbal
+            ->addSelect('user_profile_avatar.name AS user_profile_avatar_name')
+            ->addSelect('user_profile_avatar.ext AS user_profile_avatar_ext')
+            ->addSelect('user_profile_avatar.cdn AS user_profile_avatar_cdn')
+            ->leftJoin(
+                'user_profile',
+                UserProfileAvatar::class,
+                'user_profile_avatar',
+                'user_profile_avatar.event = user_profile.event'
+            );
 
         /* Аккаунт пользователя */
+
         /** Пользователь User */
-        $qb->leftJoin('userprofile_info', Account::TABLE, 'account', 'account.id = userprofile_info.usr');
+        $dbal->leftJoin(
+            'user_profile_info',
+            Account::class,
+            'account',
+            'account.id = user_profile_info.usr'
+        );
 
         /** Событие пользователя User\Event */
-        $qb
+        $dbal
             ->addSelect('account_event.id AS account_id')
             ->addSelect('account_event.email AS account_email')
             ->leftJoin(
                 'account',
-                AccountEvent::TABLE,
+                AccountEvent::class,
                 'account_event',
                 'account_event.id = account.event'
             );
@@ -169,67 +173,75 @@ final class AllUserProfileRepository implements AllUserProfileInterface
         {
             /* Аккаунт Telegram */
 
-            $qb->leftJoin(
-                'userprofile_info',
-                AccountTelegram::TABLE,
+            $dbal->leftJoin(
+                'user_profile_info',
+                AccountTelegram::class,
                 'telegram',
-                'telegram.id = userprofile_info.usr'
+                'telegram.id = user_profile_info.usr'
             );
 
             /** Событие пользователя User\Event */
-            $qb
+            $dbal
                 ->addSelect('telegram_event.id AS telegram_id')
                 ->addSelect('telegram_event.firstname AS telegram_firstname')
                 ->leftJoin(
                     'telegram',
-                    AccountTelegramEvent::TABLE,
+                    AccountTelegramEvent::class,
                     'telegram_event',
                     'telegram_event.id = telegram.event'
                 );
         }
 
+        
 
         /* Тип профиля */
 
-        $qb->leftJoin(
-            'userprofile_event',
-            TypeProfile::TABLE,
-            'profiletype',
-            'profiletype.id = userprofile_event.type'
+        $dbal->leftJoin(
+            'user_profile',
+            UserProfileEvent::class,
+            'user_profile_event',
+            'user_profile_event.id = user_profile.event'
         );
 
-        $qb->leftJoin(
-            'profiletype',
-            TypeProfileEvent::TABLE,
-            'profiletype_event',
-            'profiletype_event.id = profiletype.event'
+        $dbal->leftJoin(
+            'user_profile_event',
+            TypeProfile::class,
+            'profile_type',
+            'profile_type.id = user_profile_event.type'
         );
 
-        $qb->leftJoin(
-            'profiletype_event',
-            TypeProfileTrans::TABLE,
-            'profiletype_trans',
-            'profiletype_trans.event = profiletype_event.id AND profiletype_trans.local = :local'
-        );
+        /*$dbal->leftJoin(
+            'profile_type',
+            TypeProfileEvent::class,
+            'profile_type_event',
+            'profile_type_event.id = profile_type.event'
+        );*/
 
-        $qb->addSelect('profiletype_trans.name as user_profile_type');
+        $dbal
+            ->addSelect('profile_type_trans.name as user_profile_type')
+            ->leftJoin(
+                'profile_type_event',
+                TypeProfileTrans::class,
+                'profile_type_trans',
+                'profile_type_trans.event = profile_type.event AND profile_type_trans.local = :local'
+            );
 
 
         /* Поиск */
         if($search->getQuery())
         {
-            $qb
+            $dbal
                 ->createSearchQueryBuilder($search)
-                ->addSearchLike('userprofile_profile.username')
-                ->addSearchLike('account_event.email')
-                ->addSearchLike('userprofile_profile.location');
+                ->addSearchLike('user_profile_personal.username')
+                ->addSearchLike('user_profile_personal.location')
+                ->addSearchLike('account_event.email');
         }
 
 
-        //$qb->orderBy('userprofile.event', 'DESC');
-        $qb->addOrderBy('userprofile_modify.mod_date', 'DESC');
+        //$dbal->orderBy('userprofile.event', 'DESC');
+        $dbal->addOrderBy('user_profile_modify.mod_date', 'DESC');
 
-        return $this->paginator->fetchAllAssociative($qb);
+        return $this->paginator->fetchAllAssociative($dbal);
 
     }
 

@@ -43,13 +43,13 @@ final class ExistUserProfileByUserRepository implements ExistUserProfileByUserIn
      */
     public function isExistsProfile(UserUid $usr): bool
     {
-        $qb = $this->DBALQueryBuilder->createQueryBuilder(self::class);
+        $dbal = $this->DBALQueryBuilder->createQueryBuilder(self::class);
 
-        $qb
-            ->from(UserProfileInfo::TABLE, 'info')
+        $dbal
+            ->from(UserProfileInfo::class, 'info')
             ->where('info.usr = :usr')
             ->setParameter('usr', $usr, UserUid::TYPE);
 
-        return $qb->fetchExist();
+        return $dbal->fetchExist();
     }
 }
