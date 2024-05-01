@@ -26,7 +26,6 @@ namespace BaksDev\Users\Profile\UserProfile\Repository\UniqProfileUrl;
 use BaksDev\Core\Doctrine\DBALQueryBuilder;
 use BaksDev\Users\Profile\UserProfile\Entity\Info\UserProfileInfo;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
-use Doctrine\DBAL\Connection;
 
 final class UniqProfileUrlRepository implements UniqProfileUrlInterface
 {
@@ -43,7 +42,6 @@ final class UniqProfileUrlRepository implements UniqProfileUrlInterface
 
         $dbal
             ->from(UserProfileInfo::class, 'info');
-
 
         $dbal->where('info.url = :url')
             ->setParameter('url', $url);

@@ -34,9 +34,7 @@ final class UserProfileGpsRepository implements UserProfileGpsInterface
 {
     private DBALQueryBuilder $DBALQueryBuilder;
 
-    public function __construct(
-        DBALQueryBuilder $DBALQueryBuilder,
-    )
+    public function __construct(DBALQueryBuilder $DBALQueryBuilder,)
     {
         $this->DBALQueryBuilder = $DBALQueryBuilder;
     }

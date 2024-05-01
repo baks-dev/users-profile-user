@@ -39,7 +39,7 @@ final class ExistUserProfileByUserRepository implements ExistUserProfileByUserIn
     }
 
     /**
-     * Проверяет имеется ли профиль указанного пользователя
+     * Проверяет, имеется ли профиль указанного пользователя
      */
     public function isExistsProfile(UserUid $usr): bool
     {

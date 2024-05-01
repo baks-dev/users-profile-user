@@ -64,12 +64,12 @@ final class AllUserProfileRepository implements AllUserProfileInterface
     /**
      * Список всех добавленных профилей пользователей
      *
-     * id - дентификатор профиля <br>
-     * event - дентификатор события профиля,<br>
+     * id - идентификатор профиля <br>
+     * event - идентификатор события профиля,<br>
      * user_profile_url - адрес персональной страницы,<br>
-     * usr - идентификатор пользовтаеля,<br>
+     * usr - идентификатор пользователя,<br>
      *
-     * user_profile_status - статус модерации пролфиля,<br>
+     * user_profile_status - статус модерации профиля,<br>
      * user_profile_active - статус текущей активности профиля,<br>
      * user_profile_username - username пользователя,<br>
      * user_profile_location - местоположение,<br>
@@ -78,7 +78,7 @@ final class AllUserProfileRepository implements AllUserProfileInterface
      * user_profile_avatar_ext - расширение файла,<br>
      * user_profile_avatar_cdn - флаг загрузки CDN,<br>
      *
-     * account_id - идентификтаор аккаунта,<br>
+     * account_id - идентификатор аккаунта,<br>
      * account_email - email аккаунта,<br>
      * user_profile_type - тип профиля пользователя,<br>
      */

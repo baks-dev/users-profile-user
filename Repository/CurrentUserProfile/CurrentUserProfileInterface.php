@@ -32,12 +32,12 @@ interface CurrentUserProfileInterface
      * Возвращает массив с ключами:
      *
      * profile_url - адрес персональной страницы <br>
-     * profile_username - username провфиля <br>
-     * profile_type - Тип провфиля <br>
+     * profile_username - username профиля <br>
+     * profile_type - Тип профиля <br>
      * profile_avatar_name - название файла аватарки профиля <br>
      * profile_avatar_dir - директория файла аватарки <br>
      * profile_avatar_ext - расширение файла <br>
-     * profile_avatar_cdn - фгаг загрузки файла на CDN
+     * profile_avatar_cdn - флаг загрузки файла на CDN
      */
     public function fetchProfileAssociative(UserUid $usr): bool|array;
 

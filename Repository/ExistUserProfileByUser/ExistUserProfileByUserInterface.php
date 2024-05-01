@@ -28,7 +28,7 @@ use BaksDev\Users\User\Type\Id\UserUid;
 interface ExistUserProfileByUserInterface
 {
     /**
-     * Проверяет имеется ли профиль указанного пользователя
+     * Проверяет, имеется ли профиль указанного пользователя
      */
     public function isExistsProfile(UserUid $usr): bool;
 }

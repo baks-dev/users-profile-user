@@ -40,20 +40,14 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class UserProfileByEventRepository implements UserProfileByEventInterface
 {
-    private EntityManagerInterface $entityManager;
-    private TranslatorInterface $translator;
     private ORMQueryBuilder $ORMQueryBuilder;
     private DBALQueryBuilder $DBALQueryBuilder;
 
     public function __construct(
         ORMQueryBuilder $ORMQueryBuilder,
         DBALQueryBuilder $DBALQueryBuilder,
-        EntityManagerInterface $entityManager,
-        TranslatorInterface $translator
     )
     {
-        $this->entityManager = $entityManager;
-        $this->translator = $translator;
         $this->ORMQueryBuilder = $ORMQueryBuilder;
         $this->DBALQueryBuilder = $DBALQueryBuilder;
     }
