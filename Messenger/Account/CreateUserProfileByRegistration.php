@@ -28,6 +28,7 @@ namespace BaksDev\Users\Profile\UserProfile\Messenger\Account;
 use BaksDev\Auth\Email\Entity\Event\AccountEvent;
 use BaksDev\Auth\Email\Messenger\Confirmation\ConfirmationAccountMessage;
 use BaksDev\Auth\Email\Repository\UserNew\UserNewInterface;
+use BaksDev\Users\Profile\TypeProfile\Type\Id\Choice\TypeProfileUser;
 use BaksDev\Users\Profile\TypeProfile\Type\Id\TypeProfileUid;
 use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\UserProfileStatusActive;
@@ -84,7 +85,7 @@ final class CreateUserProfileByRegistration
         /** Создаем профиль пользователя по умолчанию */
         $UserProfileDTO = new UserProfileDTO();
         $UserProfileDTO->setSort(100);
-        $UserProfileDTO->setType(TypeProfileUid::userProfileType());
+        $UserProfileDTO->setType(new TypeProfileUid(TypeProfileUser::class));
 
         /** @var InfoDTO $InfoDTO */
         $InfoDTO = $UserProfileDTO->getInfo();

@@ -220,7 +220,7 @@ final class AllUserProfileRepository implements AllUserProfileInterface
         $dbal
             ->addSelect('profile_type_trans.name as user_profile_type')
             ->leftJoin(
-                'profile_type_event',
+                'profile_type',
                 TypeProfileTrans::class,
                 'profile_type_trans',
                 'profile_type_trans.event = profile_type.event AND profile_type_trans.local = :local'

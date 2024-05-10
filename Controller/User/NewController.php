@@ -27,6 +27,7 @@ use BaksDev\Core\Cache\AppCacheInterface;
 use BaksDev\Core\Controller\AbstractController;
 use BaksDev\Core\Listeners\Event\Security\RoleSecurity;
 use BaksDev\Users\Profile\TypeProfile\Entity\TypeProfile;
+use BaksDev\Users\Profile\TypeProfile\Type\Id\Choice\TypeProfileUser;
 use BaksDev\Users\Profile\TypeProfile\Type\Id\TypeProfileUid;
 use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\UserProfileStatusActive;
@@ -63,7 +64,7 @@ final class NewController extends AbstractController
         $UserProfileDTO->getInfo()->setUsr($this->getUsr());
 
         /** Если профиль пользовательский - делаем активным */
-        if($UserProfileDTO->getType()->equals(TypeProfileUid::userProfileType()))
+        if($UserProfileDTO->getType()->getTypeProfile() instanceof TypeProfileUser)
         {
             $UserProfileDTO->getInfo()->setStatus(UserProfileStatusActive::class);
         }

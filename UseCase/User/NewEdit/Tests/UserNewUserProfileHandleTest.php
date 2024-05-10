@@ -118,7 +118,10 @@ final class UserNewUserProfileHandleTest extends KernelTestCase
 
         $TypeProfileSectionFieldUid = new TypeProfileSectionFieldUid();
         $ValueDTO->setField($TypeProfileSectionFieldUid);
+        $ValueDTO->setValue('HKEKpYtase');
         self::assertSame($TypeProfileSectionFieldUid, $ValueDTO->getField());
+
+
 
 
 
@@ -163,6 +166,8 @@ final class UserNewUserProfileHandleTest extends KernelTestCase
 
         // $ValidatorCollection->isInvalid();
         // dd($ValidatorCollection->getErrors());
+
+
 
 
         /** @var UserProfileHandler $UserProfileHandler */

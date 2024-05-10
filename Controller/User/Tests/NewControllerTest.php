@@ -19,6 +19,7 @@
 namespace BaksDev\Users\Profile\UserProfile\Controller\User\Tests;
 
 use BaksDev\Users\Profile\TypeProfile\Entity\TypeProfile;
+use BaksDev\Users\Profile\TypeProfile\Type\Id\Choice\TypeProfileUser;
 use BaksDev\Users\Profile\TypeProfile\Type\Id\TypeProfileUid;
 use BaksDev\Users\User\Tests\TestUserAccount;
 use Doctrine\ORM\EntityManagerInterface;
@@ -46,7 +47,7 @@ final class NewControllerTest extends WebTestCase
             $usr = TestUserAccount::getAdmin();
 
             $client->loginUser($usr, 'user');
-            $client->request('GET', sprintf(self::URL, TypeProfileUid::USER));
+            $client->request('GET', sprintf(self::URL, TypeProfileUser::TYPE));
 
             self::assertResponseIsSuccessful();
         }
@@ -67,7 +68,7 @@ final class NewControllerTest extends WebTestCase
 
             $usr = TestUserAccount::getUsr();
             $client->loginUser($usr, 'user');
-            $client->request('GET', sprintf(self::URL, TypeProfileUid::USER));
+            $client->request('GET', sprintf(self::URL, TypeProfileUser::TYPE));
 
             self::assertResponseIsSuccessful();
         }
@@ -86,7 +87,7 @@ final class NewControllerTest extends WebTestCase
         {
             $client->setServerParameter('HTTP_USER_AGENT', $device);
 
-            $client->request('GET', sprintf(self::URL, TypeProfileUid::USER));
+            $client->request('GET', sprintf(self::URL, TypeProfileUser::TYPE));
 
             // Full authentication is required to access this resource
             self::assertResponseStatusCodeSame(401);

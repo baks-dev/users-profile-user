@@ -39,6 +39,7 @@ use BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\Avatar\AvatarDTO;
 use BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\Personal\PersonalDTO;
 use BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\UserProfileDTO;
 use BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\UserProfileHandler;
+use BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\Value\ValueDTO;
 use BaksDev\Users\User\Type\Id\UserUid;
 use BaksDev\Wildberries\Products\Entity\Barcode\Event\WbBarcodeEvent;
 use BaksDev\Wildberries\Products\Entity\Barcode\WbBarcode;
@@ -85,19 +86,21 @@ final class UserEditUserProfileHandleTest extends KernelTestCase
 
         self::assertEquals(TypeProfileUid::TEST, (string) $UserProfileDTO->getType());
         $UserProfileDTO->setType(clone new TypeProfileUid());
+
         /** тип профиля остается неизменным */
         self::assertEquals(TypeProfileUid::TEST, (string) $UserProfileDTO->getType());
 
         $ValueCollection = $UserProfileDTO->getValue();
         self::assertCount(1, $ValueCollection);
 
+        /** @var ValueDTO $ValueDTO */
         $ValueDTO = $ValueCollection->current();
         self::assertEquals(TypeProfileSectionFieldUid::TEST, (string) $ValueDTO->getField());
+        self::assertEquals('HKEKpYtase', (string) $ValueDTO->getValue());
 
 
         /** @var AvatarDTO $AvatarDTO */
         $AvatarDTO = $UserProfileDTO->getAvatar();
-
 
 
         /** @var InfoDTO $InfoDTO */

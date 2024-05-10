@@ -89,10 +89,15 @@ final class UserProfileDTO implements UserProfileEventInterface
 	
 	public function setType(TypeProfileUid $type) : void
 	{
-        if(!(new ReflectionProperty(self::class, 'type'))->isInitialized($this))
+        if(!isset($this->type))
         {
             $this->type = $type;
         }
+
+//        if(!(new ReflectionProperty(self::class, 'type'))->isInitialized($this))
+//        {
+//            $this->type = $type;
+//        }
 	}
 	
 	

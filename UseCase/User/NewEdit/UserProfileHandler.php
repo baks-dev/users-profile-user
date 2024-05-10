@@ -129,7 +129,6 @@ final class UserProfileHandler extends AbstractHandler
             $InfoActive->deactivate();
         }
 
-
         /* Валидация всех объектов */
         if($this->validatorCollection->isInvalid())
         {
