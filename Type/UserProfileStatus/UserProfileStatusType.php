@@ -29,22 +29,27 @@ use Doctrine\DBAL\Types\Type;
 
 final class UserProfileStatusType extends Type
 {
-	
-	public function convertToDatabaseValue($value, AbstractPlatform $platform): string
-	{
-		return (string) $value;
-	}
-	
-	
-	public function convertToPHPValue($value, AbstractPlatform $platform): ?UserProfileStatus
-	{
-        return !empty($value) ? new UserProfileStatus($value) : null;
-	}
 
-	public function getName(): string
-	{
-		return UserProfileStatus::TYPE;
-	}
+    public function convertToDatabaseValue($value, AbstractPlatform $platform): string
+    {
+        if(is_string($value) && class_exists($value))
+        {
+            $value = new UserProfileStatus($value);
+        }
+
+        return (string) $value;
+    }
+
+
+    public function convertToPHPValue($value, AbstractPlatform $platform): ?UserProfileStatus
+    {
+        return !empty($value) ? new UserProfileStatus($value) : null;
+    }
+
+    public function getName(): string
+    {
+        return UserProfileStatus::TYPE;
+    }
 
 
     public function requiresSQLCommentHint(AbstractPlatform $platform): bool
@@ -56,5 +61,5 @@ final class UserProfileStatusType extends Type
     {
         return $platform->getStringTypeDeclarationSQL($column);
     }
-	
+
 }
