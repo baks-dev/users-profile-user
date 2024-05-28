@@ -55,9 +55,12 @@ final class DeleteController extends AbstractController
         ]);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid() && $form->has('delete')) {
+        if ($form->isSubmitted() && $form->isValid() && $form->has('delete'))
+        {
+            $this->refreshTokenForm($form);
 
             $handle = $deleteUserProfileHandler->handle($profile);
+
             $this->addFlash
             (
                 'admin.page.delete',

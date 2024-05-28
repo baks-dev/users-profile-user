@@ -71,6 +71,8 @@ final class EditController extends AbstractController
 
         if($form->isSubmitted() && $form->isValid() && $form->has('Save'))
         {
+            $this->refreshTokenForm($form);
+
             $handle = $UserProfileHandler->handle($UserProfileDTO);
 
             $this->addFlash

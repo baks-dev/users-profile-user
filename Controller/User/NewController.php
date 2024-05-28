@@ -75,6 +75,7 @@ final class NewController extends AbstractController
 
         if($form->isSubmitted() && $form->isValid() && $form->has('Save'))
         {
+            $this->refreshTokenForm($form);
 
             $handle = $UserProfileHandler->handle($UserProfileDTO);
 
