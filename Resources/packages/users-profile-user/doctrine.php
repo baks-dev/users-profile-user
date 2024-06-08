@@ -23,6 +23,7 @@
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
+use BaksDev\Users\Profile\UserProfile\BaksDevUsersProfileUserProfileBundle;
 use BaksDev\Users\Profile\UserProfile\Type\Event\UserProfileEventType;
 use BaksDev\Users\Profile\UserProfile\Type\Event\UserProfileEventUid;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
@@ -43,11 +44,10 @@ return static function(ContainerConfigurator $container, DoctrineConfig $doctrin
 
     $emDefault = $doctrine->orm()->entityManager('default')->autoMapping(true);
 
-    $MODULE = substr(__DIR__, 0, strpos(__DIR__, "Resources"));
 
     $emDefault->mapping('users-profile-user')
 		->type('attribute')
-		->dir($MODULE.'Entity')
+		->dir(BaksDevUsersProfileUserProfileBundle::PATH.'Entity')
 		->isBundle(false)
 		->prefix('BaksDev\Users\Profile\UserProfile\Entity')
 		->alias('users-profile-user')

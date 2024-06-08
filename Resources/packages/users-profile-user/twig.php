@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2023.  Baks.dev <admin@baks.dev>
+ *  Copyright 2024.  Baks.dev <admin@baks.dev>
  *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -23,27 +23,15 @@
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatusExtension;
+use BaksDev\Users\Profile\UserProfile\BaksDevUsersProfileUserProfileBundle;
 use Symfony\Config\TwigConfig;
 
-return static function(TwigConfig $config, ContainerConfigurator $configurator) {
-	
-	$config->path(__DIR__.'/../view', 'users-profile-user');
-    $config->path(__DIR__.'/../../Twig/UserProfileStatus', 'UserProfileStatus');
+return static function(TwigConfig $twig) {
 
-//	$services = $configurator->services()
-//		->defaults()
-//		->autowire()
-//		->autoconfigure()
-//	;
-	
-	/* AccountStatusExtension */
-
-    
-//	$services->set('baks_profile.status.twig.extension')
-//		->class(UserProfileStatusExtension::class)
-//		->tag('twig.extension')
-//	;
+    $twig->path(
+        BaksDevUsersProfileUserProfileBundle::PATH.'Resources/view',
+        'users-profile-user'
+    );
 
 };
 

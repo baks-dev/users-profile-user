@@ -44,10 +44,7 @@ final class UserProfileStatusExtension extends AbstractExtension
 	
 	public function status(Environment $twig, ?string $status): string
 	{
-		return $twig->render('@UserProfileStatus/status.html.twig', ['status' => $status]);
+		return $twig->render('@users-profile-user/twig/status/status.html.twig', ['status' => $status]);
 	}
-
-
-
 
 }
