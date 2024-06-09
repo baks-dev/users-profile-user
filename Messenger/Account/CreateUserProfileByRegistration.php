@@ -58,7 +58,7 @@ final class CreateUserProfileByRegistration
         $this->userVerify = $userVerify;
     }
 
-    /**куы
+    /**
      * Создаем профиль пользователя после регистрации с типом "Пользователь"
      */
     public function __invoke(ConfirmationAccountMessage $message): void

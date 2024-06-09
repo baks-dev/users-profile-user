@@ -35,21 +35,20 @@ use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatusTy
 use Symfony\Config\DoctrineConfig;
 
 return static function(ContainerConfigurator $container, DoctrineConfig $doctrine) {
-	
-	$doctrine->dbal()->type(UserProfileUid::TYPE)->class(UserProfileUidType::class);
-	
-	$doctrine->dbal()->type(UserProfileEventUid::TYPE)->class(UserProfileEventType::class);
-	$doctrine->dbal()->type(UserProfileSettingsIdentifier::TYPE)->class(UserProfileSettingsType::class);
-	$doctrine->dbal()->type(UserProfileStatus::TYPE)->class(UserProfileStatusType::class);
+
+    $doctrine->dbal()->type(UserProfileUid::TYPE)->class(UserProfileUidType::class);
+
+    $doctrine->dbal()->type(UserProfileEventUid::TYPE)->class(UserProfileEventType::class);
+    $doctrine->dbal()->type(UserProfileSettingsIdentifier::TYPE)->class(UserProfileSettingsType::class);
+    $doctrine->dbal()->type(UserProfileStatus::TYPE)->class(UserProfileStatusType::class);
 
     $emDefault = $doctrine->orm()->entityManager('default')->autoMapping(true);
 
 
     $emDefault->mapping('users-profile-user')
-		->type('attribute')
-		->dir(BaksDevUsersProfileUserProfileBundle::PATH.'Entity')
-		->isBundle(false)
-		->prefix('BaksDev\Users\Profile\UserProfile\Entity')
-		->alias('users-profile-user')
-	;
+        ->type('attribute')
+        ->dir(BaksDevUsersProfileUserProfileBundle::PATH.'Entity')
+        ->isBundle(false)
+        ->prefix('BaksDev\Users\Profile\UserProfile\Entity')
+        ->alias('users-profile-user');
 };

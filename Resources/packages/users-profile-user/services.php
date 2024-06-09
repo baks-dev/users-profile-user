@@ -23,9 +23,11 @@
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
+use BaksDev\Reference\Gender\BaksDevReferenceGenderBundle;
 use BaksDev\Users\Profile\UserProfile\BaksDevUsersProfileUserProfileBundle;
 
 return static function(ContainerConfigurator $configurator) {
+
 
     $services = $configurator->services()
         ->defaults()
@@ -40,8 +42,7 @@ return static function(ContainerConfigurator $configurator) {
             $PATH.'{Entity,Resources,Type}',
             $PATH.'**/*Message.php',
             $PATH.'**/*DTO.php',
-        ])
-    ;
+        ]);
 
     $services->load($NAMESPACE.'Type\UserProfileStatus\Status\\', $PATH.'Type/UserProfileStatus/Status');
 
