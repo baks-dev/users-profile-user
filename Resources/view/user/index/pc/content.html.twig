@@ -31,6 +31,7 @@
                         {% for profile in profiles %}
                             <a href="{{ path('users-profile-user:user.newedit.new', { id : profile.value }) }}"
                                class="btn btn-danger"
+                               role="tooltip"
                                data-bs-toggle="tooltip"
                                data-bs-placement="bottom"
                                data-bs-delay='{"show":600,"hide":100}'
