@@ -29,7 +29,6 @@ use Doctrine\DBAL\Types\Type;
 
 final class UserProfileStatusType extends Type
 {
-
     public function convertToDatabaseValue($value, AbstractPlatform $platform): string
     {
         if(is_string($value) && class_exists($value))

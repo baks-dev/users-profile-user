@@ -48,8 +48,7 @@ final class FieldValueForm implements FieldValueFormInterface
 
     public function __construct(
         ORMQueryBuilder $ORMQueryBuilder
-    )
-    {
+    ) {
         $this->ORMQueryBuilder = $ORMQueryBuilder;
     }
 
@@ -61,7 +60,6 @@ final class FieldValueForm implements FieldValueFormInterface
             ->bindLocal();
 
         $select = sprintf(
-
             '
           
           new %s(
@@ -88,7 +86,8 @@ final class FieldValueForm implements FieldValueFormInterface
             ->where('field.id = :field')
             ->setParameter('field', $field);
 
-        $orm->join(TypeProfileSection::class,
+        $orm->join(
+            TypeProfileSection::class,
             'section',
             'WITH',
             'section.id = field.section'
@@ -119,7 +118,6 @@ final class FieldValueForm implements FieldValueFormInterface
             ->bindLocal();
 
         $select = sprintf(
-
             '
           
           new %s(
@@ -145,7 +143,8 @@ final class FieldValueForm implements FieldValueFormInterface
         $orm->from(TypeProfileSectionField::class, 'field', 'field.id');
 
 
-        $orm->join(TypeProfileSection::class,
+        $orm->join(
+            TypeProfileSection::class,
             'section',
             'WITH',
             'section.id = field.section'
@@ -177,7 +176,7 @@ final class FieldValueForm implements FieldValueFormInterface
     }
 
 
-    public function userFilter(User|UserUid|string $user) : self
+    public function userFilter(User|UserUid|string $user): self
     {
         if($user instanceof User)
         {
@@ -203,7 +202,6 @@ final class FieldValueForm implements FieldValueFormInterface
             ->bindLocal();
 
         $select = sprintf(
-
             '
           
           new %s(
@@ -227,7 +225,8 @@ final class FieldValueForm implements FieldValueFormInterface
 
         $orm->from(TypeProfileSectionField::class, 'field');
 
-        $orm->join(TypeProfile::class,
+        $orm->join(
+            TypeProfile::class,
             'profile',
             'WITH',
             'profile.id = :profile'
@@ -240,7 +239,8 @@ final class FieldValueForm implements FieldValueFormInterface
             'event.id = profile.event'
         );
 
-        $orm->join(TypeProfileSection::class,
+        $orm->join(
+            TypeProfileSection::class,
             'section',
             'WITH',
             'section.id = field.section AND  section.event = event.id'
@@ -280,14 +280,18 @@ final class FieldValueForm implements FieldValueFormInterface
                 profile_info.usr = :user AND 
                 profile_info.status = :active AND 
                 profile_info.active = true
-            ')
+            '
+                )
                 ->setParameter('user', $this->user, UserUid::TYPE)
-                ->setParameter('active', new UserProfileStatus(UserProfileStatusActive::class), UserProfileStatus::TYPE);
+                ->setParameter(
+                    'active',
+                    UserProfileStatusActive::class,
+                    UserProfileStatus::TYPE
+                );
 
 
             $orm
                 ->leftJoin(
-
                     UserProfile::class,
                     'user_profile',
                     'WITH',
@@ -300,8 +304,7 @@ final class FieldValueForm implements FieldValueFormInterface
             $subQueryBuilder
                 ->select('1')
                 ->from(UserProfileValue::class, 'user_profile_value')
-                ->where('user_profile_value.event = user_profile.event AND user_profile_value.field = field.id')
-            ;
+                ->where('user_profile_value.event = user_profile.event AND user_profile_value.field = field.id');
 
             //$orm->andWhere($orm->expr()->exists($subQueryBuilder->getDQL()));
             $orm->andWhere($orm->expr()->not($orm->expr()->exists($subQueryBuilder->getDQL())));
@@ -322,7 +325,6 @@ final class FieldValueForm implements FieldValueFormInterface
             ->bindLocal();
 
         $select = sprintf(
-
             '
           
           new %s(
@@ -346,7 +348,6 @@ final class FieldValueForm implements FieldValueFormInterface
         $orm->select($select);
 
 
-
         $orm->from(TypeProfileSectionField::class, 'field');
 
         $orm->leftJoin(
@@ -358,7 +359,8 @@ final class FieldValueForm implements FieldValueFormInterface
 
         /* SECTION */
 
-        $orm->join(TypeProfileSection::class,
+        $orm->join(
+            TypeProfileSection::class,
             'section',
             'WITH',
             'section.id = field.section'

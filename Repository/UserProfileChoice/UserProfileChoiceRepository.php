@@ -25,7 +25,6 @@ declare(strict_types=1);
 
 namespace BaksDev\Users\Profile\UserProfile\Repository\UserProfileChoice;
 
-
 use BaksDev\Auth\Email\Entity\Account;
 use BaksDev\Auth\Email\Entity\Status\AccountStatus;
 use BaksDev\Auth\Email\Type\EmailStatus\EmailStatus;
@@ -46,15 +45,13 @@ use Generator;
 
 final class UserProfileChoiceRepository implements UserProfileChoiceInterface
 {
-
     private ORMQueryBuilder $ORMQueryBuilder;
     private DBALQueryBuilder $DBALQueryBuilder;
 
     public function __construct(
         ORMQueryBuilder $ORMQueryBuilder,
         DBALQueryBuilder $DBALQueryBuilder
-    )
-    {
+    ) {
         $this->ORMQueryBuilder = $ORMQueryBuilder;
         $this->DBALQueryBuilder = $DBALQueryBuilder;
     }
@@ -75,9 +72,14 @@ final class UserProfileChoiceRepository implements UserProfileChoiceInterface
             UserProfileInfo::class,
             'info',
             'WITH',
-            'info.profile = user_profile.id AND info.status = :status');
+            'info.profile = user_profile.id AND info.status = :status'
+        );
 
-        $qb->setParameter('status', new UserProfileStatus(UserProfileStatusActive::class), UserProfileStatus::TYPE);
+        $qb->setParameter(
+            'status',
+            UserProfileStatusActive::class,
+            UserProfileStatus::TYPE
+        );
 
 
         if($usr)
@@ -92,26 +94,30 @@ final class UserProfileChoiceRepository implements UserProfileChoiceInterface
             UserProfileEvent::class,
             'event',
             'WITH',
-            'event.id = user_profile.event AND event.profile = user_profile.id');
+            'event.id = user_profile.event AND event.profile = user_profile.id'
+        );
 
         $qb->join(
             UserProfilePersonal::class,
             'personal',
             'WITH',
-            'personal.event = event.id');
+            'personal.event = event.id'
+        );
 
 
         $qb->join(
             Account::class,
             'account',
             'WITH',
-            'account.id = info.usr');
+            'account.id = info.usr'
+        );
 
         $qb->join(
             AccountStatus::class,
             'status',
             'WITH',
-            'status.event = account.event AND status.status = :account_status');
+            'status.event = account.event AND status.status = :account_status'
+        );
 
         $qb->setParameter('account_status', new EmailStatus(EmailStatusActive::class), EmailStatus::TYPE);
 
@@ -132,8 +138,7 @@ final class UserProfileChoiceRepository implements UserProfileChoiceInterface
         $dbal = $this->DBALQueryBuilder->createQueryBuilder(self::class);
 
         $dbal
-            ->from(UserProfile::class, 'user_profile')
-        ;
+            ->from(UserProfile::class, 'user_profile');
 
         /** Получаем активный профиль текущего пользователя */
 
@@ -141,20 +146,25 @@ final class UserProfileChoiceRepository implements UserProfileChoiceInterface
             'user_profile',
             UserProfileInfo::class,
             'current_info',
-            'current_info.usr = :current AND current_info.active IS TRUE AND current_info.status = :status');
-
+            'current_info.usr = :current AND current_info.active IS TRUE AND current_info.status = :status'
+        );
 
 
         $dbal
             ->setParameter('current', $current, UserUid::TYPE)
-            ->setParameter('status', new UserProfileStatus(UserProfileStatusActive::class), UserProfileStatus::TYPE);
+            ->setParameter(
+                'status',
+                UserProfileStatusActive::class,
+                UserProfileStatus::TYPE
+            );
 
 
         $dbal->join(
             'current_info',
             ProfileGroupUsers::class,
             'group_users',
-            'group_users.profile = current_info.profile AND group_users.authority = user_profile.id');
+            'group_users.profile = current_info.profile AND group_users.authority = user_profile.id'
+        );
 
 
         $dbal
@@ -165,9 +175,14 @@ final class UserProfileChoiceRepository implements UserProfileChoiceInterface
             'user_profile',
             UserProfileInfo::class,
             'info',
-            'info.profile = user_profile.id AND info.status = :status');
+            'info.profile = user_profile.id AND info.status = :status'
+        );
 
-        $dbal->setParameter('status', new UserProfileStatus(UserProfileStatusActive::class), UserProfileStatus::TYPE);
+        $dbal->setParameter(
+            'status',
+            UserProfileStatusActive::class,
+            UserProfileStatus::TYPE
+        );
 
 
         $dbal
@@ -175,7 +190,8 @@ final class UserProfileChoiceRepository implements UserProfileChoiceInterface
                 'user_profile',
                 UserProfileEvent::class,
                 'event',
-                'event.id = user_profile.event AND event.profile = user_profile.id');
+                'event.id = user_profile.event AND event.profile = user_profile.id'
+            );
 
         $dbal
             ->join(
@@ -190,13 +206,15 @@ final class UserProfileChoiceRepository implements UserProfileChoiceInterface
             'info',
             Account::class,
             'account',
-            'account.id = info.usr');
+            'account.id = info.usr'
+        );
 
         $dbal->join(
             'account',
             AccountStatus::class,
             'status',
-            'status.event = account.event AND status.status = :account_status');
+            'status.event = account.event AND status.status = :account_status'
+        );
 
         $dbal->setParameter('account_status', new EmailStatus(EmailStatusActive::class), EmailStatus::TYPE);
 
@@ -205,8 +223,7 @@ final class UserProfileChoiceRepository implements UserProfileChoiceInterface
             ->addSelect('user_profile.id AS value')
             ->addSelect('user_profile_personal.username AS attr')
             ->addSelect('user_profile_personal.latitude AS option')
-            ->addSelect('user_profile_personal.longitude AS property')
-        ;
+            ->addSelect('user_profile_personal.longitude AS property');
 
         return $dbal
             ->enableCache('users-profile-user', 86400)

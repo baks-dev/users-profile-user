@@ -70,8 +70,9 @@ final class CurrentUserProfileEventRepository implements CurrentUserProfileEvent
         $orm->andWhere('info.status = :status')
             ->setParameter(
                 'status',
-                new UserProfileStatus(UserProfileStatusActive::class),
-                UserProfileStatus::TYPE);
+                UserProfileStatusActive::class,
+                UserProfileStatus::TYPE
+            );
 
         $orm->leftJoin(
             UserProfile::class,

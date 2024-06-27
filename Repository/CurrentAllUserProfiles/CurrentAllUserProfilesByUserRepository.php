@@ -39,7 +39,6 @@ use Symfony\Component\Security\Core\Authentication\Token\SwitchUserToken;
 
 final class CurrentAllUserProfilesByUserRepository implements CurrentAllUserProfilesByUserInterface
 {
-
     private DBALQueryBuilder $DBALQueryBuilder;
 
     private TokenStorageInterface $tokenStorage;
@@ -47,8 +46,7 @@ final class CurrentAllUserProfilesByUserRepository implements CurrentAllUserProf
     public function __construct(
         DBALQueryBuilder $DBALQueryBuilder,
         TokenStorageInterface $tokenStorage,
-    )
-    {
+    ) {
 
         $this->DBALQueryBuilder = $DBALQueryBuilder;
         $this->tokenStorage = $tokenStorage;
@@ -98,7 +96,11 @@ final class CurrentAllUserProfilesByUserRepository implements CurrentAllUserProf
 
         $dbal
             ->andWhere('user_profile_info.status = :status')
-            ->setParameter('status', new UserProfileStatus(UserProfileStatusActive::class), UserProfileStatus::TYPE);
+            ->setParameter(
+                'status',
+                UserProfileStatusActive::class,
+                UserProfileStatus::TYPE
+            );
 
 
         $dbal
