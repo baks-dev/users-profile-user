@@ -49,8 +49,7 @@ final class UserProfileListener
         #[TaggedIterator('baks.user.profile', defaultPriorityMethod: 'priority')] iterable $profiles,
         TokenStorageInterface $tokenStorage,
         Environment $twig,
-    )
-    {
+    ) {
         $this->tokenStorage = $tokenStorage;
         $this->twig = $twig;
         $this->profiles = $profiles;
@@ -66,11 +65,11 @@ final class UserProfileListener
 
         $usr = $token?->getUser();
 
-        if($usr)
+        if($usr instanceof User)
         {
             $data = null;
 
-            foreach ($this->profiles as $profile)
+            foreach($this->profiles as $profile)
             {
                 if($profile->getvalue($usr->getId()))
                 {
@@ -82,4 +81,3 @@ final class UserProfileListener
         }
     }
 }
-
