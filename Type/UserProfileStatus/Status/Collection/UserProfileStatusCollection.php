@@ -25,14 +25,14 @@ declare(strict_types=1);
 
 namespace BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\Collection;
 
-use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
+use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
 final class UserProfileStatusCollection
 {
     private iterable $status;
 
     public function __construct(
-        #[TaggedIterator('baks.profile.status', defaultPriorityMethod: 'sort')] iterable $status,
+        #[AutowireIterator('baks.profile.status', defaultPriorityMethod: 'sort')] iterable $status,
     )
     {
         $this->status = $status;

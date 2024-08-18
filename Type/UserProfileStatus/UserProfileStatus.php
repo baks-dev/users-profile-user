@@ -70,7 +70,7 @@ final class UserProfileStatus
         {
             if($declare::equals($status))
             {
-                $this->status = new $declare;
+                $this->status = new $declare();
                 return;
             }
         }
@@ -102,7 +102,7 @@ final class UserProfileStatus
         foreach(self::getDeclared() as $key => $status)
         {
             /** @var UserProfileStatusInterface $status */
-            $class = new $status;
+            $class = new $status();
             $case[$class::sort().$key] = new self($class);
         }
 
@@ -113,7 +113,7 @@ final class UserProfileStatus
     {
         return array_filter(
             get_declared_classes(),
-            static function($className) {
+            static function ($className) {
                 return in_array(UserProfileStatusInterface::class, class_implements($className), true);
             }
         );

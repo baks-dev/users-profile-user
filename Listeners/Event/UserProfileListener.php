@@ -27,7 +27,7 @@ namespace BaksDev\Users\Profile\UserProfile\Listeners\Event;
 
 use BaksDev\Users\User\Entity\User;
 use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
+use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -46,7 +46,7 @@ final class UserProfileListener
     private Security $security;
 
     public function __construct(
-        #[TaggedIterator('baks.user.profile', defaultPriorityMethod: 'priority')] iterable $profiles,
+        #[AutowireIterator('baks.user.profile', defaultPriorityMethod: 'priority')] iterable $profiles,
         TokenStorageInterface $tokenStorage,
         Environment $twig,
     ) {

@@ -23,13 +23,16 @@
 
 namespace BaksDev\Users\Profile\UserProfile\Repository\UserByUserProfile;
 
+use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use BaksDev\Users\User\Entity\User;
 
 interface UserByUserProfileInterface
 {
+    public function withProfile(UserProfile|UserProfileUid|string $profile): self; // withProfile
+
     /**
      * Возвращает User профиля пользователя
      */
-    public function findUserByProfile(UserProfileUid $profile): ?User;
+    public function findUser(): User|false;
 }

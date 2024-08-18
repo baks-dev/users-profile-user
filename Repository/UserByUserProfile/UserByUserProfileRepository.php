@@ -28,39 +28,61 @@ namespace BaksDev\Users\Profile\UserProfile\Repository\UserByUserProfile;
 use App\Kernel;
 use BaksDev\Core\Doctrine\ORMQueryBuilder;
 use BaksDev\Users\Profile\UserProfile\Entity\Info\UserProfileInfo;
+use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use BaksDev\Users\User\Entity\User;
+use InvalidArgumentException;
 
 final class UserByUserProfileRepository implements UserByUserProfileInterface
 {
     private ORMQueryBuilder $ORMQueryBuilder;
+
+    private UserProfileUid|false $profile = false;
 
     public function __construct(ORMQueryBuilder $ORMQueryBuilder)
     {
         $this->ORMQueryBuilder = $ORMQueryBuilder;
     }
 
+    public function withProfile(UserProfile|UserProfileUid|string $profile): self
+    {
+        if(is_string($profile))
+        {
+            $profile = new UserProfileUid($profile);
+        }
+
+        if($profile instanceof UserProfile)
+        {
+            $profile = $profile->getId();
+        }
+
+        $this->profile = $profile;
+
+        return $this;
+    }
+
     /**
      * Возвращает User профиля пользователя
      */
-    public function findUserByProfile(UserProfileUid|string $profile): ?User
+    public function findUser(): User|false
     {
         if(Kernel::isTestEnvironment())
         {
             return new User();
         }
 
-        if(is_string($profile))
+        if(($this->profile instanceof UserProfileUid) === false)
         {
-            $profile = new UserProfileUid($profile);
+            throw new InvalidArgumentException('Идентификатор профиля не определен ->profile(...)');
         }
+
 
         $orm = $this->ORMQueryBuilder->createQueryBuilder(self::class);
 
         $orm
             ->from(UserProfileInfo::class, 'info')
             ->where('info.profile = :profile')
-            ->setParameter('profile', $profile, UserProfileUid::TYPE);
+            ->setParameter('profile', $this->profile, UserProfileUid::TYPE);
 
         $orm
             ->select('usr')
@@ -72,6 +94,6 @@ final class UserByUserProfileRepository implements UserByUserProfileInterface
             );
 
 
-        return $orm->getQuery()->getOneOrNullResult();
+        return $orm->getQuery()->getOneOrNullResult() ?: false;
     }
 }
