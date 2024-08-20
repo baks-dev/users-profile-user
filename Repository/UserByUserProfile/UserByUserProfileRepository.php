@@ -44,7 +44,7 @@ final class UserByUserProfileRepository implements UserByUserProfileInterface
         $this->ORMQueryBuilder = $ORMQueryBuilder;
     }
 
-    public function withProfile(UserProfile|UserProfileUid|string $profile): self
+    public function forProfile(UserProfile|UserProfileUid|string $profile): self
     {
         if(is_string($profile))
         {

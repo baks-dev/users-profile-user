@@ -29,7 +29,7 @@ use BaksDev\Users\User\Entity\User;
 
 interface UserByUserProfileInterface
 {
-    public function withProfile(UserProfile|UserProfileUid|string $profile): self; // withProfile
+    public function forProfile(UserProfile|UserProfileUid|string $profile): self;
 
     /**
      * Возвращает User профиля пользователя
