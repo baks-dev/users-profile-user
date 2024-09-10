@@ -49,6 +49,11 @@ final class UserProfileTokenStorage implements UserProfileTokenStorageInterface
             $this->profile = $user instanceof UserInterface ? new UserProfileUid($user->getProfile()) : false;
         }
 
+        if($this->profile === false)
+        {
+            throw new UserProfileAccessDeniedException('Для доступа к ресурсу необходима полная аутентификация');
+        }
+
         return $this->profile;
     }
 
@@ -61,6 +66,11 @@ final class UserProfileTokenStorage implements UserProfileTokenStorageInterface
         {
             $user = $this->userTokenStorage->getCurrentUserInterface();
             $this->current = $user instanceof UserInterface ? new UserProfileUid($user->getProfile()) : false;
+        }
+
+        if($this->current === false)
+        {
+            throw new UserProfileAccessDeniedException('Для доступа к ресурсу необходима полная аутентификация');
         }
 
         return $this->current;
