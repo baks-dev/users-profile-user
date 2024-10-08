@@ -30,16 +30,11 @@ use BaksDev\Users\Profile\UserProfile\Entity\Personal\UserProfilePersonal;
 use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 
-final class UserProfileGpsRepository implements UserProfileGpsInterface
+final readonly class UserProfileGpsRepository implements UserProfileGpsInterface
 {
-    private DBALQueryBuilder $DBALQueryBuilder;
+    public function __construct(private DBALQueryBuilder $DBALQueryBuilder) {}
 
-    public function __construct(DBALQueryBuilder $DBALQueryBuilder,)
-    {
-        $this->DBALQueryBuilder = $DBALQueryBuilder;
-    }
-
-    public function findUserProfileGps(UserProfileUid|string $profile): array|bool
+    public function findUserProfileGps(UserProfileUid|string $profile): array|false
     {
         if(is_string($profile))
         {
@@ -51,10 +46,10 @@ final class UserProfileGpsRepository implements UserProfileGpsInterface
         $dbal
             ->from(UserProfile::class, 'main')
             ->where('main.id = :profile')
-            ->setParameter('profile', $profile, UserProfileUid::TYPE)
-        ;
+            ->setParameter('profile', $profile, UserProfileUid::TYPE);
 
         $dbal
+            ->addSelect('personal.location')
             ->addSelect('personal.latitude')
             ->addSelect('personal.longitude')
             ->join(
