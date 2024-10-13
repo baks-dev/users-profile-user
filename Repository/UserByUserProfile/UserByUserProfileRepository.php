@@ -25,24 +25,22 @@ declare(strict_types=1);
 
 namespace BaksDev\Users\Profile\UserProfile\Repository\UserByUserProfile;
 
-use App\Kernel;
 use BaksDev\Core\Doctrine\ORMQueryBuilder;
 use BaksDev\Users\Profile\UserProfile\Entity\Info\UserProfileInfo;
 use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use BaksDev\Users\User\Entity\User;
 use InvalidArgumentException;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 final class UserByUserProfileRepository implements UserByUserProfileInterface
 {
-    private ORMQueryBuilder $ORMQueryBuilder;
-
     private UserProfileUid|false $profile = false;
 
-    public function __construct(ORMQueryBuilder $ORMQueryBuilder)
-    {
-        $this->ORMQueryBuilder = $ORMQueryBuilder;
-    }
+    public function __construct(
+        #[Autowire(env: 'APP_ENV')] private readonly string $environment,
+        private readonly ORMQueryBuilder $ORMQueryBuilder
+    ) {}
 
     public function forProfile(UserProfile|UserProfileUid|string $profile): self
     {
@@ -62,11 +60,11 @@ final class UserByUserProfileRepository implements UserByUserProfileInterface
     }
 
     /**
-     * Возвращает User профиля пользователя
+     * Возвращает объект сущности User по идентификатору профиля пользователя
      */
     public function findUser(): User|false
     {
-        if(Kernel::isTestEnvironment())
+        if($this->environment === 'test')
         {
             return new User();
         }
@@ -75,7 +73,6 @@ final class UserByUserProfileRepository implements UserByUserProfileInterface
         {
             throw new InvalidArgumentException('Идентификатор профиля не определен ->profile(...)');
         }
-
 
         $orm = $this->ORMQueryBuilder->createQueryBuilder(self::class);
 
@@ -93,7 +90,8 @@ final class UserByUserProfileRepository implements UserByUserProfileInterface
                 'usr.id = info.usr'
             );
 
-
-        return $orm->getQuery()->getOneOrNullResult() ?: false;
+        return $orm
+            ->enableCache('users-profile-user')
+            ->getOneOrNullResult() ?: false;
     }
 }
