@@ -10,7 +10,7 @@
 # systemctl stop baks-users-profile-user@1.service
 
 [Unit]
-Description=Symfony messenger users-profile-user %i
+Description=users-profile-user
 StartLimitBurst=5
 StartLimitIntervalSec=0
 
