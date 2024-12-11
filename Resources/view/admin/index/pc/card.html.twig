@@ -36,7 +36,6 @@
 
             {% if item.user_profile_avatar_ext is defined and item.user_profile_avatar_ext is not null %}
                 {% set img_host =  item.user_profile_avatar_cdn == true  ? CDN_HOST : '' %}
-                {# {% set img_table = '/upload/' ~ constant('BaksDev\\Payment\\Entity\\Cover\\PaymentCover::TABLE') %} #}
                 {% set img_dir = item.user_profile_avatar_name %}
                 {% set img_file = (img_host is empty ? '/image.' : '/small.') ~ item.user_profile_avatar_ext %}
                 {% set image_path = img_host ~ img_dir ~ img_file %}
