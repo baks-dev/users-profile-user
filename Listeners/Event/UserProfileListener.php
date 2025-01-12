@@ -1,17 +1,17 @@
 <?php
 /*
- *  Copyright 2023.  Baks.dev <admin@baks.dev>
- *
+ *  Copyright 2025.  Baks.dev <admin@baks.dev>
+ *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
  *  in the Software without restriction, including without limitation the rights
  *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  *  copies of the Software, and to permit persons to whom the Software is furnished
  *  to do so, subject to the following conditions:
- *
+ *  
  *  The above copyright notice and this permission notice shall be included in all
  *  copies or substantial portions of the Software.
- *
+ *  
  *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  *  FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL THE
@@ -27,11 +27,12 @@ namespace BaksDev\Users\Profile\UserProfile\Listeners\Event;
 
 use BaksDev\Users\User\Entity\User;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\Authentication\Token\SwitchUserToken;
+use Symfony\Contracts\Cache\ItemInterface;
 use Twig\Environment;
 
 /**
@@ -49,7 +50,8 @@ final class UserProfileListener
         #[AutowireIterator('baks.user.profile', defaultPriorityMethod: 'priority')] iterable $profiles,
         TokenStorageInterface $tokenStorage,
         Environment $twig,
-    ) {
+    )
+    {
         $this->tokenStorage = $tokenStorage;
         $this->twig = $twig;
         $this->profiles = $profiles;
@@ -57,6 +59,8 @@ final class UserProfileListener
 
     public function onKernelController(ControllerEvent $event): void
     {
+
+
         /** @var User $usr */
         $token = $this->tokenStorage->getToken();
 
@@ -65,17 +69,29 @@ final class UserProfileListener
 
         $usr = $token?->getUser();
 
+
         if($usr instanceof User)
         {
-            $data = null;
 
-            foreach($this->profiles as $profile)
-            {
-                if($profile->getvalue($usr->getId()))
+            $cache = new FilesystemAdapter('users-profile-user');
+
+            $data = $cache->get((string) 'users-profile-user-'.$usr->getId(), function(ItemInterface $item) use ($usr
+            ): ?array {
+                $item->expiresAfter(86400);
+
+                $data = null;
+
+                foreach($this->profiles as $profile)
                 {
-                    $data[$profile::KEY] = $profile->getValue($usr->getId());
+                    if($profile->getvalue($usr->getId()))
+                    {
+                        $data[$profile::KEY] = $profile->getValue($usr->getId());
+                    }
                 }
-            }
+
+                return $data;
+            });
+
 
             $this->twig->addGlobal('baks_profile', $data);
         }
