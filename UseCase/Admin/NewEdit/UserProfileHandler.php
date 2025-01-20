@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2024.  Baks.dev <admin@baks.dev>
+ *  Copyright 2025.  Baks.dev <admin@baks.dev>
  *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -39,22 +39,17 @@ use DomainException;
 
 final class UserProfileHandler extends AbstractHandler
 {
-
-    private UniqProfileUrlInterface $uniqProfileUrl;
-
     public function __construct(
+        private readonly UniqProfileUrlInterface $uniqProfileUrl,
+
         EntityManagerInterface $entityManager,
         MessageDispatchInterface $messageDispatch,
         ValidatorCollectionInterface $validatorCollection,
         ImageUploadInterface $imageUpload,
         FileUploadInterface $fileUpload,
-
-        UniqProfileUrlInterface $uniqProfileUrl,
     )
     {
         parent::__construct($entityManager, $messageDispatch, $validatorCollection, $imageUpload, $fileUpload);
-
-        $this->uniqProfileUrl = $uniqProfileUrl;
     }
 
     public function handle(UserProfileDTO $command,): string|UserProfile
