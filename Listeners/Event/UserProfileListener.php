@@ -25,13 +25,11 @@ declare(strict_types=1);
 
 namespace BaksDev\Users\Profile\UserProfile\Listeners\Event;
 
-use BaksDev\Users\User\Entity\User;
-use Symfony\Bundle\SecurityBundle\Security;
+use BaksDev\Users\User\Repository\UserTokenStorage\UserTokenStorageInterface;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 use Twig\Environment;
 
@@ -39,61 +37,46 @@ use Twig\Environment;
  * Слушатель инициирует профиль профиль пользователя для Environment
  */
 #[AsEventListener(event: ControllerEvent::class)]
-final class UserProfileListener
+final readonly class UserProfileListener
 {
-    private TokenStorageInterface $tokenStorage;
-    private Environment $twig;
-    private iterable $profiles;
-    private Security $security;
-
     public function __construct(
-        #[AutowireIterator('baks.user.profile', defaultPriorityMethod: 'priority')] iterable $profiles,
-        TokenStorageInterface $tokenStorage,
-        Environment $twig,
-    )
-    {
-        $this->tokenStorage = $tokenStorage;
-        $this->twig = $twig;
-        $this->profiles = $profiles;
-    }
+        #[AutowireIterator('baks.user.profile', defaultPriorityMethod: 'priority')] private iterable $profiles,
+        private UserTokenStorageInterface $tokenStorage,
+        private Environment $twig,
+    ) {}
 
     public function onKernelController(ControllerEvent $event): void
     {
 
-
-        /** @var User $usr */
-        $token = $this->tokenStorage->getToken();
-
-        // - $usr = $token instanceof SwitchUserToken ? $token->getOriginalToken()->getUser() : $token?->getUser();
-        // + $usr = $token?->getUser();
-
-        $usr = $token?->getUser();
-
-
-        if($usr instanceof User)
+        if(false === $this->tokenStorage->isUser())
         {
+            return;
+        }
 
-            $cache = new FilesystemAdapter('users-profile-user');
+        $cache = new FilesystemAdapter('users-profile-user');
 
-            $data = $cache->get((string) 'users-profile-user-'.$usr->getId(), function(ItemInterface $item) use ($usr
-            ): ?array {
-                $item->expiresAfter(86400);
+        $data = $cache->get('users-profile-user-'.$this->tokenStorage->getUserCurrent(),
+
+            function(ItemInterface $item): ?array {
+
+                $item->expiresAfter(3600);
 
                 $data = null;
 
+                $user = $this->tokenStorage->getUserCurrent();
+
                 foreach($this->profiles as $profile)
                 {
-                    if($profile->getvalue($usr->getId()))
+                    if($profile->getvalue($user))
                     {
-                        $data[$profile::KEY] = $profile->getValue($usr->getId());
+                        $data[$profile::KEY] = $profile->getValue($user);
                     }
                 }
 
                 return $data;
             });
 
+        $this->twig->addGlobal('baks_profile', $data);
 
-            $this->twig->addGlobal('baks_profile', $data);
-        }
     }
 }

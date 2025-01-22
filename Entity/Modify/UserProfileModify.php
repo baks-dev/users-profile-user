@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2023.  Baks.dev <admin@baks.dev>
+ *  Copyright 2025.  Baks.dev <admin@baks.dev>
  *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -25,9 +25,9 @@ namespace BaksDev\Users\Profile\UserProfile\Entity\Modify;
 
 use BaksDev\Core\Entity\EntityEvent;
 use BaksDev\Core\Type\Ip\IpAddress;
-use BaksDev\Core\Type\Modify\ModifyAction;
 use BaksDev\Core\Type\Modify\Modify\ModifyActionNew;
 use BaksDev\Core\Type\Modify\Modify\ModifyActionUpdate;
+use BaksDev\Core\Type\Modify\ModifyAction;
 use BaksDev\Users\Profile\UserProfile\Entity\Event\UserProfileEvent;
 use BaksDev\Users\User\Entity\User;
 use BaksDev\Users\User\Type\Id\UserUid;
@@ -44,11 +44,9 @@ use InvalidArgumentException;
 #[ORM\Index(columns: ['action'])]
 class UserProfileModify extends EntityEvent
 {
-	public const TABLE = 'users_profile_modify';
-	
 	/** ID события */
 	#[ORM\Id]
-	#[ORM\OneToOne(inversedBy: 'modify', targetEntity: UserProfileEvent::class)]
+    #[ORM\OneToOne(targetEntity: UserProfileEvent::class, inversedBy: 'modify')]
 	#[ORM\JoinColumn(name: 'event', referencedColumnName: 'id')]
 	private UserProfileEvent $event;
 	

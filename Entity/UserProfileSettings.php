@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2023.  Baks.dev <admin@baks.dev>
+ *  Copyright 2025.  Baks.dev <admin@baks.dev>
  *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -24,8 +24,8 @@
 namespace BaksDev\Users\Profile\UserProfile\Entity;
 
 use BaksDev\Users\Profile\UserProfile\Type\Settings\UserProfileSettingsIdentifier;
-use Doctrine\ORM\Mapping as ORM;
 use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
 
 /* Настройки сущности UserProfile */
 
@@ -34,8 +34,6 @@ use Doctrine\DBAL\Types\Types;
 #[ORM\Table(name: 'users_profile_settings')]
 class UserProfileSettings
 {
-	public const TABLE = 'users_profile_settings';
-	
 	/** ID */
 	#[ORM\Id]
 	#[ORM\Column(type: UserProfileSettingsIdentifier::TYPE)]
