@@ -55,6 +55,8 @@ final readonly class UserProfileListener
 
         $cache = new FilesystemAdapter('users-profile-user');
 
+        $cache->deleteItem('users-profile-user-'.$this->tokenStorage->getUserCurrent());
+
         $data = $cache->get('users-profile-user-'.$this->tokenStorage->getUserCurrent(),
 
             function(ItemInterface $item): ?array {

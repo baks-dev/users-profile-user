@@ -1,17 +1,17 @@
 <?php
 /*
- *  Copyright 2023.  Baks.dev <admin@baks.dev>
- *
+ *  Copyright 2025.  Baks.dev <admin@baks.dev>
+ *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
  *  in the Software without restriction, including without limitation the rights
  *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  *  copies of the Software, and to permit persons to whom the Software is furnished
  *  to do so, subject to the following conditions:
- *
+ *  
  *  The above copyright notice and this permission notice shall be included in all
  *  copies or substantial portions of the Software.
- *
+ *  
  *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  *  FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL THE
@@ -34,10 +34,10 @@ use BaksDev\Users\Profile\UserProfile\Entity\Event\UserProfileEvent;
 use BaksDev\Users\Profile\UserProfile\Entity\Info\UserProfileInfo;
 use BaksDev\Users\Profile\UserProfile\Entity\Personal\UserProfilePersonal;
 use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
+use BaksDev\Users\Profile\UserProfile\Repository\UserProfileTokenStorage\UserProfileTokenStorageInterface;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\UserProfileStatusActive;
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
-
 use BaksDev\Users\User\Entity\User;
 use BaksDev\Users\User\Type\Id\UserUid;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -54,7 +54,8 @@ final class CurrentUserProfileRepository implements CurrentUserProfileInterface
         #[Autowire(env: 'CDN_HOST')] string $CDN_HOST,
         ORMQueryBuilder $ORMQueryBuilder,
         DBALQueryBuilder $DBALQueryBuilder,
-        AppCacheInterface $cache
+        AppCacheInterface $cache,
+        private readonly UserProfileTokenStorageInterface $userProfileTokenStorage,
     ) {
         $this->ORMQueryBuilder = $ORMQueryBuilder;
         $this->DBALQueryBuilder = $DBALQueryBuilder;
@@ -78,6 +79,8 @@ final class CurrentUserProfileRepository implements CurrentUserProfileInterface
 
     public function fetchProfileAssociative(UserUid $usr, bool $authority = true): bool|array
     {
+        //dump($this->userProfileTokenStorage->getProfile());
+
         $dbal = $this->DBALQueryBuilder
             ->createQueryBuilder(self::class)
             ->bindLocal();
@@ -93,6 +96,7 @@ final class CurrentUserProfileRepository implements CurrentUserProfileInterface
         $dbal->addSelect('profile_info.url AS profile_url');  /* URL профиля */
         $dbal->addSelect('profile_info.discount AS profile_discount');  /* URL профиля */
 
+
         if(empty($authority))
         {
             /* Пользователь */
@@ -105,22 +109,27 @@ final class CurrentUserProfileRepository implements CurrentUserProfileInterface
                 'users',
                 UserProfileInfo::class,
                 'profile_info',
-                'profile_info.usr = users.usr 
-                AND profile_info.status = :profile_status 
-                AND profile_info.active = true'
-            );
+                '
+                    profile_info.profile = :profile
+                    AND profile_info.usr = users.usr 
+                    AND profile_info.status = :profile_status 
+                '
+            )
+                ->setParameter('profile', $this->userProfileTokenStorage->getProfile(), UserProfileUid::TYPE);
         }
         else
         {
             $dbal
                 ->from(UserProfileInfo::class, 'profile_info')
-                ->andWhere(' profile_info.active = true')
-                ->andWhere('profile_info.status = :profile_status');
+                ->andWhere('profile_info.status = :profile_status')//->andWhere(' profile_info.active = true') !!! ???
+            ;
 
             $dbal
                 ->andWhere('profile_info.profile = :authority')
                 ->setParameter('authority', $authority, UserProfileUid::TYPE);
 
+
+            //dump($authority);
 
             /* Пользователь */
             $dbal->join(
@@ -203,6 +212,7 @@ final class CurrentUserProfileRepository implements CurrentUserProfileInterface
                 'profile_type_trans.event = profile_type.event AND profile_type_trans.local = :local'
             );
 
+
         /* Кешируем результат DBAL */
         return $dbal->enableCache('users-profile-user', 3600)->fetchAssociative();
     }
@@ -210,6 +220,9 @@ final class CurrentUserProfileRepository implements CurrentUserProfileInterface
 
     public function getCurrentUserProfile(UserUid $usr): ?CurrentUserProfileDTO
     {
+
+        dump($this->userProfileTokenStorage->getProfile());
+
         $orm = $this->ORMQueryBuilder
             ->createQueryBuilder(self::class)
             ->bindLocal();
