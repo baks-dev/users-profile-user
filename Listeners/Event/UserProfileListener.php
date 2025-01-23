@@ -59,7 +59,7 @@ final readonly class UserProfileListener
 
             function(ItemInterface $item): ?array {
 
-                $item->expiresAfter(3600);
+                $item->expiresAfter(60);
 
                 $data = null;
 
