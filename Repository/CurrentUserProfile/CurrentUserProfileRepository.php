@@ -26,7 +26,6 @@ namespace BaksDev\Users\Profile\UserProfile\Repository\CurrentUserProfile;
 use BaksDev\Core\Cache\AppCacheInterface;
 use BaksDev\Core\Doctrine\DBALQueryBuilder;
 use BaksDev\Core\Doctrine\ORMQueryBuilder;
-use BaksDev\Users\Profile\TypeProfile\Entity\Event\TypeProfileEvent;
 use BaksDev\Users\Profile\TypeProfile\Entity\Trans\TypeProfileTrans;
 use BaksDev\Users\Profile\TypeProfile\Entity\TypeProfile;
 use BaksDev\Users\Profile\UserProfile\Entity\Avatar\UserProfileAvatar;
@@ -40,28 +39,17 @@ use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\UserProfileS
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
 use BaksDev\Users\User\Entity\User;
 use BaksDev\Users\User\Type\Id\UserUid;
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
-final class CurrentUserProfileRepository implements CurrentUserProfileInterface
+final readonly class CurrentUserProfileRepository implements CurrentUserProfileInterface
 {
-    private ORMQueryBuilder $ORMQueryBuilder;
-    private DBALQueryBuilder $DBALQueryBuilder;
-    private string $CDN_HOST;
-    private AppCacheInterface $cache;
-
     public function __construct(
-        #[Autowire(env: 'CDN_HOST')] string $CDN_HOST,
-        ORMQueryBuilder $ORMQueryBuilder,
-        DBALQueryBuilder $DBALQueryBuilder,
-        AppCacheInterface $cache,
-        private readonly UserProfileTokenStorageInterface $userProfileTokenStorage,
-    ) {
-        $this->ORMQueryBuilder = $ORMQueryBuilder;
-        $this->DBALQueryBuilder = $DBALQueryBuilder;
-        $this->CDN_HOST = $CDN_HOST;
-        $this->cache = $cache;
-    }
+        #[Autowire(env: 'CDN_HOST')] private string $CDN_HOST,
+        private ORMQueryBuilder $ORMQueryBuilder,
+        private DBALQueryBuilder $DBALQueryBuilder,
+        private AppCacheInterface $cache,
+        private UserProfileTokenStorageInterface $userProfileTokenStorage,
+    ) {}
 
 
     /** Активный профиль пользователя
@@ -79,8 +67,6 @@ final class CurrentUserProfileRepository implements CurrentUserProfileInterface
 
     public function fetchProfileAssociative(UserUid $usr, bool $authority = true): bool|array
     {
-        //dump($this->userProfileTokenStorage->getProfile());
-
         $dbal = $this->DBALQueryBuilder
             ->createQueryBuilder(self::class)
             ->bindLocal();
@@ -93,8 +79,9 @@ final class CurrentUserProfileRepository implements CurrentUserProfileInterface
         }
 
         /* PROFILE */
-        $dbal->addSelect('profile_info.url AS profile_url');  /* URL профиля */
-        $dbal->addSelect('profile_info.discount AS profile_discount');  /* URL профиля */
+        $dbal
+            ->addSelect('profile_info.url AS profile_url')/* URL профиля */
+            ->addSelect('profile_info.discount AS profile_discount');  /* URL профиля */
 
 
         if(empty($authority))
@@ -115,7 +102,11 @@ final class CurrentUserProfileRepository implements CurrentUserProfileInterface
                     AND profile_info.status = :profile_status 
                 '
             )
-                ->setParameter('profile', $this->userProfileTokenStorage->getProfile(), UserProfileUid::TYPE);
+                ->setParameter(
+                    'profile',
+                    $this->userProfileTokenStorage->getProfile(),
+                    UserProfileUid::TYPE
+                );
         }
         else
         {
@@ -127,9 +118,6 @@ final class CurrentUserProfileRepository implements CurrentUserProfileInterface
             $dbal
                 ->andWhere('profile_info.profile = :authority')
                 ->setParameter('authority', $authority, UserProfileUid::TYPE);
-
-
-            //dump($authority);
 
             /* Пользователь */
             $dbal->join(
@@ -196,12 +184,6 @@ final class CurrentUserProfileRepository implements CurrentUserProfileInterface
             'profile_type.id = profile_event.type'
         );
 
-        /*$dbal->leftJoin(
-            'profile_type',
-            TypeProfileEvent::class,
-            'profile_type_event',
-            'profile_type_event.id = profile_type.event'
-        );*/
 
         $dbal
             ->addSelect('profile_type_trans.name as profile_type')
@@ -212,17 +194,15 @@ final class CurrentUserProfileRepository implements CurrentUserProfileInterface
                 'profile_type_trans.event = profile_type.event AND profile_type_trans.local = :local'
             );
 
-
         /* Кешируем результат DBAL */
-        return $dbal->enableCache('users-profile-user', 3600)->fetchAssociative();
+        return $dbal
+            ->enableCache('users-profile-user', 3600)
+            ->fetchAssociative();
     }
 
 
     public function getCurrentUserProfile(UserUid $usr): ?CurrentUserProfileDTO
     {
-
-        dump($this->userProfileTokenStorage->getProfile());
-
         $orm = $this->ORMQueryBuilder
             ->createQueryBuilder(self::class)
             ->bindLocal();
@@ -271,8 +251,7 @@ final class CurrentUserProfileRepository implements CurrentUserProfileInterface
 				profile_info.usr = users.id AND
 				profile_info.status = :profile_status AND
 				profile_info.active = true
-		'
-            )
+		')
             ->setParameter(
                 'profile_status',
                 UserProfileStatusActive::class,
@@ -319,13 +298,6 @@ final class CurrentUserProfileRepository implements CurrentUserProfileInterface
             'profile_type.id = profile_event.type'
         );
 
-        /*orm->leftJoin(
-
-            TypeProfileEvent::class,
-            'profile_type_event',
-            'WITH',
-            'profile_type_event.id = profile_type.event'
-        );*/
 
         $orm->leftJoin(
             TypeProfileTrans::class,
@@ -336,7 +308,9 @@ final class CurrentUserProfileRepository implements CurrentUserProfileInterface
 
 
         /* Кешируем результат ORM */
-        return $orm->enableCache('users-profile-user', 3600)->getOneOrNullResult();
+        return $orm
+            ->enableCache('users-profile-user', 3600)
+            ->getOneOrNullResult();
 
     }
 }
