@@ -58,7 +58,7 @@ class UserProfileInfo extends EntityReadonly
      */
     #[Assert\NotBlank]
     #[Assert\Uuid]
-    #[ORM\OneToOne(inversedBy: 'info', targetEntity: UserProfileEvent::class)]
+    #[ORM\OneToOne(targetEntity: UserProfileEvent::class, inversedBy: 'info')]
     #[ORM\JoinColumn(name: 'event', referencedColumnName: 'id')]
     private UserProfileEvent $event;
 
