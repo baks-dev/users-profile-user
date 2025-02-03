@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2023.  Baks.dev <admin@baks.dev>
+ *  Copyright 2025.  Baks.dev <admin@baks.dev>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -27,16 +27,13 @@ use BaksDev\Core\Controller\AbstractController;
 use BaksDev\Core\Form\Search\SearchDTO;
 use BaksDev\Core\Form\Search\SearchForm;
 use BaksDev\Core\Listeners\Event\Security\RoleSecurity;
-use BaksDev\Users\Profile\TypeProfile\Repository\AllProfileType\AllProfileTypeInterface;
 use BaksDev\Users\Profile\TypeProfile\Repository\PublicTypeProfile\PublicTypeProfileInterface;
 use BaksDev\Users\Profile\TypeProfile\Repository\TypeProfileChoice\TypeProfileChoiceInterface;
 use BaksDev\Users\Profile\UserProfile\Repository\UserProfileByUser\UserProfileByUserInterface;
-use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
 #[AsController]
 #[RoleSecurity('ROLE_USER')]
@@ -55,10 +52,14 @@ final class IndexController extends AbstractController
 
         // Поиск
         $search = new SearchDTO();
-        $searchForm = $this->createForm(SearchForm::class, $search,
-            ['action' => $this->generateUrl('users-profile-user:user.index')]
-        );
-        $searchForm->handleRequest($request);
+
+        $searchForm = $this
+            ->createForm(
+                type: SearchForm::class,
+                data: $search,
+                options: ['action' => $this->generateUrl('users-profile-user:user.index')]
+            )
+            ->handleRequest($request);
 
         // Получаем список
         $query = $userProfileByUser

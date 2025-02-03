@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2023.  Baks.dev <admin@baks.dev>
+ *  Copyright 2025.  Baks.dev <admin@baks.dev>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,6 @@ use BaksDev\Core\Controller\AbstractController;
 use BaksDev\Core\Form\Search\SearchDTO;
 use BaksDev\Core\Form\Search\SearchForm;
 use BaksDev\Core\Listeners\Event\Security\RoleSecurity;
-use BaksDev\Users\Profile\TypeProfile\Repository\AllProfileType\AllProfileTypeInterface;
 use BaksDev\Users\Profile\TypeProfile\Repository\TypeProfileChoice\TypeProfileChoiceInterface;
 use BaksDev\Users\Profile\UserProfile\Repository\AllUserProfile\AllUserProfileInterface;
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
@@ -57,10 +56,14 @@ final class IndexController extends AbstractController
 
         // Поиск
         $search = new SearchDTO();
-        $searchForm = $this->createForm(SearchForm::class, $search,
-            ['action' => $this->generateUrl('users-profile-user:admin.index')]
-        );
-        $searchForm->handleRequest($request);
+
+        $searchForm = $this
+            ->createForm(
+                type: SearchForm::class,
+                data: $search,
+                options: ['action' => $this->generateUrl('users-profile-user:admin.index')]
+            )
+            ->handleRequest($request);
 
         // Получаем список
         $status = !$request->get('status') ? null : new UserProfileStatus($request->get('status'));
