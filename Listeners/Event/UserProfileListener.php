@@ -26,11 +26,9 @@ declare(strict_types=1);
 namespace BaksDev\Users\Profile\UserProfile\Listeners\Event;
 
 use BaksDev\Users\User\Repository\UserTokenStorage\UserTokenStorageInterface;
-use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
-use Symfony\Contracts\Cache\ItemInterface;
 use Twig\Environment;
 
 /**
@@ -47,34 +45,22 @@ final readonly class UserProfileListener
 
     public function onKernelController(ControllerEvent $event): void
     {
-
         if(false === $this->tokenStorage->isUser())
         {
             return;
         }
 
-        $cache = new FilesystemAdapter('users-profile-user');
+        $data = null;
 
-        $data = $cache->get('users-profile-user-'.$this->tokenStorage->getUserCurrent(),
+        $user = $this->tokenStorage->getUserCurrent();
 
-            function(ItemInterface $item): ?array {
-
-                $item->expiresAfter(60);
-
-                $data = null;
-
-                $user = $this->tokenStorage->getUserCurrent();
-
-                foreach($this->profiles as $profile)
-                {
-                    if($profile->getvalue($user))
-                    {
-                        $data[$profile::KEY] = $profile->getValue($user);
-                    }
-                }
-
-                return $data;
-            });
+        foreach($this->profiles as $profile)
+        {
+            if($profile->getvalue($user))
+            {
+                $data[$profile::KEY] = $profile->getValue($user);
+            }
+        }
 
         $this->twig->addGlobal('baks_profile', $data);
 
