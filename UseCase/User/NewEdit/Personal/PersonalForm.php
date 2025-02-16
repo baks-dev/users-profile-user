@@ -96,7 +96,7 @@ final class PersonalForm extends AbstractType
 				'expanded' => true,
 				'multiple' => false,
 				'required' => true,
-				'translation_domain' => 'reference.gender',
+                'translation_domain' => 'gender_type',
 			])
 		;
 		
