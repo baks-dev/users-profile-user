@@ -76,12 +76,6 @@ final class PersonalForm extends AbstractType
         );
 
 
-
-
-
-
-
-		/* Тип профиля */
 		$builder
 			->add('gender', ChoiceType::class, [
                 'choices' => Gender::cases(false),
