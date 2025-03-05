@@ -47,7 +47,7 @@ class UserProfilePersonal extends EntityEvent
 	private UserProfileEvent $event;
 	
 	/** Название профиля */
-	#[ORM\Column(type: Types::STRING, length: 32)]
+    #[ORM\Column(type: Types::STRING, length: 64)]
 	private string $username;
 	
 	/** Пол (m: мужской, w-женский) */
