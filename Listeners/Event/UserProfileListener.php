@@ -32,7 +32,7 @@ use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Twig\Environment;
 
 /**
- * Слушатель инициирует профиль профиль пользователя для Environment
+ * Слушатель инициирует профиль пользователя для Environment
  */
 #[AsEventListener(event: ControllerEvent::class)]
 final readonly class UserProfileListener

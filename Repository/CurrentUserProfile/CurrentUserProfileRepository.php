@@ -40,6 +40,7 @@ use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
 use BaksDev\Users\User\Entity\User;
 use BaksDev\Users\User\Type\Id\UserUid;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 final readonly class CurrentUserProfileRepository implements CurrentUserProfileInterface
 {
@@ -49,6 +50,7 @@ final readonly class CurrentUserProfileRepository implements CurrentUserProfileI
         private DBALQueryBuilder $DBALQueryBuilder,
         private AppCacheInterface $cache,
         private UserProfileTokenStorageInterface $userProfileTokenStorage,
+        private RequestStack $request
     ) {}
 
 
@@ -74,8 +76,11 @@ final readonly class CurrentUserProfileRepository implements CurrentUserProfileI
         /** Если пользователь олицетворен - подгружаем профиль самозванца */
         if($authority)
         {
-            $AppCache = $this->cache->init('Authority');
-            $authority = ($AppCache->getItem((string) $usr))->get();
+            $Session = $this->request->getSession();
+            $authority = $Session->get('Authority', false);
+
+            //$AppCache = $this->cache->init('Authority');
+            //$authority = ($AppCache->getItem((string) $usr))->get();
         }
 
         /* PROFILE */
