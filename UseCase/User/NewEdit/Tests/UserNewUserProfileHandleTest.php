@@ -46,7 +46,12 @@ use BaksDev\Users\User\Type\Id\UserUid;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Event\ConsoleCommandEvent;
+use Symfony\Component\Console\Input\StringInput;
+use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\DependencyInjection\Attribute\When;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use function PHPUnit\Framework\assertEquals;
 
 /**
@@ -56,11 +61,14 @@ use function PHPUnit\Framework\assertEquals;
 #[When(env: 'test')]
 final class UserNewUserProfileHandleTest extends KernelTestCase
 {
-    /**
-     * This method is called before the first test of this test class is run.
-     */
     public static function setUpBeforeClass(): void
     {
+
+        // Бросаем событие консольной комманды
+        $dispatcher = self::getContainer()->get(EventDispatcherInterface::class);
+        $event = new ConsoleCommandEvent(new Command(), new StringInput(''), new NullOutput());
+        $dispatcher->dispatch($event, 'console.command');
+
         /** @var UserProfileStatusCollection $UserProfileStatusCollection */
         $UserProfileStatusCollection = self::getContainer()->get(UserProfileStatusCollection::class);
         $UserProfileStatusCollection->cases();

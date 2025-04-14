@@ -35,13 +35,11 @@ use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
 use BaksDev\Users\Profile\UserProfile\Messenger\UserProfileMessage;
 use BaksDev\Users\Profile\UserProfile\Repository\UniqProfileUrl\UniqProfileUrlInterface;
 use Doctrine\ORM\EntityManagerInterface;
-use DomainException;
 
 final class UserProfileHandler extends AbstractHandler
 {
     public function __construct(
         private readonly UniqProfileUrlInterface $uniqProfileUrl,
-
         EntityManagerInterface $entityManager,
         MessageDispatchInterface $messageDispatch,
         ValidatorCollectionInterface $validatorCollection,
@@ -52,23 +50,11 @@ final class UserProfileHandler extends AbstractHandler
         parent::__construct($entityManager, $messageDispatch, $validatorCollection, $imageUpload, $fileUpload);
     }
 
-    public function handle(UserProfileDTO $command,): string|UserProfile
+    public function handle(UserProfileDTO $command): string|UserProfile
     {
-        /** Валидация DTO  */
-        $this->validatorCollection->add($command);
-
-        $this->main = new UserProfile();
-        $this->event = new UserProfileEvent();
-
-        try
-        {
-            $command->getEvent() ? $this->preUpdate($command, true) : $this->prePersist($command);
-        }
-        catch(DomainException $errorUniqid)
-        {
-            return $errorUniqid->getMessage();
-        }
-
+        $this
+            ->setCommand($command)
+            ->preEventPersistOrUpdate(UserProfile::class, UserProfileEvent::class);
 
         /** @var Info\InfoDTO $infoDTO */
         $infoDTO = $command->getInfo();
@@ -81,10 +67,8 @@ final class UserProfileHandler extends AbstractHandler
             $this->event->getInfo()->updateUrlUniq();
         }
 
-
         /* Если у текущего пользователя имеется активный профиль - деактивируем */
         $InfoActive = $this
-            ->entityManager
             ->getRepository(UserProfileInfo::class)
             ->findOneBy(['usr' => $infoDTO->getUsr(), 'active' => true]);
 
@@ -114,7 +98,7 @@ final class UserProfileHandler extends AbstractHandler
             return $this->validatorCollection->getErrorUniqid();
         }
 
-        $this->entityManager->flush();
+        $this->flush();
 
         /* Отправляем сообщение в шину */
         $this->messageDispatch->dispatch(

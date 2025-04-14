@@ -35,9 +35,6 @@ use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
 use BaksDev\Users\Profile\UserProfile\Messenger\UserProfileMessage;
 use BaksDev\Users\Profile\UserProfile\Repository\UniqProfileUrl\UniqProfileUrlInterface;
 use Doctrine\ORM\EntityManagerInterface;
-use DomainException;
-use Psr\Log\LoggerInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 final class UserProfileHandler extends AbstractHandler
 {
@@ -54,32 +51,20 @@ final class UserProfileHandler extends AbstractHandler
         parent::__construct($entityManager, $messageDispatch, $validatorCollection, $imageUpload, $fileUpload);
     }
 
-    public function handle(UserProfileEventInterface $command,): string|UserProfile
+    public function handle(UserProfileEventInterface $command): string|UserProfile
     {
+        $this
+            ->setCommand($command)
+            ->preEventPersistOrUpdate(UserProfile::class, UserProfileEvent::class);
 
-        /* Валидация DTO  */
-        $this->validatorCollection->add($command);
-
-        $this->main = new UserProfile();
-        $this->event = new UserProfileEvent();
-
-        try
-        {
-            $command->getEvent() ? $this->preUpdate($command, true) : $this->prePersist($command);
-        }
-        catch(DomainException $errorUniqid)
-        {
-            return $errorUniqid->getMessage();
-        }
-
-        $UserProfileInfo = $this->entityManager->getRepository(UserProfileInfo::class)->find(
-            $this->event->getMain()
-        );
+        $UserProfileInfo = $this
+            ->getRepository(UserProfileInfo::class)
+            ->find($this->event->getMain());
 
         if(!$UserProfileInfo)
         {
             $UserProfileInfo = new UserProfileInfo($this->event->getMain());
-            $this->entityManager->persist($UserProfileInfo);
+            $this->persist($UserProfileInfo);
         }
 
         $this->validatorCollection->add($UserProfileInfo);
@@ -89,7 +74,11 @@ final class UserProfileHandler extends AbstractHandler
         $infoDTO = $command->getInfo();
 
         /* Проверяем на уникальность Адрес персональной страницы */
-        $uniqProfileUrl = $this->uniqProfileUrl->exist($infoDTO->getUrl(), $UserProfileInfo->getProfile());
+        $uniqProfileUrl = $this->uniqProfileUrl
+            ->exist(
+                $infoDTO->getUrl(),
+                $UserProfileInfo->getProfile()
+            );
 
         if($uniqProfileUrl)
         {
@@ -116,7 +105,6 @@ final class UserProfileHandler extends AbstractHandler
 
         /* Деактивируем профиль пользователя, Если был другой ранее активный */
         $InfoActive = $this
-            ->entityManager
             ->getRepository(UserProfileInfo::class)
             ->findOneBy(['usr' => $infoDTO->getUsr(), 'active' => true]);
 
@@ -132,7 +120,7 @@ final class UserProfileHandler extends AbstractHandler
             return $this->validatorCollection->getErrorUniqid();
         }
 
-        $this->entityManager->flush();
+        $this->flush();
 
         /* Отправляем событие в шину  */
         $this->messageDispatch->dispatch(

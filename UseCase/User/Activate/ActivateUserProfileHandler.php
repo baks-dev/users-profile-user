@@ -28,35 +28,24 @@ use BaksDev\Users\Profile\UserProfile\Entity\Event\UserProfileEvent;
 use BaksDev\Users\Profile\UserProfile\Entity\Info\UserProfileInfo;
 use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
 use BaksDev\Users\Profile\UserProfile\Messenger\UserProfileMessage;
-use DomainException;
 
 final class ActivateUserProfileHandler extends AbstractHandler
 {
     public function handle(ActivateUserProfileDTO $command): string|UserProfile
     {
-        /* Валидация DTO  */
-        $this->validatorCollection->add($command);
+        $this
+            ->setCommand($command)
+            ->preEventPersistOrUpdate(UserProfile::class, UserProfileEvent::class);
 
-        $this->main = new UserProfile();
-        $this->event = new UserProfileEvent();
 
-        try
-        {
-            $command->getEvent() ? $this->preUpdate($command, true) : $this->prePersist($command);
-        }
-        catch(DomainException $errorUniqid)
-        {
-            return $errorUniqid->getMessage();
-        }
-
-        $UserProfileInfo = $this->entityManager->getRepository(UserProfileInfo::class)->find(
-            $this->event->getMain()
-        );
+        $UserProfileInfo = $this
+            ->getRepository(UserProfileInfo::class)
+            ->find($this->event->getMain());
 
         if(!$UserProfileInfo)
         {
             $UserProfileInfo = new UserProfileInfo($this->event->getMain());
-            $this->entityManager->persist($UserProfileInfo);
+            $this->persist($UserProfileInfo);
         }
 
         $this->validatorCollection->add($UserProfileInfo);
@@ -67,7 +56,8 @@ final class ActivateUserProfileHandler extends AbstractHandler
 
 
         /* Если у текущего пользователя имеется активный профиль - деактивируем */
-        $InfoActive = $this->entityManager->getRepository(UserProfileInfo::class)
+        $InfoActive = $this
+            ->getRepository(UserProfileInfo::class)
             ->findBy(['usr' => $infoDTO->getUsr(), 'active' => true]);
 
         if($InfoActive)
@@ -92,14 +82,14 @@ final class ActivateUserProfileHandler extends AbstractHandler
             return $this->validatorCollection->getErrorUniqid();
         }
 
-        $this->entityManager->flush();
+        $this->flush();
 
         /* Отправляем событие в шину  */
         $this->messageDispatch
             ->dispatch(
-            message: new UserProfileMessage($this->main->getId(), $this->main->getEvent(), $command->getEvent()),
-            transport: 'users-profile-user'
-        );
+                message: new UserProfileMessage($this->main->getId(), $this->main->getEvent(), $command->getEvent()),
+                transport: 'users-profile-user'
+            );
 
         return $this->main;
 
