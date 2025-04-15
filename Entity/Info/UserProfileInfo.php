@@ -116,6 +116,11 @@ class UserProfileInfo extends EntityReadonly
         return $this->profile;
     }
 
+    public function getUsr(): UserUid
+    {
+        return $this->usr;
+    }
+
     /**
      * Event
      */

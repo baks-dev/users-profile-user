@@ -36,6 +36,7 @@ use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
 use BaksDev\Users\Profile\UserProfile\Entity\Value\UserProfileValue;
 use BaksDev\Users\Profile\UserProfile\Type\Event\UserProfileEventUid;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
+use BaksDev\Users\User\Type\Id\UserUid;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -143,6 +144,10 @@ class UserProfileEvent extends EntityEvent
         return $this->id;
     }
 
+    public function getUser(): UserUid
+    {
+        return $this->info->getUsr();
+    }
 
     public function getMain(): ?UserProfileUid
     {

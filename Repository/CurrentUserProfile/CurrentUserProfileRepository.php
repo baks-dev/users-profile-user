@@ -48,7 +48,6 @@ final readonly class CurrentUserProfileRepository implements CurrentUserProfileI
         #[Autowire(env: 'CDN_HOST')] private string $CDN_HOST,
         private ORMQueryBuilder $ORMQueryBuilder,
         private DBALQueryBuilder $DBALQueryBuilder,
-        private AppCacheInterface $cache,
         private UserProfileTokenStorageInterface $userProfileTokenStorage,
         private RequestStack $request
     ) {}
