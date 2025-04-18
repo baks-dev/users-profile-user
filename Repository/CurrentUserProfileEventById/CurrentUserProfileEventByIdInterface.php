@@ -93,6 +93,7 @@ final class CurrentUserProfileEventByIdInterface implements CurrentUserProfileEv
                 'event.id = profile.event'
             );
 
-        return $orm->getQuery()->getResult() ?: false;
+
+        return $orm->getQuery()->getOneOrNullResult() ?: false;
     }
 }
