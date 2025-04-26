@@ -91,34 +91,34 @@ class UserProfileEvent extends EntityEvent
      * Аватарка профиля
      */
     #[Assert\Valid]
-    #[ORM\OneToOne(targetEntity: UserProfileAvatar::class, mappedBy: 'event', cascade: ['all'])]
+    #[ORM\OneToOne(targetEntity: UserProfileAvatar::class, mappedBy: 'event', cascade: ['all'], fetch: 'EAGER')]
     private ?UserProfileAvatar $avatar = null;
 
     /**
      * Персональные данные
      */
     #[Assert\Valid]
-    #[ORM\OneToOne(targetEntity: UserProfilePersonal::class, mappedBy: 'event', cascade: ['all'])]
+    #[ORM\OneToOne(targetEntity: UserProfilePersonal::class, mappedBy: 'event', cascade: ['all'], fetch: 'EAGER')]
     private ?UserProfilePersonal $personal = null;
 
     /**
      * Значения профиля
      */
     #[Assert\Valid]
-    #[ORM\OneToMany(targetEntity: UserProfileValue::class, mappedBy: 'event', cascade: ['all'])]
+    #[ORM\OneToMany(targetEntity: UserProfileValue::class, mappedBy: 'event', cascade: ['all'], fetch: 'EAGER')]
     private Collection $value;
 
     /**
      * Модификатор
      */
-    #[ORM\OneToOne(targetEntity: UserProfileModify::class, mappedBy: 'event', cascade: ['all'])]
+    #[ORM\OneToOne(targetEntity: UserProfileModify::class, mappedBy: 'event', cascade: ['all'], fetch: 'EAGER')]
     private UserProfileModify $modify;
 
     /**
      * Персональные данные
      */
     #[Assert\Valid]
-    #[ORM\OneToOne(targetEntity: UserProfileInfo::class, mappedBy: 'event', cascade: ['all'])]
+    #[ORM\OneToOne(targetEntity: UserProfileInfo::class, mappedBy: 'event', cascade: ['all'], fetch: 'EAGER')]
     private ?UserProfileInfo $info = null;
 
 
