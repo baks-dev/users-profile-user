@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2024.  Baks.dev <admin@baks.dev>
+ *  Copyright 2025.  Baks.dev <admin@baks.dev>
  *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -35,71 +35,62 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class InfoForm extends AbstractType
 {
-	private UsersChoiceOptionalAccountEmailInterface $usersChoice;
-	
-	
-	public function __construct(UsersChoiceOptionalAccountEmailInterface $usersChoice)
-	{
-		$this->usersChoice = $usersChoice;
-	}
-	
-	
-	public function buildForm(FormBuilderInterface $builder, array $options): void
+    private UsersChoiceOptionalAccountEmailInterface $usersChoice;
+
+
+    public function __construct(UsersChoiceOptionalAccountEmailInterface $usersChoice)
     {
-		$builder
-			->add('usr', ChoiceType::class, [
-				'choices' => $this->usersChoice->getChoice(),
-				'choice_value' => function(?UserUid $status) {
-					return $status?->getValue();
-				},
-				'choice_label' => function(UserUid $status) {
-					/* Account Email */
-					return $status->getOption();
-				},
-				'label' => false,
-				'expanded' => false,
-				'multiple' => false,
-				'required' => true,
-				'attr' => ['data-select' => 'select2',],
-			])
-		;
-		
-		$builder->add('url', TextType::class);
-		
-		$builder->add('discount',
-			IntegerType::class, [
-				'required' => false,
-                'attr' => ['min' => -99, 'max' => 99],
-			]
-		);
+        $this->usersChoice = $usersChoice;
+    }
 
 
-
-		$builder
-			->add('status', ChoiceType::class, [
-				'choices' => UserProfileStatus::cases(),
-				'choice_value' => function(?UserProfileStatus $status) {
-					return $status?->getUserProfileStatusValue();
-				},
-				'choice_label' => function(UserProfileStatus $status) {
-					return $status->getUserProfileStatusValue();
-				},
-				
-				'label' => false,
-				'expanded' => false,
-				'multiple' => false,
-				'required' => true,
-				'translation_domain' => 'user.profile.status',
-			])
-		;
-	}
-	
-	
-	public function configureOptions(OptionsResolver $resolver): void
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-		$resolver->setDefaults([
-			'data_class' => InfoDTO::class,
-		]);
-	}
-	
+        $builder
+            ->add('usr', ChoiceType::class, [
+                'choices' => $this->usersChoice->getChoice(),
+                'choice_value' => function(?UserUid $status) {
+                    return $status?->getValue();
+                },
+                'choice_label' => function(UserUid $status) {
+                    /* Account Email */
+                    return $status->getOption();
+                },
+                'label' => false,
+                'expanded' => false,
+                'multiple' => false,
+                'required' => true,
+                'attr' => ['data-select' => 'select2',],
+            ]);
+
+        $builder->add('url', TextType::class);
+
+        $builder->add('discount', TextType::class, ['required' => false]);
+
+        $builder
+            ->add('status', ChoiceType::class, [
+                'choices' => UserProfileStatus::cases(),
+                'choice_value' => function(?UserProfileStatus $status) {
+                    return $status?->getUserProfileStatusValue();
+                },
+                'choice_label' => function(UserProfileStatus $status) {
+                    return $status->getUserProfileStatusValue();
+                },
+
+                'label' => false,
+                'expanded' => false,
+                'multiple' => false,
+                'required' => true,
+                'translation_domain' => 'user.profile.status',
+            ]);
+    }
+
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'data_class' => InfoDTO::class,
+        ]);
+    }
+
 }

@@ -44,7 +44,7 @@ final class UserProfileDiscount implements UserProfileInterface
     }
 
     /** Возвращает значение (value) */
-    public function getValue(UserUid $usr): int|bool
+    public function getValue(UserUid $usr): string|bool
     {
         $current = $this->currentUserProfile->fetchProfileAssociative($usr);
 

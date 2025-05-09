@@ -7,10 +7,33 @@
 {{ form_row(form.info.url, {  label : 'admin.form.label.url'|trans }) }}
 
 
-{{ form_label(form.info.discount, 'admin.form.label.discount'|trans ) }}
+{# {{ form_label(form.info.discount, 'admin.form.label.discount'|trans ) }} #}
+
+<div class="d-flex gap-2 align-items-center mb-2">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+         class="text-muted" viewBox="0 0 16 16" role="tooltip" data-bs-toggle="tooltip"
+         data-bs-placement="bottom"
+         data-bs-html="true"
+         data-bs-original-title="Положительное либо отрицательное число в рублях, либо с процентом:
+                         <br>100.1
+                         <br>-100.1
+                         <br>10.1%
+                         <br>-10.1%">
+        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.496 6.033h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286a.237.237 0 0 0 .241.247zm2.325 6.443c.61 0 1.029-.394 1.029-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94 0 .533.425.927 1.01.927z"></path>
+    </svg>
+    <label class="m-0 form-label required" for="{{ form.info.discount.vars.id }}">
+        {{ 'admin.form.label.discount'|trans }}
+    </label>
+</div>
+
 <div class="input-group mb-3">
-	<span class="input-group-text" id="basic-addon1">%</span>
-	{{ form_widget(form.info.discount) }}
+	<span class="input-group-text" id="basic-addon1">
+		<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-wallet2"
+             viewBox="0 0 16 16">
+          <path d="M12.136.326A1.5 1.5 0 0 1 14 1.78V3h.5A1.5 1.5 0 0 1 16 4.5v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 13.5v-9a1.5 1.5 0 0 1 1.432-1.499zM5.562 3H13V1.78a.5.5 0 0 0-.621-.484zM1.5 4a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5z"/>
+        </svg>
+	</span>
+    {{ form_widget(form.info.discount) }}
 </div>
 
 

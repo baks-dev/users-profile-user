@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2024.  Baks.dev <admin@baks.dev>
+ *  Copyright 2025.  Baks.dev <admin@baks.dev>
  *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -51,8 +51,7 @@ final class InfoDTO implements UserProfileInfoInterface
     private bool $active = false;
 
     /** Персональная скидка профиля */
-    #[Assert\Range(min: -99, max: 99)]
-    private ?int $discount = 0;
+    private ?string $discount = null;
 
     public function __construct()
     {
@@ -132,13 +131,13 @@ final class InfoDTO implements UserProfileInfoInterface
     }
 
 
-    public function getDiscount(): ?int
+    public function getDiscount(): ?string
     {
         return $this->discount;
     }
 
 
-    public function setDiscount(?int $discount): void
+    public function setDiscount(?string $discount): void
     {
         $this->discount = $discount;
     }

@@ -55,8 +55,10 @@ final class UserProfileForm extends AbstractType
 		$builder->add('sort', IntegerType::class);
 		
 		$builder->add('personal', Personal\PersonalForm::class);
-		$builder->add('info', Info\InfoForm::class);
-		$builder->add('avatar', Avatar\AvatarForm::class);
+
+        $builder->add('info', Info\InfoForm::class);
+
+        $builder->add('avatar', Avatar\AvatarForm::class);
 		
 		$profileType = $options['data']->getType();
 
