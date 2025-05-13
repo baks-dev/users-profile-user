@@ -73,7 +73,7 @@ class UserProfileInfo extends EntityReadonly
     /**
      * Персональная скидка профиля
      */
-    #[ORM\Column(type: Types::STRING, nullable: true)]
+    #[ORM\Column(type: Types::STRING, length: 5, nullable: true)]
     private ?string $discount = null;
 
     /**

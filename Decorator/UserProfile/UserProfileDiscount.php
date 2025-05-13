@@ -48,7 +48,7 @@ final class UserProfileDiscount implements UserProfileInterface
     {
         $current = $this->currentUserProfile->fetchProfileAssociative($usr);
 
-        return $current['profile_discount'] ?? false;
+        return empty($current['profile_discount']) ? false : (string) $current['profile_discount'];
     }
 
     public static function priority(): int
