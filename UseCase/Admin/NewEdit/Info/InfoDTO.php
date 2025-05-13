@@ -29,6 +29,7 @@ use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\UserProfileS
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\UserProfileStatusModeration;
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
 use BaksDev\Users\User\Type\Id\UserUid;
+use JetBrains\PhpStorm\Deprecated;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /** @see UserProfileInfo */
@@ -50,7 +51,11 @@ final class InfoDTO implements UserProfileInfoInterface
     /** Статус модерации профиля */
     private bool $active = false;
 
-    /** Персональная скидка профиля */
+    /**
+     * Персональная скидка профиля
+     * @deprecated Переносится в UserProfileDiscount
+     */
+    #[Deprecated]
     private ?string $discount = null;
 
     public function __construct()
@@ -130,13 +135,21 @@ final class InfoDTO implements UserProfileInfoInterface
         $this->url = uniqid($this->url.'_', false);
     }
 
-
+    /**
+     * Персональная скидка профиля
+     * @deprecated Переносится в UserProfileDiscount
+     */
+    #[Deprecated]
     public function getDiscount(): ?string
     {
         return $this->discount;
     }
 
-
+    /**
+     * Персональная скидка профиля
+     * @deprecated Переносится в UserProfileDiscount
+     */
+    #[Deprecated]
     public function setDiscount(?string $discount): void
     {
         $this->discount = $discount;

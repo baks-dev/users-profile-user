@@ -109,5 +109,4 @@ final class UserProfileHandler extends AbstractHandler
         return $this->main;
     }
 
-
 }

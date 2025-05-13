@@ -29,11 +29,15 @@ use BaksDev\Core\Type\Modify\Modify\ModifyActionNew;
 use BaksDev\Core\Type\Modify\Modify\ModifyActionUpdate;
 use BaksDev\Users\Profile\TypeProfile\Type\Id\TypeProfileUid;
 use BaksDev\Users\Profile\UserProfile\Entity\Avatar\UserProfileAvatar;
+use BaksDev\Users\Profile\UserProfile\Entity\Discount\UserProfileDiscount;
 use BaksDev\Users\Profile\UserProfile\Entity\Info\UserProfileInfo;
 use BaksDev\Users\Profile\UserProfile\Entity\Modify\UserProfileModify;
+use BaksDev\Users\Profile\UserProfile\Entity\Orders\UserProfileOrders;
 use BaksDev\Users\Profile\UserProfile\Entity\Personal\UserProfilePersonal;
+use BaksDev\Users\Profile\UserProfile\Entity\Shop\UserProfileShop;
 use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
 use BaksDev\Users\Profile\UserProfile\Entity\Value\UserProfileValue;
+use BaksDev\Users\Profile\UserProfile\Entity\Warehouse\UserProfileWarehouse;
 use BaksDev\Users\Profile\UserProfile\Type\Event\UserProfileEventUid;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use BaksDev\Users\User\Type\Id\UserUid;
@@ -120,6 +124,23 @@ class UserProfileEvent extends EntityEvent
     #[Assert\Valid]
     #[ORM\OneToOne(targetEntity: UserProfileInfo::class, mappedBy: 'event', cascade: ['all'], fetch: 'EAGER')]
     private ?UserProfileInfo $info = null;
+
+
+    /** Флаг, означающий, что профиль пользователя является магазином */
+    #[ORM\OneToOne(targetEntity: UserProfileShop::class, mappedBy: 'event', cascade: ['all'])]
+    private ?UserProfileShop $shop = null;
+
+    /** Флаг, означающий, что профиль пользователя является ПВЗ */
+    #[ORM\OneToOne(targetEntity: UserProfileOrders::class, mappedBy: 'event', cascade: ['all'])]
+    private ?UserProfileOrders $orders = null;
+
+    /** Флаг, означающий, что профиль пользователя является Складом */
+    #[ORM\OneToOne(targetEntity: UserProfileWarehouse::class, mappedBy: 'event', cascade: ['all'])]
+    private ?UserProfileWarehouse $warehouse = null;
+
+    /** Персональная скидка профиля */
+    #[ORM\OneToOne(targetEntity: UserProfileDiscount::class, mappedBy: 'event', cascade: ['all'])]
+    private ?UserProfileDiscount $discount = null;
 
 
     public function __construct()

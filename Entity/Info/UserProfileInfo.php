@@ -34,6 +34,7 @@ use BaksDev\Users\User\Type\Id\UserUid;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use InvalidArgumentException;
+use JetBrains\PhpStorm\Deprecated;
 use Symfony\Component\Validator\Constraints as Assert;
 
 // Неизменяемые данные UserProfile
@@ -72,7 +73,9 @@ class UserProfileInfo extends EntityReadonly
 
     /**
      * Персональная скидка профиля
+     * @deprecated Переносится в UserProfileDiscount
      */
+    #[Deprecated]
     #[ORM\Column(type: Types::STRING, length: 5, nullable: true)]
     private ?string $discount = null;
 

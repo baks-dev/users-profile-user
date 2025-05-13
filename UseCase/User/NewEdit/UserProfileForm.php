@@ -25,7 +25,10 @@ namespace BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit;
 
 use BaksDev\Users\Profile\UserProfile\Repository\FieldValueForm\FieldValueFormDTO;
 use BaksDev\Users\Profile\UserProfile\Repository\FieldValueForm\FieldValueFormInterface;
+use BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\Orders\NewEditUserProfileOrdersForm;
+use BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\Shop\NewEditUserProfileShopForm;
 use BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\Value\ValueDTO;
+use BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\Warehouse\NewEditUserProfileWarehouseForm;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -39,57 +42,58 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class UserProfileForm extends AbstractType
 {
-	
-	private FieldValueFormInterface $fieldValue;
-	
-	
-	public function __construct(FieldValueFormInterface $fieldValue)
-	{
-		$this->fieldValue = $fieldValue;
-	}
-	
-	
-	public function buildForm(FormBuilderInterface $builder, array $options) : void
-	{
 
-		$builder->add('sort', IntegerType::class);
-		
-		$builder->add('personal', Personal\PersonalForm::class);
+    private FieldValueFormInterface $fieldValue;
+
+
+    public function __construct(FieldValueFormInterface $fieldValue)
+    {
+        $this->fieldValue = $fieldValue;
+    }
+
+
+    public function buildForm(FormBuilderInterface $builder, array $options): void
+    {
+
+        $builder->add('sort', IntegerType::class);
+
+        $builder->add('personal', Personal\PersonalForm::class);
 
         $builder->add('info', Info\InfoForm::class);
 
         $builder->add('avatar', Avatar\AvatarForm::class);
-		
-		$profileType = $options['data']->getType();
 
-		$fields = $this->fieldValue->get($profileType);
-		
-		$builder->add('value', CollectionType::class, [
-			'entry_type' => Value\ValueForm::class,
-			'entry_options' => ['label' => false, 'fields' => $fields],
-			'label' => false,
-			'by_reference' => false,
-			'allow_delete' => true,
-			'allow_add' => true,
-		]);
-		
-		$builder->addEventListener(
-			FormEvents::PRE_SET_DATA,
-			function(FormEvent $event) use ($fields) {
+
+        $profileType = $options['data']->getType();
+
+        $fields = $this->fieldValue->get($profileType);
+
+        $builder->add('value', CollectionType::class, [
+            'entry_type' => Value\ValueForm::class,
+            'entry_options' => ['label' => false, 'fields' => $fields],
+            'label' => false,
+            'by_reference' => false,
+            'allow_delete' => true,
+            'allow_add' => true,
+        ]);
+
+        $builder->addEventListener(
+            FormEvents::PRE_SET_DATA,
+            function(FormEvent $event) use ($fields) {
 
                 if(empty($fields))
                 {
                     return;
                 }
-				
-				/** @var UserProfileDTO $data */
-				$data = $event->getData();
 
-				/** @var FieldValueFormDTO $field */
-				foreach($fields as $field)
-				{
+                /** @var UserProfileDTO $data */
+                $data = $event->getData();
 
-					//$field = end($field);
+                /** @var FieldValueFormDTO $field */
+                foreach($fields as $field)
+                {
+
+                    //$field = end($field);
                     $value = $data->getValue()->filter(function(ValueDTO $element) use ($field) {
                         return $element->getField()->equals($field->getField());
                     });
@@ -107,31 +111,31 @@ final class UserProfileForm extends AbstractType
                     /** @var ValueDTO $current */
                     $current = $value->current();
                     $current->updSection($field);
-				}
-			}
-		);
-		
-		/* Сохранить ******************************************************/
-		$builder->add
-		(
-			'Save',
-			SubmitType::class,
-			['label' => 'Save', 'label_html' => true, 'attr' => ['class' => 'btn-primary']]
-		);
-		
-	}
-	
-	
-	public function configureOptions(OptionsResolver $resolver) : void
-	{
-		$resolver->setDefaults
-		(
-			[
-				'data_class' => UserProfileDTO::class,
-				'method' => 'POST',
-				'attr' => ['class' => 'w-100'],
-			]
-		);
-	}
-	
+                }
+            }
+        );
+
+        /* Сохранить ******************************************************/
+        $builder->add
+        (
+            'Save',
+            SubmitType::class,
+            ['label' => 'Save', 'label_html' => true, 'attr' => ['class' => 'btn-primary']]
+        );
+
+    }
+
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults
+        (
+            [
+                'data_class' => UserProfileDTO::class,
+                'method' => 'POST',
+                'attr' => ['class' => 'w-100'],
+            ]
+        );
+    }
+
 }

@@ -11,7 +11,7 @@ admin:
 
   form:
     header:
-      administration: 'Администрирвоание'
+      administration: 'Администриование'
       basic: 'Основные настройки'
       personal: 'Личные данные'
     label:
@@ -24,7 +24,7 @@ admin:
       username: 'Имя профиля'
       url: 'URL Адрес профиля'
       sort: 'Сортировка'
-      discount: 'Персональная скидка'
+      discount: 'Персональная скидка (надбавка)'
 
     placeholder:
       info:

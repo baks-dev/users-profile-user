@@ -25,7 +25,11 @@ namespace BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit;
 
 use BaksDev\Users\Profile\UserProfile\Repository\FieldValueForm\FieldValueFormDTO;
 use BaksDev\Users\Profile\UserProfile\Repository\FieldValueForm\FieldValueFormInterface;
+use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Discount\NewEditUserProfileDiscountForm;
+use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Orders\NewEditUserProfileOrdersForm;
+use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Shop\NewEditUserProfileShopForm;
 use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Value\ValueDTO;
+use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Warehouse\NewEditUserProfileWarehouseForm;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -57,8 +61,21 @@ final class UserProfileForm extends AbstractType
 		$builder->add('avatar', Avatar\AvatarForm::class);
 		
 		$builder->add('sort', IntegerType::class);
-		
-		$profileType = $options['data']->getType();
+
+        /** Флаг, означающий, что профиль пользователя является магазином */
+        $builder->add('shop', NewEditUserProfileShopForm::class);
+
+        /** Флаг, означающий, что профиль пользователя является ПВЗ */
+        $builder->add('orders', NewEditUserProfileOrdersForm::class);
+
+        /** Флаг, означающий, что профиль пользователя является Складом */
+        $builder->add('warehouse', NewEditUserProfileWarehouseForm::class);
+
+        /** Персональная скидка профиля */
+        $builder->add('discount', NewEditUserProfileDiscountForm::class);
+
+
+        $profileType = $options['data']->getType();
 		$fields = $this->fieldValue->get($profileType);
 		
 		$builder->add('value', CollectionType::class, [

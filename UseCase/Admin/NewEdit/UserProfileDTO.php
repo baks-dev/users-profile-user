@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2024.  Baks.dev <admin@baks.dev>
+ *  Copyright 2025.  Baks.dev <admin@baks.dev>
  *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -28,9 +28,13 @@ use BaksDev\Users\Profile\UserProfile\Entity\Avatar\UserProfileAvatarInterface;
 use BaksDev\Users\Profile\UserProfile\Entity\Event\UserProfileEventInterface;
 use BaksDev\Users\Profile\UserProfile\Type\Event\UserProfileEventUid;
 use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Avatar\AvatarDTO;
+use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Discount\NewEditUserProfileDiscountDTO;
 use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Info\InfoDTO;
+use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Orders\NewEditUserProfileOrdersDTO;
 use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Personal\PersonalDTO;
+use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Shop\NewEditUserProfileShopDTO;
 use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Value\ValueDTO;
+use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Warehouse\NewEditUserProfileWarehouseDTO;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -68,12 +72,29 @@ final class UserProfileDTO implements UserProfileEventInterface
     private ArrayCollection $value;
 
 
+    /** Флаг, означающий, что профиль пользователя является магазином */
+    private NewEditUserProfileShopDTO $shop;
+
+    /** Флаг, означающий, что профиль пользователя является ПВЗ */
+    private NewEditUserProfileOrdersDTO $orders;
+
+    /** Флаг, означающий, что профиль пользователя является Складом */
+    private NewEditUserProfileWarehouseDTO $warehouse;
+
+    private NewEditUserProfileDiscountDTO $discount;
+
+
     public function __construct()
     {
         $this->avatar = new AvatarDTO();
         $this->info = new InfoDTO();
         $this->personal = new PersonalDTO();
         $this->value = new ArrayCollection();
+
+        $this->shop = new NewEditUserProfileShopDTO();
+        $this->orders = new NewEditUserProfileOrdersDTO();
+        $this->warehouse = new NewEditUserProfileWarehouseDTO();
+        $this->discount = new NewEditUserProfileDiscountDTO();
     }
 
 
@@ -190,6 +211,26 @@ final class UserProfileDTO implements UserProfileEventInterface
     public function removeValue(ValueDTO $value): void
     {
         $this->value->removeElement($value);
+    }
+
+    public function getShop(): NewEditUserProfileShopDTO
+    {
+        return $this->shop;
+    }
+
+    public function getOrders(): NewEditUserProfileOrdersDTO
+    {
+        return $this->orders;
+    }
+
+    public function getWarehouse(): NewEditUserProfileWarehouseDTO
+    {
+        return $this->warehouse;
+    }
+
+    public function getDiscount(): NewEditUserProfileDiscountDTO
+    {
+        return $this->discount;
     }
 
 }
