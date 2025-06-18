@@ -26,7 +26,10 @@ declare(strict_types=1);
 
 namespace BaksDev\Users\Profile\UserProfile\Repository\UserProfileByAuthority\Tests;
 
+use BaksDev\Users\Profile\Group\Type\Prefix\Role\GroupRolePrefix;
+use BaksDev\Users\Profile\Group\Type\Prefix\Voter\RoleVoterPrefix;
 use BaksDev\Users\Profile\UserProfile\Repository\UserProfileByAuthority\UserProfileByAuthorityInterface;
+use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\DependencyInjection\Attribute\When;
 
@@ -42,20 +45,19 @@ class UserProfileByAuthorityRepositoryTest extends KernelTestCase
         /** @var UserProfileByAuthorityInterface $UserProfileByAuthorityInterface */
         $UserProfileByAuthorityInterface = self::getContainer()->get(UserProfileByAuthorityInterface::class);
 
-        self::assertTrue(true);
-        return;
-
-        $profile = '';
-        $authority = '';
-        $role = '';
+        $profile = new UserProfileUid();
+        $role = new GroupRolePrefix();
+        $voter = new RoleVoterPrefix;
 
         $result = $UserProfileByAuthorityInterface
             ->withProfile($profile)
-            ->withRole($authority)
-            ->withVoter($role)
+            ->withRole($role)
+            ->withVoter($voter)
             ->findAll();
 
-        dd(iterator_to_array($result));
+        $result->current();
+
+        self::assertTrue(true);
     }
 
 }

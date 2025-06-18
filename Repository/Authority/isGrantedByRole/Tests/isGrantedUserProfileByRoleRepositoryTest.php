@@ -26,7 +26,9 @@ declare(strict_types=1);
 
 namespace BaksDev\Users\Profile\UserProfile\Repository\Authority\isGrantedByRole\Tests;
 
+use BaksDev\Users\Profile\Group\Type\Prefix\Voter\RoleVoterPrefix;
 use BaksDev\Users\Profile\UserProfile\Repository\Authority\isGrantedByRole\isGrantedUserProfileByRoleRepository;
+use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\DependencyInjection\Attribute\When;
 
@@ -39,18 +41,12 @@ class isGrantedUserProfileByRoleRepositoryTest extends KernelTestCase
 
     public function testFindAll(): void
     {
-
         /** @var isGrantedUserProfileByRoleRepository $isGrantedUserProfileByRoleRepository */
         $isGrantedUserProfileByRoleRepository = self::getContainer()->get(isGrantedUserProfileByRoleRepository::class);
 
-        self::assertTrue(true);
-        return;
-
-        $profile = '';
-        $authority = '';
-        $role = '';
-
-        dd();
+        $profile = new UserProfileUid();
+        $authority = new UserProfileUid();
+        $role = new RoleVoterPrefix;
 
         $result = $isGrantedUserProfileByRoleRepository
             ->onProfile($profile)
@@ -58,7 +54,7 @@ class isGrantedUserProfileByRoleRepositoryTest extends KernelTestCase
             ->onRoleVoter($role)
             ->isGranted();
 
-        dd($result);
+        self::assertTrue(true);
     }
 
 }

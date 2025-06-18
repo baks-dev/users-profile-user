@@ -99,8 +99,8 @@ final class UserProfileByAuthorityRepository implements UserProfileByAuthorityIn
      * Метод возвращает профили пользователей, которые имеют доверенности к указанному либо активному профилю
      *
      * Фильтр по конкретному профилю либо профилю активного пользователя
-     * @see withProfile
-     * @example  $this->withProfile('018d3196-6c42-7822-9366-c023860f90bb');
+     * @return Generator{int, UserProfileUid}
+     *@example  $this->withProfile('018d3196-6c42-7822-9366-c023860f90bb');
      *
      * Фильтр по роли
      * @see withRole
@@ -110,6 +110,7 @@ final class UserProfileByAuthorityRepository implements UserProfileByAuthorityIn
      * @see withVoter
      * @example  $this->withVoter('ROLE_ORDERS_DELETE');
      *
+     * @see withProfile
      */
     public function findAll(): Generator
     {
