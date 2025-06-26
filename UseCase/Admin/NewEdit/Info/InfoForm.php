@@ -65,7 +65,8 @@ final class InfoForm extends AbstractType
 
         $builder->add('url', TextType::class);
 
-        $builder->add('discount', TextType::class, ['required' => false]);
+        /** @deprecated перенесено в NewEditUserProfileDiscount */
+        //$builder->add('discount', TextType::class, ['required' => false]);
 
         $builder
             ->add('status', ChoiceType::class, [
