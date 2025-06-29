@@ -101,10 +101,12 @@ final class UserProfileHandler extends AbstractHandler
         $this->flush();
 
         /* Отправляем сообщение в шину */
-        $this->messageDispatch->dispatch(
-            message: new UserProfileMessage($this->main->getId(), $this->main->getEvent(), $command->getEvent()),
-            transport: 'users-profile-user'
-        );
+        $this->messageDispatch
+            ->addClearCacheOther('products-product')
+            ->dispatch(
+                message: new UserProfileMessage($this->main->getId(), $this->main->getEvent(), $command->getEvent()),
+                transport: 'users-profile-user',
+            );
 
         return $this->main;
     }
