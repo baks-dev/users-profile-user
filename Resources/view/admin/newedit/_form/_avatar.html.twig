@@ -1,0 +1,41 @@
+{% trans_default_domain 'admin.user.profile' %}
+
+
+<div class="card-body text-center pt-0">
+
+    {# Обложка #}
+    {% set image_path = '/assets/img/blank.svg' %}
+
+    {% if form.avatar.vars.data.ext is defined and form.avatar.vars.data.ext is not null %}
+        {% set img_host =  form.avatar.vars.data.cdn == true  ? CDN_HOST : '' %}
+        {% set img_table = '/upload/users_profile_avatar/' %}
+        {% set img_dir = form.avatar.vars.data.name %}
+        {% set img_file = (img_host is empty ? '/image.' : '/small.') ~ form.avatar.vars.data.ext %}
+        {% set image_path = img_host ~ img_table ~ img_dir ~ img_file %}
+    {% endif %}
+
+
+    <label class="icon rounded-circle bg-contain lazy position-relative image-input"
+           style="width: 150px; height: 150px;"
+           data-bg="{{ image_path }}"
+    >
+
+        <div class="position-absolute top-0 start-100 rounded-circle border p-2 d-flex align-items-center justify-content-center"
+             style="width: 16px; height: 16px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"
+                 fill="currentColor"
+                 class="position-absolute text-muted" viewBox="0 0 16 16">
+                <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001z"/>
+            </svg>
+        </div>
+
+        {{ form_row(form.avatar.file, { 'attr'  : { 'class' : 'd-none' } }) }}
+
+    </label>
+
+    <div class="text-muted small mt-3">
+        {# Принимаются только файлы изображений .png, .jpg и .jpeg #}
+        <small>{{ 'admin.form.label.avatar'|trans }}</small>
+    </div>
+
+</div>

@@ -32,6 +32,7 @@ use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Discount\NewEditUser
 use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Info\InfoDTO;
 use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Orders\NewEditUserProfileOrdersDTO;
 use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Personal\PersonalDTO;
+use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Region\UserProfileRegionDTO;
 use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Shop\NewEditUserProfileShopDTO;
 use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Value\ValueDTO;
 use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Warehouse\NewEditUserProfileWarehouseDTO;
@@ -81,7 +82,11 @@ final class UserProfileDTO implements UserProfileEventInterface
     /** Флаг, означающий, что профиль пользователя является Складом */
     private NewEditUserProfileWarehouseDTO $warehouse;
 
+    /** Персональная скидка профиля */
     private NewEditUserProfileDiscountDTO $discount;
+
+    /** Регион пользователя */
+    private UserProfileRegionDTO $region;
 
 
     public function __construct()
@@ -95,6 +100,7 @@ final class UserProfileDTO implements UserProfileEventInterface
         $this->orders = new NewEditUserProfileOrdersDTO();
         $this->warehouse = new NewEditUserProfileWarehouseDTO();
         $this->discount = new NewEditUserProfileDiscountDTO();
+        $this->region = new UserProfileRegionDTO();
     }
 
 
@@ -233,4 +239,8 @@ final class UserProfileDTO implements UserProfileEventInterface
         return $this->discount;
     }
 
+    public function getRegion(): UserProfileRegionDTO
+    {
+        return $this->region;
+    }
 }

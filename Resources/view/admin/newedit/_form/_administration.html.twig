@@ -1,0 +1,94 @@
+{% trans_default_domain 'admin.user.profile' %}
+
+<div class="card-body pt-0">
+
+    {{ form_row(form.info.usr, {
+        label : 'admin.form.label.info.user'|trans,
+        placeholder: 'admin.form.placeholder.info.user'|trans
+    }) }}
+
+    {{ form_row(form.region.value, {
+        label: 'Регион пользователя'|trans,
+        placeholder: 'Выберите регион пользователя из списка ...'|trans
+    }) }}
+
+    <div class="w-100 d-flex justify-content-between mb-3 gap-3">
+
+        <div class="w-100">
+            <div class="invisible bg-danger bg-warning bg-primary"></div>
+            <div class="rounded-circle w-15px h-15px bg-light position-absolute end-0 me-15"
+                 id="profile_status_circle">
+            </div>
+            {{ form_row(form.info.status, { label: 'admin.form.label.info.status'|trans }) }}
+        </div>
+
+        <div class="w-100">
+            <div class="d-flex gap-2 align-items-center mb-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                     class="text-muted" viewBox="0 0 16 16" role="tooltip" data-bs-toggle="tooltip"
+                     data-bs-placement="bottom"
+                     data-bs-html="true"
+                     data-bs-original-title="Положительное либо отрицательное число в рублях, либо с процентом:
+                         <br>100.1
+                         <br>-100.1
+                         <br>10.1%
+                         <br>-10.1%">
+                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.496 6.033h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286a.237.237 0 0 0 .241.247zm2.325 6.443c.61 0 1.029-.394 1.029-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94 0 .533.425.927 1.01.927z"></path>
+                </svg>
+                <label class="m-0 form-label required" for="{{ form.discount.value.vars.id }}">
+                    {{ 'admin.form.label.discount'|trans }}
+                </label>
+            </div>
+
+            <div class="input-group mb-3">
+				<span class="input-group-text" id="basic-addon1">
+					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                         class="bi bi-wallet2"
+                         viewBox="0 0 16 16">
+					  <path d="M12.136.326A1.5 1.5 0 0 1 14 1.78V3h.5A1.5 1.5 0 0 1 16 4.5v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 13.5v-9a1.5 1.5 0 0 1 1.432-1.499zM5.562 3H13V1.78a.5.5 0 0 0-.621-.484zM1.5 4a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5z"/>
+					</svg>
+				</span>
+                {{ form_widget(form.discount.value) }}
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="w-100 d-flex justify-content-between gap-3 mb-3">
+
+
+        <label class="btn w-100 p-3 border-dotted rounded-3 {{ form.shop.value.vars.data ? 'active' : '' }}">
+            <div class="d-flex align-items-center">
+                <div class="flex-grow-1">
+					<span class="h5">
+						{{ form_widget(form.shop.value, { label: 'Магазин'|trans }) }}
+					</span>
+                </div>
+            </div>
+        </label>
+
+
+        <label class="btn w-100 p-3 border-dotted rounded-3 {{ form.orders.value.vars.data ? 'active' : '' }}">
+            <div class="d-flex align-items-center">
+                <div class="flex-grow-1">
+					<span class="h5">
+						{{ form_widget(form.orders.value, { label: 'ПВЗ'|trans }) }}
+					</span>
+                </div>
+            </div>
+        </label>
+
+        <label class="btn w-100 p-3 border-dotted rounded-3 {{ form.warehouse.value.vars.data ? 'active' : '' }}">
+            <div class="d-flex align-items-center">
+                <div class="flex-grow-1">
+					<span class="h5">
+						{{ form_widget(form.warehouse.value, { label: 'Склад'|trans }) }}
+					</span>
+                </div>
+            </div>
+        </label>
+
+    </div>
+
+</div>

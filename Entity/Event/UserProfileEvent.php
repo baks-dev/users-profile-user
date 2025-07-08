@@ -30,6 +30,7 @@ use BaksDev\Core\Type\Modify\Modify\ModifyActionUpdate;
 use BaksDev\Users\Profile\TypeProfile\Type\Id\TypeProfileUid;
 use BaksDev\Users\Profile\UserProfile\Entity\Avatar\UserProfileAvatar;
 use BaksDev\Users\Profile\UserProfile\Entity\Discount\UserProfileDiscount;
+use BaksDev\Users\Profile\UserProfile\Entity\Event\Region\UserProfileRegion;
 use BaksDev\Users\Profile\UserProfile\Entity\Info\UserProfileInfo;
 use BaksDev\Users\Profile\UserProfile\Entity\Modify\UserProfileModify;
 use BaksDev\Users\Profile\UserProfile\Entity\Orders\UserProfileOrders;
@@ -141,6 +142,10 @@ class UserProfileEvent extends EntityEvent
     /** Персональная скидка профиля */
     #[ORM\OneToOne(targetEntity: UserProfileDiscount::class, mappedBy: 'event', cascade: ['all'])]
     private ?UserProfileDiscount $discount = null;
+
+    /** Идентификатор региона пользователя */
+    #[ORM\OneToOne(targetEntity: UserProfileRegion::class, mappedBy: 'event', cascade: ['all'])]
+    private ?UserProfileRegion $region = null;
 
 
     public function __construct()

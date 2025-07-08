@@ -32,8 +32,8 @@
 		
 		
 		{{ form_start(form) }}
-		
-		{{ include(_self|replace({ "new/content.html.twig": "form.html.twig" })) }}
+
+		{{ include(_self|replace({ "new/content.html.twig": "_form/form.html.twig" })) }}
 		
 		{# Блок кнопок #}
 		{{ include(_self|replace({ "content.html.twig": "_btn.html.twig" })) }}
