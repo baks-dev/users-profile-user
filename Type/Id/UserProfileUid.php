@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2024.  Baks.dev <admin@baks.dev>
+ *  Copyright 2025.  Baks.dev <admin@baks.dev>
  *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -49,19 +49,28 @@ final class UserProfileUid extends Uid
            $dbal->addSelect(' AS characteristic');
     */
 
+    private ?string $params;
+
+    private object|false|null $decode = null;
+
     public function __construct(
         AbstractUid|self|string|null $value = null,
         mixed $attr = null,
         mixed $option = null,
         mixed $property = null,
         mixed $characteristic = null,
-    ) {
+        ?string $params = null, // строка JSON с параметрами
+    )
+    {
+
         parent::__construct($value);
 
         $this->attr = $attr;
         $this->option = $option;
         $this->property = $property;
         $this->characteristic = $characteristic;
+        $this->params = $params;
+
     }
 
     /**
@@ -96,4 +105,26 @@ final class UserProfileUid extends Uid
         return $this->characteristic;
     }
 
+
+    public function getParams(): object|false
+    {
+        if($this->decode === null)
+        {
+            if(empty($this->params))
+            {
+                $this->decode = false;
+                return false;
+            }
+
+            if(false === json_validate($this->params))
+            {
+                $this->decode = false;
+                return false;
+            }
+
+            $this->decode = json_decode($this->params, false, 512, JSON_THROW_ON_ERROR);
+        }
+
+        return $this->decode;
+    }
 }

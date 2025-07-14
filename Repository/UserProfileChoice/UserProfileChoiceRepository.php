@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2024.  Baks.dev <admin@baks.dev>
+ *  Copyright 2025.  Baks.dev <admin@baks.dev>
  *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -50,7 +50,8 @@ final class UserProfileChoiceRepository implements UserProfileChoiceInterface
     public function __construct(
         ORMQueryBuilder $ORMQueryBuilder,
         DBALQueryBuilder $DBALQueryBuilder
-    ) {
+    )
+    {
         $this->ORMQueryBuilder = $ORMQueryBuilder;
         $this->DBALQueryBuilder = $DBALQueryBuilder;
     }
@@ -62,67 +63,71 @@ final class UserProfileChoiceRepository implements UserProfileChoiceInterface
     {
         $select = sprintf('new %s(user_profile.id, personal.username, personal.latitude, personal.longitude)', UserProfileUid::class);
 
-        $qb = $this->ORMQueryBuilder->createQueryBuilder(self::class);
-        $qb->select($select);
+        $dbal = $this->ORMQueryBuilder->createQueryBuilder(self::class);
+        $dbal->select($select);
 
-        $qb->from(UserProfile::class, 'user_profile');
+        $dbal->from(UserProfile::class, 'user_profile');
 
-        $qb->join(
-            UserProfileInfo::class,
-            'info',
-            'WITH',
-            'info.profile = user_profile.id AND info.status = :status'
-        );
-
-        $qb->setParameter(
-            'status',
-            UserProfileStatusActive::class,
-            UserProfileStatus::TYPE
-        );
+        $dbal
+            ->join(
+                UserProfileInfo::class,
+                'info',
+                'WITH',
+                'info.profile = user_profile.id AND info.status = :status',
+            )
+            ->setParameter(
+                'status',
+                UserProfileStatusActive::class,
+                UserProfileStatus::TYPE,
+            );
 
 
         if($usr)
         {
-            $qb
+            $dbal
                 ->where('info.usr = :usr')
                 ->setParameter('usr', $usr, UserUid::TYPE);
         }
 
 
-        $qb->join(
+        $dbal->join(
             UserProfileEvent::class,
             'event',
             'WITH',
-            'event.id = user_profile.event AND event.profile = user_profile.id'
+            'event.id = user_profile.event AND event.profile = user_profile.id',
         );
 
-        $qb->join(
+        $dbal->join(
             UserProfilePersonal::class,
             'personal',
             'WITH',
-            'personal.event = event.id'
+            'personal.event = event.id',
         );
 
 
-        $qb->join(
+        $dbal->join(
             Account::class,
             'account',
             'WITH',
-            'account.id = info.usr'
+            'account.id = info.usr',
         );
 
-        $qb->join(
-            AccountStatus::class,
-            'status',
-            'WITH',
-            'status.event = account.event AND status.status = :account_status'
-        );
-
-        $qb->setParameter('account_status', new EmailStatus(EmailStatusActive::class), EmailStatus::TYPE);
+        $dbal
+            ->join(
+                AccountStatus::class,
+                'status',
+                'WITH',
+                'status.event = account.event AND status.status = :account_status',
+            )
+            ->setParameter(
+                key: 'account_status',
+                value: EmailStatusActive::class,
+                type: EmailStatus::TYPE,
+            );
 
 
         /* Кешируем результат ORM */
-        return $qb->enableCache('users-profile-user', 86400)->getResult();
+        return $dbal->enableCache('users-profile-user', 86400)->getResult();
 
     }
 
@@ -145,7 +150,7 @@ final class UserProfileChoiceRepository implements UserProfileChoiceInterface
             'user_profile',
             UserProfileInfo::class,
             'current_info',
-            'current_info.usr = :current AND current_info.active IS TRUE AND current_info.status = :status'
+            'current_info.usr = :current AND current_info.active IS TRUE AND current_info.status = :status',
         );
 
 
@@ -154,7 +159,7 @@ final class UserProfileChoiceRepository implements UserProfileChoiceInterface
             ->setParameter(
                 'status',
                 UserProfileStatusActive::class,
-                UserProfileStatus::TYPE
+                UserProfileStatus::TYPE,
             );
 
 
@@ -162,7 +167,7 @@ final class UserProfileChoiceRepository implements UserProfileChoiceInterface
             'current_info',
             ProfileGroupUsers::class,
             'group_users',
-            'group_users.profile = current_info.profile AND group_users.authority = user_profile.id'
+            'group_users.profile = current_info.profile AND group_users.authority = user_profile.id',
         );
 
 
@@ -174,13 +179,13 @@ final class UserProfileChoiceRepository implements UserProfileChoiceInterface
             'user_profile',
             UserProfileInfo::class,
             'info',
-            'info.profile = user_profile.id AND info.status = :status'
+            'info.profile = user_profile.id AND info.status = :status',
         );
 
         $dbal->setParameter(
             'status',
             UserProfileStatusActive::class,
-            UserProfileStatus::TYPE
+            UserProfileStatus::TYPE,
         );
 
 
@@ -189,7 +194,7 @@ final class UserProfileChoiceRepository implements UserProfileChoiceInterface
                 'user_profile',
                 UserProfileEvent::class,
                 'event',
-                'event.id = user_profile.event AND event.profile = user_profile.id'
+                'event.id = user_profile.event AND event.profile = user_profile.id',
             );
 
         $dbal
@@ -197,7 +202,7 @@ final class UserProfileChoiceRepository implements UserProfileChoiceInterface
                 'user_profile',
                 UserProfilePersonal::class,
                 'user_profile_personal',
-                'user_profile_personal.event = user_profile.event'
+                'user_profile_personal.event = user_profile.event',
             );
 
 
@@ -205,14 +210,14 @@ final class UserProfileChoiceRepository implements UserProfileChoiceInterface
             'info',
             Account::class,
             'account',
-            'account.id = info.usr'
+            'account.id = info.usr',
         );
 
         $dbal->join(
             'account',
             AccountStatus::class,
             'status',
-            'status.event = account.event AND status.status = :account_status'
+            'status.event = account.event AND status.status = :account_status',
         );
 
         $dbal->setParameter('account_status', new EmailStatus(EmailStatusActive::class), EmailStatus::TYPE);
@@ -229,6 +234,5 @@ final class UserProfileChoiceRepository implements UserProfileChoiceInterface
             ->fetchAllHydrate(UserProfileUid::class);
 
     }
-
 
 }
