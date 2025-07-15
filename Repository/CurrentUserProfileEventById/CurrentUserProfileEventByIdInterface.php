@@ -21,79 +21,18 @@
  *  THE SOFTWARE.
  */
 
-declare(strict_types=1);
-
 namespace BaksDev\Users\Profile\UserProfile\Repository\CurrentUserProfileEventById;
 
-use BaksDev\Core\Doctrine\ORMQueryBuilder;
 use BaksDev\Users\Profile\UserProfile\Entity\Event\UserProfileEvent;
 use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
-use InvalidArgumentException;
 
-
-final class CurrentUserProfileEventByIdInterface implements CurrentUserProfileEventByIdInterfaceInterface
+interface CurrentUserProfileEventByIdInterface
 {
-
-    private UserProfileUid|false $profile = false;
-
-    public function __construct(private readonly ORMQueryBuilder $ORMQueryBuilder) {}
-
-    public function forProfile(UserProfile|UserProfileUid|string $profile): self
-    {
-
-        if(empty($profile))
-        {
-            $this->profile = false;
-            return $this;
-        }
-
-        if(is_string($profile))
-        {
-            $profile = new UserProfileUid($profile);
-        }
-
-        if($profile instanceof UserProfile)
-        {
-            $profile = $profile->getId();
-        }
-
-        $this->profile = $profile;
-
-        return $this;
-    }
+    public function forProfile(UserProfile|UserProfileUid|string $profile): self;
 
     /**
      * Метод возвращает активное событие профиля пользователя
      */
-    public function find(): UserProfileEvent|false
-    {
-        if(false === ($this->profile instanceof UserProfileUid))
-        {
-            throw new InvalidArgumentException('Invalid Argument UserProfile');
-        }
-
-        $orm = $this->ORMQueryBuilder->createQueryBuilder(self::class);
-
-        $orm
-            ->from(UserProfile::class, 'profile')
-            ->where('profile.id = :profile')
-            ->setParameter(
-                key: 'profile',
-                value: $this->profile,
-                type: UserProfileUid::TYPE
-            );
-
-        $orm
-            ->select('event')
-            ->join(
-                UserProfileEvent::class,
-                'event',
-                'WITH',
-                'event.id = profile.event'
-            );
-
-
-        return $orm->getQuery()->getOneOrNullResult() ?: false;
-    }
+    public function find(): UserProfileEvent|false;
 }
