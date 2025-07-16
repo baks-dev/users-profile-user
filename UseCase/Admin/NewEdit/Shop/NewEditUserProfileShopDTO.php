@@ -25,7 +25,7 @@ declare(strict_types=1);
 
 namespace BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Shop;
 
-use BaksDev\Users\Profile\UserProfile\Entity\Shop\UserProfileShopInterface;
+use BaksDev\Users\Profile\UserProfile\Entity\Event\Shop\UserProfileShopInterface;
 
 /** @see UserProfileShop */
 final class NewEditUserProfileShopDTO implements UserProfileShopInterface

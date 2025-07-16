@@ -25,7 +25,7 @@ declare(strict_types=1);
 
 namespace BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Orders;
 
-use BaksDev\Users\Profile\UserProfile\Entity\Orders\UserProfileOrdersInterface;
+use BaksDev\Users\Profile\UserProfile\Entity\Event\Orders\UserProfileOrdersInterface;
 
 /** @see UserProfileOrders */
 final class NewEditUserProfileOrdersDTO implements UserProfileOrdersInterface

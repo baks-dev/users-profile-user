@@ -24,7 +24,7 @@
 namespace BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit;
 
 use BaksDev\Users\Profile\TypeProfile\Type\Id\TypeProfileUid;
-use BaksDev\Users\Profile\UserProfile\Entity\Avatar\UserProfileAvatarInterface;
+use BaksDev\Users\Profile\UserProfile\Entity\Event\Avatar\UserProfileAvatarInterface;
 use BaksDev\Users\Profile\UserProfile\Entity\Event\UserProfileEventInterface;
 use BaksDev\Users\Profile\UserProfile\Type\Event\UserProfileEventUid;
 use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Avatar\AvatarDTO;

@@ -24,7 +24,7 @@
 namespace BaksDev\Users\Profile\UserProfile\Listeners\Entity;
 
 use BaksDev\Core\Type\Ip\IpAddress;
-use BaksDev\Users\Profile\UserProfile\Entity\Modify\UserProfileModify;
+use BaksDev\Users\Profile\UserProfile\Entity\Event\Modify\UserProfileModify;
 use BaksDev\Users\User\Repository\UserTokenStorage\UserTokenStorageInterface;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
 use Doctrine\ORM\Events;

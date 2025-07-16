@@ -34,9 +34,9 @@ use BaksDev\Users\Profile\Group\Entity\Users\ProfileGroupUsers;
 use BaksDev\Users\Profile\TypeProfile\Type\Id\Choice\TypeProfileIndividual;
 use BaksDev\Users\Profile\TypeProfile\Type\Id\Choice\TypeProfileOrganization;
 use BaksDev\Users\Profile\TypeProfile\Type\Id\TypeProfileUid;
+use BaksDev\Users\Profile\UserProfile\Entity\Event\Info\UserProfileInfo;
+use BaksDev\Users\Profile\UserProfile\Entity\Event\Personal\UserProfilePersonal;
 use BaksDev\Users\Profile\UserProfile\Entity\Event\UserProfileEvent;
-use BaksDev\Users\Profile\UserProfile\Entity\Info\UserProfileInfo;
-use BaksDev\Users\Profile\UserProfile\Entity\Personal\UserProfilePersonal;
 use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\UserProfileStatusActive;
@@ -55,42 +55,9 @@ final class UserProfileOrganizationRepository implements UserProfileOrganization
     {
         $dbal = $this->DBALQueryBuilder->createQueryBuilder(self::class);
 
-        //$dbal->select('id');
-        //$dbal->from(ClasssName::class, 'aliace');
-
         $dbal
             ->from(UserProfile::class, 'user_profile');
 
-        /** Получаем активный профиль текущего пользователя */
-
-        //        $dbal->join(
-        //            'user_profile',
-        //            UserProfileInfo::class,
-        //            'current_info',
-        //            'current_info.usr = :current AND current_info.active IS TRUE AND current_info.status = :status'
-        //        );
-
-
-        //        $dbal
-        //            ->setParameter('current', $current, UserUid::TYPE)
-        //            ->setParameter(
-        //                'status',
-        //                UserProfileStatusActive::class,
-        //                UserProfileStatus::TYPE
-        //            );
-
-
-        //        $dbal->join(
-        //            'current_info',
-        //            ProfileGroupUsers::class,
-        //            'group_users',
-        //            'group_users.profile = current_info.profile AND group_users.authority = user_profile.id'
-        //        );
-
-
-        //        $dbal
-        //            ->where('info.usr = :usr')
-        //            ->setParameter('usr', $usr, UserUid::TYPE);
 
         $dbal->join(
             'user_profile',
@@ -170,13 +137,7 @@ final class UserProfileOrganizationRepository implements UserProfileOrganization
              AS params",
         );
 
-        $dbal
-            ->addSelect('user_profile.id AS value')
-
-            //            ->addSelect('user_profile_personal.username AS attr')
-            //            ->addSelect('user_profile_personal.latitude AS option')
-            //            ->addSelect('user_profile_personal.longitude AS property')
-        ;
+        $dbal->addSelect('user_profile.id AS value');
 
         $dbal->allGroupByExclude();
 

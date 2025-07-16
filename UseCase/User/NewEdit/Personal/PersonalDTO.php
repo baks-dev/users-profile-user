@@ -27,7 +27,7 @@ use BaksDev\Core\Type\Gps\GpsLatitude;
 use BaksDev\Core\Type\Gps\GpsLongitude;
 use BaksDev\Reference\Gender\Type\Gender;
 use BaksDev\Reference\Gender\Type\Genders\Collection\GenderMen;
-use BaksDev\Users\Profile\UserProfile\Entity\Personal\UserProfilePersonalInterface;
+use BaksDev\Users\Profile\UserProfile\Entity\Event\Personal\UserProfilePersonalInterface;
 use DateTimeImmutable;
 use Symfony\Component\Validator\Constraints as Assert;
 

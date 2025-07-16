@@ -26,7 +26,7 @@ declare(strict_types=1);
 namespace BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Warehouse;
 
 
-use BaksDev\Users\Profile\UserProfile\Entity\Warehouse\UserProfileWarehouseInterface;
+use BaksDev\Users\Profile\UserProfile\Entity\Event\Warehouse\UserProfileWarehouseInterface;
 
 /** @see UserProfileWarehouse */
 final class NewEditUserProfileWarehouseDTO implements UserProfileWarehouseInterface

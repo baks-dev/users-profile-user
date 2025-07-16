@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2023.  Baks.dev <admin@baks.dev>
+ *  Copyright 2025.  Baks.dev <admin@baks.dev>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,7 @@ namespace BaksDev\Users\Profile\UserProfile\UseCase\Admin\Delete\Modify;
 
 use BaksDev\Core\Type\Modify\Modify\ModifyActionDelete;
 use BaksDev\Core\Type\Modify\ModifyAction;
-use BaksDev\Users\Profile\UserProfile\Entity\Modify\UserProfileModifyInterface;
+use BaksDev\Users\Profile\UserProfile\Entity\Event\Modify\UserProfileModifyInterface;
 
 final class ModifyDTO implements UserProfileModifyInterface
 {

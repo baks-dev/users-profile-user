@@ -12,6 +12,7 @@
 {# ---- CSS ------------------------------------------------------------ #}
 {% block stylesheets %}
 	<link href="/assets/plugins/datepicker/datepicker.min.css" rel="stylesheet">
+	<link href="/assets/plugins/nice-select2/nice-select2.min.css" rel="stylesheet">
 {% endblock %}
 
 {# ---- HEADER-БЛОК ------------------------------------------------------------ #}
@@ -43,6 +44,7 @@
 
 <script nonce='{{ csp_nonce() }}' async  data-src="/assets/js/image.input.min.js?v={{ version }}" class="lazy"></script>
 <script nonce='{{ csp_nonce() }}' async  data-src="/assets/js/radio.input.min.js?v={{ version }}" class="lazy"></script>
+<script nonce="{{ csp_nonce() }}" data-src='/assets/plugins/nice-select2/nice-select2.min.js?v={{ version }}' class='lazy'></script>
 <script nonce='{{ csp_nonce() }}' async  data-src="/assets/plugins/semantic/semantic.min.js?v={{ version }}" class="lazy"></script>
 <script nonce='{{ csp_nonce() }}' async  data-src="/assets/plugins/datepicker/datepicker.min.js?v={{ version }}" class="lazy"></script>
 <script nonce='{{ csp_nonce() }}' async  data-src="/assets/plugins/geocountry/geocountry.min.js?v={{ version }}" class="lazy"></script>

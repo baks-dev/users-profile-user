@@ -23,22 +23,20 @@
 
 namespace BaksDev\Users\Profile\UserProfile\Entity\Event;
 
-use App\Kernel;
+
 use BaksDev\Core\Entity\EntityEvent;
-use BaksDev\Core\Type\Modify\Modify\ModifyActionNew;
-use BaksDev\Core\Type\Modify\Modify\ModifyActionUpdate;
 use BaksDev\Users\Profile\TypeProfile\Type\Id\TypeProfileUid;
-use BaksDev\Users\Profile\UserProfile\Entity\Avatar\UserProfileAvatar;
-use BaksDev\Users\Profile\UserProfile\Entity\Discount\UserProfileDiscount;
+use BaksDev\Users\Profile\UserProfile\Entity\Event\Avatar\UserProfileAvatar;
+use BaksDev\Users\Profile\UserProfile\Entity\Event\Discount\UserProfileDiscount;
+use BaksDev\Users\Profile\UserProfile\Entity\Event\Info\UserProfileInfo;
+use BaksDev\Users\Profile\UserProfile\Entity\Event\Modify\UserProfileModify;
+use BaksDev\Users\Profile\UserProfile\Entity\Event\Orders\UserProfileOrders;
+use BaksDev\Users\Profile\UserProfile\Entity\Event\Personal\UserProfilePersonal;
 use BaksDev\Users\Profile\UserProfile\Entity\Event\Region\UserProfileRegion;
-use BaksDev\Users\Profile\UserProfile\Entity\Info\UserProfileInfo;
-use BaksDev\Users\Profile\UserProfile\Entity\Modify\UserProfileModify;
-use BaksDev\Users\Profile\UserProfile\Entity\Orders\UserProfileOrders;
-use BaksDev\Users\Profile\UserProfile\Entity\Personal\UserProfilePersonal;
-use BaksDev\Users\Profile\UserProfile\Entity\Shop\UserProfileShop;
+use BaksDev\Users\Profile\UserProfile\Entity\Event\Shop\UserProfileShop;
+use BaksDev\Users\Profile\UserProfile\Entity\Event\Value\UserProfileValue;
+use BaksDev\Users\Profile\UserProfile\Entity\Event\Warehouse\UserProfileWarehouse;
 use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
-use BaksDev\Users\Profile\UserProfile\Entity\Value\UserProfileValue;
-use BaksDev\Users\Profile\UserProfile\Entity\Warehouse\UserProfileWarehouse;
 use BaksDev\Users\Profile\UserProfile\Type\Event\UserProfileEventUid;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use BaksDev\Users\User\Type\Id\UserUid;

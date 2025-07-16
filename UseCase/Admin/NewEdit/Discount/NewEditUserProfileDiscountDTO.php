@@ -25,7 +25,7 @@ declare(strict_types=1);
 
 namespace BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Discount;
 
-use BaksDev\Users\Profile\UserProfile\Entity\Discount\UserProfileDiscountInterface;
+use BaksDev\Users\Profile\UserProfile\Entity\Event\Discount\UserProfileDiscountInterface;
 
 /** @see UserProfileDiscount */
 final class NewEditUserProfileDiscountDTO implements UserProfileDiscountInterface
