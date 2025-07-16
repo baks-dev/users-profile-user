@@ -23,6 +23,11 @@
 
 namespace BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit;
 
+use BaksDev\Reference\Region\Type\Id\RegionUid;
+use BaksDev\Users\Profile\TypeProfile\Repository\TypeProfileChoice\TypeProfileChoiceInterface;
+use BaksDev\Users\Profile\TypeProfile\Type\Id\Choice\Collection\TypeProfileCollection;
+use BaksDev\Users\Profile\TypeProfile\Type\Id\Choice\Collection\TypeProfileInterface;
+use BaksDev\Users\Profile\TypeProfile\Type\Id\TypeProfileUid;
 use BaksDev\Users\Profile\UserProfile\Repository\FieldValueForm\FieldValueFormDTO;
 use BaksDev\Users\Profile\UserProfile\Repository\FieldValueForm\FieldValueFormInterface;
 use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Discount\NewEditUserProfileDiscountForm;
@@ -32,6 +37,8 @@ use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Shop\NewEditUserProf
 use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Value\ValueDTO;
 use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Warehouse\NewEditUserProfileWarehouseForm;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ButtonType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -43,13 +50,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 final class UserProfileForm extends AbstractType
 {
 
-    private FieldValueFormInterface $fieldValue;
 
-
-    public function __construct(FieldValueFormInterface $fieldValue)
-    {
-        $this->fieldValue = $fieldValue;
-    }
+    public function __construct(
+        private readonly FieldValueFormInterface $fieldValue,
+        private readonly TypeProfileChoiceInterface $TypeProfileChoice
+    ) {}
 
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -78,6 +83,23 @@ final class UserProfileForm extends AbstractType
         /** Регион пользователя */
         $builder->add('region', UserProfileRegionForm::class);
 
+        $types = $this->TypeProfileChoice->getActiveTypeProfileChoice();
+
+        $builder
+            ->add('type', ChoiceType::class, [
+                'choices' => $types,
+                'choice_value' => function(TypeProfileUid|null $type) {
+                    return $type?->getValue();
+                },
+                'choice_label' => function(TypeProfileUid $type) {
+
+                    return $type->getAttr();
+                },
+                'label' => false,
+                'expanded' => false,
+                'multiple' => false,
+                'required' => false,
+            ]);
 
         /**
          * Свойства профиля пользователя
@@ -106,6 +128,7 @@ final class UserProfileForm extends AbstractType
 
                 /** @var UserProfileDTO $data */
                 $data = $event->getData();
+                $form = $event->getForm();
 
                 /** @var FieldValueFormDTO $field */
                 foreach($fields as $field)
@@ -124,8 +147,11 @@ final class UserProfileForm extends AbstractType
                             $new = false;
                             break;
                         }
+
+
                     }
 
+                    /** Создаем новое поле для заполнения */
                     if($new)
                     {
                         $value = new ValueDTO();
@@ -135,8 +161,54 @@ final class UserProfileForm extends AbstractType
                     }
                 }
 
+                /** Удаляем старые элементы */
+
+                foreach($data->getValue() as $value)
+                {
+                    $remove = true;
+
+                    foreach($fields as $field)
+                    {
+                        if(true === $field->getField()->equals($value->getField()))
+                        {
+                            $remove = false;
+                            break;
+                        }
+                    }
+
+                    if($remove)
+                    {
+                        $value->remove();
+                        //$data->removeValue($value);
+                    }
+                }
             },
         );
+
+
+        $builder->addEventListener(
+            FormEvents::POST_SUBMIT,
+            function(FormEvent $event) use ($fields) {
+
+                /** @var UserProfileDTO $data */
+                $data = $event->getData();
+
+                /**
+                 * Удаляем старые элементы
+                 *
+                 * @var ValueDTO $remove
+                 */
+                foreach($data->getValue() as $remove)
+                {
+                    if($remove->isRemove())
+                    {
+                        $data->removeValue($remove);
+                    }
+                }
+
+            });
+
+
 
         /* Сохранить ******************************************************/
         $builder->add

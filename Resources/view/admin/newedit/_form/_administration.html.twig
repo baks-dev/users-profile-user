@@ -7,6 +7,11 @@
         placeholder: 'admin.form.placeholder.info.user'|trans
     }) }}
 
+    {{ form_row(form.type, {
+        label : 'Тип профиля пользователя'|trans,
+        placeholder: 'Выберите тип профиля пользователя из списка ...'|trans
+    }) }}
+
     {{ form_row(form.region.value, {
         label: 'Регион пользователя'|trans,
         placeholder: 'Выберите регион пользователя из списка ...'|trans

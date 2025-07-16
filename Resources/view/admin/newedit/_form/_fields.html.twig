@@ -4,13 +4,13 @@
 
 {% for value in form.value %}
 
-
     {% if section != value.vars.data.section %}
+
         {% set section = value.vars.data.section %}
 
         {# Закрываем секцию, eсли она не первая в цикле #}
         {% if loop.first != true %}
-            </div></div>
+            {# </div></div> #}
         {% endif %}
 
 

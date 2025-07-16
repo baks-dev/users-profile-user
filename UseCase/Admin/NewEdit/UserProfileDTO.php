@@ -72,7 +72,6 @@ final class UserProfileDTO implements UserProfileEventInterface
     #[Assert\Valid]
     private ArrayCollection $value;
 
-
     /** Флаг, означающий, что профиль пользователя является магазином */
     private NewEditUserProfileShopDTO $shop;
 
