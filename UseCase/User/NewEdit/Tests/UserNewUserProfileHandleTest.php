@@ -57,6 +57,7 @@ use function PHPUnit\Framework\assertEquals;
 /**
  * @group users-profile-user
  * @group users-profile-user-usecase
+ * @group orders-order-controller
  */
 #[When(env: 'test')]
 final class UserNewUserProfileHandleTest extends KernelTestCase
