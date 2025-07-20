@@ -1,0 +1,378 @@
+{# {{ include(_self|replace({ "content.html.twig": "header.html.twig" })) }} #}
+
+<main class="main">
+
+
+    <div class="map-wrap d-flex overflow-hidden mb-3">
+        <div id="map" class='w-100 bg-cover'
+             style='height: 250px; background-image: url("/triangle/map.webp");'
+        ></div>
+    </div>
+
+
+    {% if current %}
+
+        <section id='info' class='mb-3 container'>
+
+            <div class='d-flex flex-column gap-2 small'>
+
+                <div class='w-100 d-flex gap-3 p-2' style='height: 80px;'>
+
+                    <div>
+					<span class="icon rounded-circle bg-contain lazy p-1 mb-2"
+                          style="width: 43px; height: 43px;"
+                    >
+						<svg xmlns="http://www.w3.org/2000/svg"
+                             width="20"
+                             height="20"
+                             fill="currentColor"
+                             class="text-muted"
+                             viewBox="0 0 16 16">
+							<path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z"/>
+							<path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+						</svg>
+					
+					</span>
+                    </div>
+
+                    <div class='small d-flex flex-column'>
+                        <div class='mb-3'>
+                            {{ current.call_address }}
+                        </div>
+                        <div class='small text-muted'>Охрана выдает разовый пропуск</div>
+                    </div>
+
+                </div>
+
+
+                <div class='w-100 d-flex gap-3 p-2' style='height: 80px;'>
+                    <div>
+					<span class="icon rounded-circle bg-contain lazy p-1 mb-2"
+                          style="width: 43px; height: 43px;"
+                    >
+						<svg xmlns="http://www.w3.org/2000/svg"
+                             width="16"
+                             height="16"
+                             fill="currentColor"
+                             class="text-muted"
+                             viewBox="0 0 16 16">
+							<path d="M15.854.146a.5.5 0 0 1 0 .708L11.707 5H14.5a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5v-4a.5.5 0 0 1 1 0v2.793L15.146.146a.5.5 0 0 1 .708 0zm-12.2 1.182a.678.678 0 0 0-1.015-.063L1.605 2.3c-.483.484-.661 1.169-.45 1.77a17.568 17.568 0 0 0 4.168 6.608 17.569 17.569 0 0 0 6.608 4.168c.601.211 1.286.033 1.77-.45l1.034-1.034a.678.678 0 0 0-.063-1.015l-2.307-1.794a.678.678 0 0 0-.58-.122l-2.19.547a1.745 1.745 0 0 1-1.657-.459L5.482 8.062a1.745 1.745 0 0 1-.46-1.657l.548-2.19a.678.678 0 0 0-.122-.58L3.654 1.328zM1.884.511a1.745 1.745 0 0 1 2.612.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z"/>
+						</svg>
+					</span>
+                    </div>
+
+                    <div class='small d-flex flex-column justify-content-between'>
+                        <div class='mb-3'>
+
+                            {% set current_phones = current.calls_phone|json_decode %}
+
+                            {% for phone in current_phones %}
+                                <div class='d-flex gap-3'>
+                                    {% if phone.call_phone_name %}
+                                        <span class='text-muted'>{{ phone.call_phone_name }}</span>
+                                    {% endif %}
+
+                                    <span>{{ phone.call_phone_number }}</span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class='small text-muted'>(бесплатно для звонков из регионов)</div>
+                    </div>
+
+                </div>
+
+
+                <div class='w-100 d-flex gap-3 p-2 ' style='height: 80px;'>
+                    <div>
+					<span class="icon rounded-circle bg-contain lazy p-1 mb-2"
+                          style="width: 43px; height: 43px;"
+                    >
+						<svg xmlns="http://www.w3.org/2000/svg"
+                             width="16"
+                             height="16"
+                             fill="currentColor"
+                             class="text-muted"
+                             viewBox="0 0 16 16">
+							<path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2Zm13 2.383-4.708 2.825L15 11.105V5.383Zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741ZM1 11.105l4.708-2.897L1 5.383v5.722Z"/>
+						</svg>
+					</span>
+                    </div>
+
+                    <div class='small d-flex flex-column justify-content-between'>
+                        <div class='mb-3'>
+                            <a href='mailto:{{ current.call_email }}'>
+                                {{ current.call_email }}
+                            </a>
+                        </div>
+                        <div class='small text-muted'>
+                            <a href='mailto:{{ current.call_email }}'
+                               class="btn btn-sm btn-primary text-nowrap rounded-3">
+                                <span class="p-1">Задать вопрос</span>
+                                <span class="spinner-border spinner-border-sm vertical-middle d-none">
+							</span>
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class='w-100 d-flex gap-3 p-2' style='height: 80px;'>
+                    <div>
+					<span class="icon rounded-circle bg-contain lazy p-1 mb-2 "
+                          style="width: 43px; height: 43px;"
+                    >
+						<svg xmlns="http://www.w3.org/2000/svg"
+                             width="16"
+                             height="16"
+                             fill="currentColor"
+                             class="text-muted"
+                             viewBox="0 0 16 16">
+					<path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
+					<path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/>
+				</svg>
+					</span>
+                    </div>
+
+                    <div class='small d-flex flex-column justify-content-between'>
+                        <div class='mb-3'>
+
+                            {{ current.call_working|replace(
+                                {
+                                    ' Пн': '<br>Пн',
+                                    ' Вт': '<br>Вт',
+                                    ' Ср': '<br>Ср',
+                                    ' Чт': '<br>Чт',
+                                    ' Пт': '<br>Пт',
+                                    ' Сб': '<br>Сб',
+                                    ' Вс': '<br>Вс',
+
+                                })|raw }}
+
+                        </div>
+                        <div class='small text-muted'>
+                            Заказы через корзину сайта принимаются круглосуточно
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <div class='container'>
+            <hr>
+        </div>
+
+    {% endif %}
+
+
+    <section id="regional" class="container">
+
+
+        <h1 class="text-uppercase h5 fw-bolder lh-1">Региональные представительства</h1>
+
+
+        <div class='w-100' style='height: 55px;'>
+            {{ form_start(form) }}
+
+            {{ form_widget(form.region) }}
+            {{ form_end(form) }}
+        </div>
+
+
+        <p>Наша компания имеет широкую сеть региональных представительств и дилеров. Вы можете обратиться в ближайший к
+            Вам офис для получения дополнительных консультаций. </p>
+
+
+        <div class='mt-3'>
+
+
+            {% if current %}
+
+                <div class="w-100 d-flex gap-3 align-items-center mb-3" style="height: 80px;">
+                    <div class='mb-1'><span class="icon rounded-circle bg-contain p-1"
+                                            style="width: 43px; height: 43px;">
+						<svg xmlns="http://www.w3.org/2000/svg"
+                             width="20"
+                             height="20"
+                             fill="currentColor"
+                             class="text-muted"
+                             viewBox="0 0 16 16">
+							<path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
+						</svg>
+					</span>
+                    </div>
+                    <div>
+					<span class="h6 lh-1">
+						{{ current.region_name }}
+					</span>
+                    </div>
+                </div>
+
+            {% endif %}
+
+
+
+            {# {{ dump(calls) }} #}
+
+            <ul class="list-group list-group-flush">
+
+                {% for call in calls %}
+
+
+
+                    <li class="list-group-item p-3">
+
+                        <div class="d-flex gap-3 align-items-center {{ call.call_description ?:'mb-2' }}">
+                            <div class='mb-2'>
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     width="15"
+                                     height="15"
+                                     fill="currentColor"
+                                     class="text-dark"
+                                     viewBox="0 0 16 16">
+                                    <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z"></path>
+                                    <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"></path>
+                                </svg>
+                            </div>
+                            <h2 class='h6 w-100'>{{ call.call_name }}</h2>
+
+                        </div>
+                        {% if call.call_description %}
+                            <div class="mb-2">
+                                <span class='text-muted'>{{ call.call_description }}</span>
+                            </div>
+                        {% endif %}
+
+
+                        <div class="d-flex gap-3 align-items-center mb-2 text-primary">
+                            <div>
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     width="15"
+                                     height="15"
+                                     fill="currentColor"
+                                     class="text-muted"
+                                     viewBox="0 0 16 16">
+                                    <path d="M14.763.075A.5.5 0 0 1 15 .5v15a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5V14h-1v1.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V10a.5.5 0 0 1 .342-.474L6 7.64V4.5a.5.5 0 0 1 .276-.447l8-4a.5.5 0 0 1 .487.022ZM6 8.694 1 10.36V15h5V8.694ZM7 15h2v-1.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5V15h2V1.309l-7 3.5V15Z"/>
+                                    <path d="M2 11h1v1H2v-1Zm2 0h1v1H4v-1Zm-2 2h1v1H2v-1Zm2 0h1v1H4v-1Zm4-4h1v1H8V9Zm2 0h1v1h-1V9Zm-2 2h1v1H8v-1Zm2 0h1v1h-1v-1Zm2-2h1v1h-1V9Zm0 2h1v1h-1v-1ZM8 7h1v1H8V7Zm2 0h1v1h-1V7Zm2 0h1v1h-1V7ZM8 5h1v1H8V5Zm2 0h1v1h-1V5Zm2 0h1v1h-1V5Zm0-2h1v1h-1V3Z"/>
+                                </svg>
+                            </div>
+
+                            <div class='map-change pointer'
+                                 data-address='{{ call.call_address }}'
+                                 data-latitude='{{ call.call_latitude }}'
+                                 data-longitude='{{ call.call_longitude }}'
+                            >
+                                {{ call.call_address }}
+                            </div>
+
+                        </div>
+
+                        <div class="d-flex gap-3 align-items-center mb-2">
+                            <div>
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     width="15"
+                                     height="15"
+                                     fill="currentColor"
+                                     class="text-muted"
+                                     viewBox="0 0 16 16">
+                                    <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"></path>
+                                    <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"></path>
+                                </svg>
+                            </div>
+
+
+                            <span>
+								{{ call.call_working|replace(
+                                    {
+                                        ' Пн': '<br>Пн',
+                                        ' Вт': '<br>Вт',
+                                        ' Ср': '<br>Ср',
+                                        ' Чт': '<br>Чт',
+                                        ' Пт': '<br>Пт',
+                                        ' Сб': '<br>Сб',
+                                        ' Вс': '<br>Вс',
+
+                                    })|raw }}
+							</span>
+                        </div>
+
+
+                        <div class="d-flex gap-3 mb-2 align-items-center">
+                            <div>
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     width="15"
+                                     height="15"
+                                     fill="currentColor"
+                                     class="text-muted"
+                                     viewBox="0 0 16 16">
+                                    <path d="M15.854.146a.5.5 0 0 1 0 .708L11.707 5H14.5a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5v-4a.5.5 0 0 1 1 0v2.793L15.146.146a.5.5 0 0 1 .708 0zm-12.2 1.182a.678.678 0 0 0-1.015-.063L1.605 2.3c-.483.484-.661 1.169-.45 1.77a17.568 17.568 0 0 0 4.168 6.608 17.569 17.569 0 0 0 6.608 4.168c.601.211 1.286.033 1.77-.45l1.034-1.034a.678.678 0 0 0-.063-1.015l-2.307-1.794a.678.678 0 0 0-.58-.122l-2.19.547a1.745 1.745 0 0 1-1.657-.459L5.482 8.062a1.745 1.745 0 0 1-.46-1.657l.548-2.19a.678.678 0 0 0-.122-.58L3.654 1.328zM1.884.511a1.745 1.745 0 0 1 2.612.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z"></path>
+                                </svg>
+                            </div>
+
+                            <div>
+
+                                {% set phones = call.calls_phone|json_decode %}
+
+                                {% for phone in phones %}
+                                    <div class='d-flex gap-3'>
+                                        {% if phone.call_phone_name %}
+                                            <span class='text-muted'>{{ phone.call_phone_name }}</span>
+                                        {% endif %}
+
+                                        <span>{{ phone.call_phone_number }}</span>
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                        </div>
+
+
+                        <div class="d-flex gap-3 align-items-center mb-2">
+                            <div>
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     width="16"
+                                     height="16"
+                                     fill="currentColor"
+                                     class="text-muted"
+                                     viewBox="0 0 16 16">
+                                    <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2Zm13 2.383-4.708 2.825L15 11.105V5.383Zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741ZM1 11.105l4.708-2.897L1 5.383v5.722Z"></path>
+                                </svg>
+                            </div>
+                            <span>{{ call.call_email }}</span>
+                        </div>
+
+                    </li>
+
+
+                {% else %}
+
+                    <div class="alert alert-warning rounded-4" role="alert">
+                        <div class="d-flex align-items-baseline gap-3">
+                            <div>
+                                <div class="icon rounded-circle bg-contain p-2 bg-primary text-white small"
+                                     style="width: 10px; height: 10px;"><span class="small">!</span></div>
+                            </div>
+                            <div class="small lh-1">
+                                К сожалению в Вашем регионе нет контактныйх центров или пунктов выдачи товаров
+                            </div>
+                        </div>
+                    </div>
+
+                {% endfor %}
+
+
+            </ul>
+
+
+        </div>
+
+
+    </section>
+
+
+</main>
+
+
+
+

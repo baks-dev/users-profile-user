@@ -1,0 +1,151 @@
+{# ---- ШАБЛОН ------------------------------------------------------------ #}
+{% extends Template('/user/base.html.twig') %}
+
+{% block title %}Контакты{% endblock %}
+
+{# ---- CSS ------------------------------------------------------------ #}
+ {% block stylesheets %}
+
+     {% if MAPS_YANDEX_API is defined %}
+         <link rel="preconnect" href="https://api-maps.yandex.ru">
+         <link rel="preconnect" href="https://yastatic.net">
+         <link rel="preload"
+               href="https://api-maps.yandex.ru/2.1/?apikey={{ MAPS_YANDEX_API }}&lang={{ app.request.locale|lower }}">
+     {% endif %}
+
+ {% endblock %}
+
+
+{# ---- КОНТЕНТ-БЛОК ------------------------------------------------------------ #}
+{% block content %}
+    {{ include(_self|replace({ "template.html.twig" : (baks_settings.device ?: 'pc') ~ "/content.html.twig" })) }}
+{% endblock %}
+
+{# @var current \BaksDev\Users\Profile\UserProfile\Repository\UserProfileByRegion\UserProfileByRegionResult #}
+
+{% block javascript %}
+
+{% if MAPS_YANDEX_API is defined %}
+
+	<script nonce='{{ csp_nonce() }}' class='lazy' data-src="https://api-maps.yandex.ru/2.1/?apikey={{ MAPS_YANDEX_API }}&lang={{ app.request.locale|lower }}" ></script>
+
+	<script nonce='{{ csp_nonce() }}' type="text/javascript">
+
+		 document.getElementById("region_filter_form_region")?.addEventListener("change", () => {
+			  let $form = document.forms.namedItem("region_filter_form");
+			  if ($form) { $form.submit(); }
+		  });
+
+	 </script>
+
+
+
+	 {% if current %}
+
+		 <script nonce='{{ csp_nonce() }}' type="text/javascript">
+
+				let myMap = null;
+
+				 /** Инициируем карту */
+				 setTimeout(function initYmaps() {
+
+					if (typeof ymaps == "object") {
+
+						ymaps.ready(init);
+
+						function init(){
+
+
+							myMap = new ymaps.Map("map", {
+							center: [{{ current.latitude }}, {{ current.longitude }}],
+							controls: ["routeButtonControl", "fullscreenControl"],
+							zoom: 16,
+						});
+
+							let control = myMap.controls.get("routeButtonControl");
+							control.routePanel.state.set("to", '{{ current.location }}');
+
+							/** Метка на карте */
+						   myMap.geoObjects.add(new ymaps.Placemark([{{ current.latitude }}, {{ current.longitude }}], {
+								balloonContent: '{{ current.location }}',
+							}, {
+								preset: "islands",
+								iconColor: "#4684D0",
+							}));
+
+
+								/**
+								 * Создаем мультимаршрут.
+								 * Первым аргументом передаем модель либо объект описания модели.
+								 * Вторым аргументом передаем опции отображения мультимаршрута.
+								 * @see https://api.yandex.ru/maps/doc/jsapi/2.1/ref/reference/multiRouter.MultiRoute.xml
+								 * @see https://api.yandex.ru/maps/doc/jsapi/2.1/ref/reference/multiRouter.MultiRouteModel.xml
+								 */
+								// var multiRoute = new ymaps.multiRouter.MultiRoute({
+								// 	// Описание опорных точек мультимаршрута.
+								// 	referencePoints: [
+								// 		[55.930302,37.753937], /* A - Московская область, Мытищи, Олимпийский проспект, 42А */
+								// 		[55.672057,37.278081], /* B - Московская область, Одинцово, Советская улица, 1*/
+								// 		/* "Зубовский бульвар, 5с1", /* A */
+								// 		/* "Москва, ул. Мясницкая"  /* B */
+								// 	],
+								// 	// Параметры маршрутизации.
+								// 	params: {
+								// 		// Ограничение на максимальное количество маршрутов, возвращаемое маршрутизатором.
+								// 		results: 1
+								// 	}
+								// }, {
+								// 	// Автоматически устанавливать границы карты так, чтобы маршрут был виден целиком.
+								// 	boundsAutoApply: true
+								// });
+								//
+								//
+								// // Добавляем мультимаршрут на карту.
+								// myMap.geoObjects.add(multiRoute);
+
+						}
+
+						return;
+					}
+
+					setTimeout(initYmaps, 100);
+
+				}, 500);
+
+
+				 document.querySelectorAll(".map-change").forEach((el) => el.addEventListener("click", (e) => {
+
+					if (myMap)
+						{
+							myMap.setCenter(
+									[el.dataset.latitude, el.dataset.longitude],
+									16,
+								);
+
+							/** Метка на карте */
+						   myMap.geoObjects.add(new ymaps.Placemark([el.dataset.latitude, el.dataset.longitude], {
+								balloonContent: el.dataset.address,
+							}, {
+								preset: "islands",
+								iconColor: "#4684D0",
+							}));
+
+						   let control = myMap.controls.get("routeButtonControl");
+							control.routePanel.state.set("to", el.dataset.address);
+
+
+
+					  /* Плавная прокрутка к элементу */
+						document.getElementById("map").scrollIntoView({block: "center", inline: "center", behavior: "smooth"});
+
+						}
+
+				}));
+
+
+		</script>
+	 {% endif %}
+ {% endif %}
+ 
+ {% endblock %}
+
