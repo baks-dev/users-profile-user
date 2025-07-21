@@ -26,6 +26,12 @@ declare(strict_types=1);
 namespace BaksDev\Users\Profile\UserProfile\Repository\UserProfileByRegion;
 
 use BaksDev\Core\Doctrine\DBALQueryBuilder;
+use BaksDev\Reference\Region\Entity\Region;
+use BaksDev\Reference\Region\Entity\Trans\RegionTrans;
+use BaksDev\Reference\Region\Type\Id\RegionType;
+use BaksDev\Reference\Region\Type\Id\RegionUid;
+use BaksDev\Reference\Region\Type\Regions\Russia\Crimea;
+use BaksDev\Reference\Region\Type\Regions\Russia\Moscow;
 use BaksDev\Users\Profile\TypeProfile\Entity\Section\Fields\Trans\TypeProfileSectionFieldTrans;
 use BaksDev\Users\Profile\TypeProfile\Entity\Section\Fields\TypeProfileSectionField;
 use BaksDev\Users\Profile\UserProfile\Entity\Event\Info\UserProfileInfo;
@@ -33,6 +39,7 @@ use BaksDev\Users\Profile\UserProfile\Entity\Event\Orders\UserProfileOrders;
 use BaksDev\Users\Profile\UserProfile\Entity\Event\Personal\UserProfilePersonal;
 use BaksDev\Users\Profile\UserProfile\Entity\Event\Region\UserProfileRegion;
 use BaksDev\Users\Profile\UserProfile\Entity\Event\Shop\UserProfileShop;
+use BaksDev\Users\Profile\UserProfile\Entity\Event\UserProfileEvent;
 use BaksDev\Users\Profile\UserProfile\Entity\Event\Value\UserProfileValue;
 use BaksDev\Users\Profile\UserProfile\Entity\Event\Warehouse\UserProfileWarehouse;
 use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
@@ -45,7 +52,8 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 final readonly class UserProfileByRegionRepository implements UserProfileByRegionInterface
 {
     public function __construct(
-        private DBALQueryBuilder $DBALQueryBuilder
+        private DBALQueryBuilder $DBALQueryBuilder,
+        #[Autowire(env: 'PROJECT_REGION')] private ?string $region = null,
     ) {}
 
     /**
@@ -74,6 +82,14 @@ final readonly class UserProfileByRegionRepository implements UserProfileByRegio
                 'status',
                 UserProfileStatusActive::class,
                 UserProfileStatus::TYPE,
+            );
+
+        $dbal
+            ->leftJoin(
+                'profile',
+                UserProfileEvent::class,
+                'event',
+                'event.id = profile.event',
             );
 
 
@@ -111,6 +127,25 @@ final readonly class UserProfileByRegionRepository implements UserProfileByRegio
                 UserProfileWarehouse::class,
                 'profile_warehouse',
                 'profile_warehouse.event = profile.event',
+            );
+
+        /** Регион */
+
+        $dbal
+            ->leftJoin(
+                'profile_region',
+                Region::class,
+                'region',
+                'region.id = profile_region.value',
+            );
+
+        $dbal
+            ->addSelect('region_trans.name AS region_name')
+            ->leftJoin(
+                'region',
+                RegionTrans::class,
+                'region_trans',
+                'region_trans.event = region.event',
             );
 
         /** Информация о профиле пользователя */
@@ -172,8 +207,24 @@ final readonly class UserProfileByRegionRepository implements UserProfileByRegio
         );
 
 
-        $dbal->allGroupByExclude();
+        if(false === is_null($this->region))
+        {
+            $dbal
+                ->orderBy('CASE WHEN profile_region.value = :region THEN 0 ELSE 1 END')
+                ->setParameter(
+                    key: 'region',
+                    value: new RegionUid($this->region),
+                    type: RegionUid::TYPE,
+                );
+        }
 
+        $dbal->addOrderBy('profile_region.value');
+        $dbal->addOrderBy('event.sort');
+
+
+        // CASE WHEN region = 'EU' THEN 0 ELSE 1 END,
+        $dbal->addGroupBy('event.sort');
+        $dbal->allGroupByExclude();
 
         return $dbal
             ->enableCache('users-profile-user', '1 day')

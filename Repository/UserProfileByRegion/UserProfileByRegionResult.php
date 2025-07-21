@@ -37,6 +37,7 @@ final class UserProfileByRegionResult
     public function __construct(
         private string $id, //" => "0197f935-a3c8-701a-9dfb-5e6f951e4c6e"
         private string $region, //" => "201042a6-c35d-7bc4-9cb9-ef8bc1c8711e"
+        private string $region_name,
         private ?bool $shop, //" => null
         private ?bool $orders, //" => null
         private ?bool $warehouse, //" => null
@@ -100,5 +101,10 @@ final class UserProfileByRegionResult
         }
 
         return json_decode($this->profile_value, false, 512, JSON_THROW_ON_ERROR);
+    }
+
+    public function getRegionName(): string
+    {
+        return $this->region_name;
     }
 }

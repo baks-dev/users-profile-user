@@ -1,25 +1,7 @@
 {# @var contact \BaksDev\Users\Profile\UserProfile\Repository\UserProfileByRegion\UserProfileByRegionResult #}
 
-<section id='contact'>
+<section id='contact' class="mb-5" style="min-width: 400px; max-width: 400px;">
 
-
-    <div class='d-flex gap-3 align-items-center mb-3'>
-
-
-        <h1 class="text-uppercase h5 fw-bolder lh-1">Региональные представительства</h1>
-
-        {# <div class='w-25'>
-            {{ form_start(form) }}
-
-            {{ form_widget(form.region, { attr: {
-                'data-select' : 'select2'
-            } }) }}
-            {{ form_end(form) }}
-        </div> #}
-    </div>
-
-    <p>Наша компания имеет широкую сеть региональных представительств и дилеров. Вы можете обратиться в ближайший к
-        Вам офис для получения дополнительных консультаций. </p>
 
     <div class='mt-3'>
 
@@ -50,14 +32,13 @@
 
         {# {{ dump(calls) }} #}
 
-        <div class="row row-cols-4 g-4">
+        <div class="row">
 
 
             <div class="col small d-flex flex-column gap-1">
 
-
-                <div class="d-flex gap-3 align-items-center {# {{ contact.call_description ?:'mb-1' }} #}">
-                    <div class='mb-2'>
+                <div class="d-flex gap-3 align-items-center mb-1 text-primary">
+                    <div>
                         <svg xmlns="http://www.w3.org/2000/svg"
                              width="15"
                              height="15"
@@ -68,17 +49,19 @@
                             <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"></path>
                         </svg>
                     </div>
-                    <h2 class='h6'>Москва и московская обл.</h2>
+
+                    <div class='map-change pointer'
+                         data-address='{{ contact.location }}'
+                         data-latitude='{{ contact.latitude }}'
+                         data-longitude='{{ contact.longitude }}'
+                    >
+                        {{ contact.location }}
+                    </div>
+
                 </div>
 
-                {# {% if contact.call_description %}
-                        <div class="mb-1">
-                            <span class='text-muted'>{{ contact.call_description }}</span>
-                        </div>
-                    {% endif %} #}
 
-
-                <div class="d-flex gap-3 align-items-center mb-1 text-primary">
+                <div class="d-flex gap-3 align-items-center mb-1 text-muted">
                     <div>
                         <svg xmlns="http://www.w3.org/2000/svg"
                              width="15"
@@ -90,14 +73,21 @@
                             <path d="M2 11h1v1H2v-1Zm2 0h1v1H4v-1Zm-2 2h1v1H2v-1Zm2 0h1v1H4v-1Zm4-4h1v1H8V9Zm2 0h1v1h-1V9Zm-2 2h1v1H8v-1Zm2 0h1v1h-1v-1Zm2-2h1v1h-1V9Zm0 2h1v1h-1v-1ZM8 7h1v1H8V7Zm2 0h1v1h-1V7Zm2 0h1v1h-1V7ZM8 5h1v1H8V5Zm2 0h1v1h-1V5Zm2 0h1v1h-1V5Zm0-2h1v1h-1V3Z"/>
                         </svg>
                     </div>
+                    <span>
+                        Оффис
 
-                    <div class='map-change pointer'
-                         data-address='{{ contact.location }}'
-                         data-latitude='{{ contact.latitude }}'
-                         data-longitude='{{ contact.longitude }}'
-                    >
-                        {{ contact.location }}
-                    </div>
+                        {% if contact.shop %}
+                            , Магазин
+                        {% endif %}
+
+                        {% if contact.orders %}
+                            , ПВЗ
+                        {% endif %}
+
+                        {% if contact.warehouse %}
+                            , Склад
+                        {% endif %}
+                    </span>
 
                 </div>
 
@@ -149,7 +139,6 @@
 
                         {% for phone in phones %}
 
-
                             <div class='d-flex gap-3'>
                                 {% if phone.name %}
                                     <span class='text-muted'>{{ phone.name }}</span>
@@ -190,15 +179,10 @@
 
                 </div>
 
-
             </div>
 
-
         </div>
-
 
     </div>
 
 </section>
-
-<hr class="mt-5 rounded-circle border-0" style="height: 20px; box-shadow: 0 20px 20px -6px #000;">
