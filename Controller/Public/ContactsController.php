@@ -39,7 +39,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[AsController]
 final class ContactsController extends AbstractController
 {
-    #[Route('/contacts/{page<\d+>}', name: 'public.contacts', methods: ['GET', 'POST'])]
+    #[Route('/contact/{page<\d+>}', name: 'public.contacts', methods: ['GET', 'POST'])]
     public function index(
         Request $request,
         UserProfileByRegionInterface $UserProfileByRegion,
