@@ -29,16 +29,37 @@ use App\Kernel;
 use BaksDev\Core\Doctrine\DBALQueryBuilder;
 use BaksDev\Users\Profile\TypeProfile\Entity\Section\Fields\Trans\TypeProfileSectionFieldTrans;
 use BaksDev\Users\Profile\TypeProfile\Entity\Section\Fields\TypeProfileSectionField;
+use BaksDev\Users\Profile\UserProfile\Entity\Event\Personal\UserProfilePersonal;
 use BaksDev\Users\Profile\UserProfile\Entity\Event\Value\UserProfileValue;
 use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
+use BaksDev\Users\Profile\UserProfile\Repository\UserProfileTokenStorage\UserProfileTokenStorageInterface;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 
 final class UserProfileByIdRepository implements UserProfileByIdInterface
 {
 
-    public function __construct(private readonly DBALQueryBuilder $DBALQueryBuilder) {}
+    private UserProfileUid|false $profile = false;
 
-    public function fetchUserProfileAssociative(UserProfileUid $profile): ?array
+    public function __construct(
+        private readonly DBALQueryBuilder $DBALQueryBuilder,
+        private readonly UserProfileTokenStorageInterface $UserProfileTokenStorage,
+    ) {}
+
+
+    public function profile(UserProfile|UserProfileUid $profile): self
+    {
+        if($profile instanceof UserProfile)
+        {
+            $profile = $profile->getId();
+        }
+
+        $this->profile = $profile;
+
+        return $this;
+    }
+
+    /** Метод возвращает информацию о профиле пользователя. */
+    public function find(): UserProfileResult|false
     {
         $dbal = $this->DBALQueryBuilder
             ->createQueryBuilder(self::class)
@@ -46,39 +67,69 @@ final class UserProfileByIdRepository implements UserProfileByIdInterface
 
         //$qb->select('event.sort');
         $dbal
-            ->from(UserProfile::class, 'main')
-            ->where('main.id = :profile')
-            ->setParameter('profile', $profile, UserProfileUid::TYPE);
+            ->from(UserProfile::class, 'profile')
+            ->where('profile.id = :profile')
+            ->setParameter(
+                key: 'profile',
+                value: ($this->profile instanceof UserProfileUid) ? $this->profile : $this->UserProfileTokenStorage->getProfile(),
+                type: UserProfileUid::TYPE,
+            );
+
+
+        /** Информация о профиле пользователя */
+
+        $dbal
+            ->addSelect('users_profile_personal.location')
+            ->addSelect('users_profile_personal.latitude')
+            ->addSelect('users_profile_personal.longitude')
+            ->leftJoin(
+                'profile',
+                UserProfilePersonal::class,
+                'users_profile_personal',
+                'users_profile_personal.event = profile.event',
+            );
 
 
         $dbal
-            ->addSelect('value.value AS profile_value')
             ->leftJoin(
-                'main',
+                'profile',
                 UserProfileValue::class,
-                'value',
-                'value.event = main.event'
+                'profile_value',
+                'profile_value.event = profile.event',
             );
 
         $dbal
-            ->addSelect('type.type AS profile_type')
             ->join(
-                'value',
+                'profile_value',
                 TypeProfileSectionField::class,
-                'type',
-                'type.id = value.field AND type.card = true'
+                'profile_field',
+                'profile_field.id = profile_value.field AND profile_field.card = true',
             );
 
         $dbal
-            ->addSelect('type_trans.name')
             ->leftJoin(
-                'type',
+                'profile_field',
                 TypeProfileSectionFieldTrans::class,
                 'type_trans',
-                'type_trans.field = type.id AND type_trans.local = :local'
+                'type_trans.field = profile_field.id AND type_trans.local = :local',
             );
 
 
-        return $dbal->fetchAllAssociative();
+        $dbal->addSelect(
+            "JSON_AGG ( DISTINCT
+
+                JSONB_BUILD_OBJECT
+                (
+                    'value', profile_value.value,
+                    'type', profile_field.type,
+                    'name', type_trans.name
+                )
+
+            ) AS profile_value",
+        );
+
+        $dbal->allGroupByExclude();
+
+        return $dbal->fetchHydrate(UserProfileResult::class);
     }
 }
