@@ -27,6 +27,7 @@ namespace BaksDev\Users\Profile\UserProfile\Repository\UserProfileById;
 
 use BaksDev\Core\Type\Gps\GpsLatitude;
 use BaksDev\Core\Type\Gps\GpsLongitude;
+use BaksDev\Field\Pack\Contact\Type\ContactField;
 use BaksDev\Field\Pack\Organization\Type\OrganizationField;
 use BaksDev\Field\Pack\Phone\Type\PhoneField;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -84,6 +85,25 @@ final class UserProfileResult
     public function isOrganization(): bool
     {
         return true;
+    }
+
+    /**
+     * @return object{
+     *    name: string,
+     *    type: string,
+     *    value: string
+     *  }|false
+     */
+    public function getContactName(): object|false
+    {
+        if(empty($this->getProfileValue()))
+        {
+            return false;
+        }
+
+        return array_find($this->getProfileValue(), function($element) {
+            return $element->type === ContactField::TYPE;
+        }) ?: false;
     }
 
     /**
