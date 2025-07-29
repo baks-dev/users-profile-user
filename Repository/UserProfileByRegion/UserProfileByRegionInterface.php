@@ -27,6 +27,8 @@ use Generator;
 
 interface UserProfileByRegionInterface
 {
+    public function onlyCurrentRegion(): self;
+
     /**
      * Метод возвращает все профили пользователей с указанной региональностью
      *

@@ -49,12 +49,23 @@ use Generator;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 
-final readonly class UserProfileByRegionRepository implements UserProfileByRegionInterface
+final  class UserProfileByRegionRepository implements UserProfileByRegionInterface
 {
+    /**
+     * @var true
+     */
+    private bool $onlyCurrentRegion = false;
+
     public function __construct(
-        private DBALQueryBuilder $DBALQueryBuilder,
-        #[Autowire(env: 'PROJECT_REGION')] private ?string $region = null,
+        readonly private DBALQueryBuilder $DBALQueryBuilder,
+        #[Autowire(env: 'PROJECT_REGION')] private readonly ?string $region = null,
     ) {}
+
+    public function onlyCurrentRegion(): self
+    {
+        $this->onlyCurrentRegion = true;
+        return $this;
+    }
 
     /**
      * Метод возвращает все профили пользователей с указанной региональностью
@@ -209,8 +220,16 @@ final readonly class UserProfileByRegionRepository implements UserProfileByRegio
 
         if(false === is_null($this->region))
         {
+            if(false === $this->onlyCurrentRegion)
+            {
+                $dbal->orderBy('CASE WHEN profile_region.value = :region THEN 0 ELSE 1 END');
+            }
+            else
+            {
+                $dbal->where('profile_region.value = :region');
+            }
+
             $dbal
-                ->orderBy('CASE WHEN profile_region.value = :region THEN 0 ELSE 1 END')
                 ->setParameter(
                     key: 'region',
                     value: new RegionUid($this->region),
@@ -220,7 +239,6 @@ final readonly class UserProfileByRegionRepository implements UserProfileByRegio
 
         $dbal->addOrderBy('profile_region.value');
         $dbal->addOrderBy('event.sort');
-
 
         // CASE WHEN region = 'EU' THEN 0 ELSE 1 END,
         $dbal->addGroupBy('event.sort');
