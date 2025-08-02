@@ -28,6 +28,7 @@ namespace BaksDev\Users\Profile\UserProfile\Repository\UserProfileTokenStorage;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use BaksDev\Users\User\Repository\UserTokenStorage\UserTokenStorageInterface;
 use BaksDev\Users\User\Type\Id\UserUid;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 final class UserProfileTokenStorage implements UserProfileTokenStorageInterface
@@ -36,13 +37,21 @@ final class UserProfileTokenStorage implements UserProfileTokenStorageInterface
 
     private UserProfileUid|false|null $current = null;
 
-    public function __construct(private readonly UserTokenStorageInterface $userTokenStorage) {}
+    public function __construct(
+        private readonly UserTokenStorageInterface $userTokenStorage,
+        #[Autowire(env: 'APP_ENV')] private readonly string $env = 'test',
+    ) {}
 
     /**
      * Метод возвращает идентификатор профиля текущего пользователя либо идентификатор олицетворенного
      */
     public function getProfile(): UserProfileUid|false
     {
+        if($this->env === 'test')
+        {
+            return new UserProfileUid(UserProfileUid::TEST);
+        }
+
         if(is_null($this->profile))
         {
             $user = $this->userTokenStorage->getUserInterface();
@@ -62,6 +71,11 @@ final class UserProfileTokenStorage implements UserProfileTokenStorageInterface
      */
     public function getProfileCurrent(): UserProfileUid|false
     {
+        if($this->env === 'test')
+        {
+            return new UserProfileUid(UserProfileUid::TEST);
+        }
+
         if(is_null($this->current))
         {
             $user = $this->userTokenStorage->getCurrentUserInterface();
