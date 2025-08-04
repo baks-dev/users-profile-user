@@ -77,10 +77,10 @@ final class EditController extends AbstractController
 
             $this->addFlash
             (
-                'user.page.edit',
-                $handle instanceof UserProfile ? 'user.success.edit' : 'user.danger.edit',
-                'user.user.profile',
-                $handle
+                type: 'page.edit',
+                message: $handle instanceof UserProfile ? 'user.success.edit' : 'user.danger.edit',
+                domain: 'user.user.profile',
+                arguments: $handle,
             );
 
             return $this->redirectToRoute('users-profile-user:user.index');

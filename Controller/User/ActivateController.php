@@ -119,13 +119,17 @@ final class ActivateController extends AbstractController
                 $impersonationToken = new  UsernamePasswordToken(
                     $CurrentUsr,
                     "user",
-                    $CurrentUsr->getRoles()
+                    $CurrentUsr->getRoles(),
                 );
 
                 $tokenStorage->setToken($impersonationToken);
             }
 
-            $this->addFlash('success', 'user.success.activate', 'user.user.profile');
+            $this->addFlash(
+                type: 'success',
+                message: 'success.activate',
+                domain: 'user.profile',
+            );
         }
 
         return $this->redirectToReferer();

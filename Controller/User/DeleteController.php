@@ -92,10 +92,10 @@ final class DeleteController extends AbstractController
 
             $this->addFlash
             (
-                'user.page.delete',
-                $handle instanceof UserProfile ? 'user.success.delete' : 'user.danger.delete',
-                'user.user.profile',
-                $handle
+                type: 'page.delete',
+                message: $handle instanceof UserProfile ? 'user.success.delete' : 'user.danger.delete',
+                domain: 'user.user.profile',
+                arguments: $handle,
             );
 
             return $this->redirectToRoute('users-profile-user:user.index');

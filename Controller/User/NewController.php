@@ -108,10 +108,10 @@ final class NewController extends AbstractController
 
             $this->addFlash
             (
-                'user.page.new',
-                $handle instanceof UserProfile ? 'user.success.new' : 'user.danger.new',
-                'user.user.profile',
-                $handle
+                type: 'user.page.new',
+                message: $handle instanceof UserProfile ? 'user.success.new' : 'user.danger.new',
+                domain: 'user.user.profile',
+                arguments: $handle,
             );
 
             return $this->redirectToRoute('users-profile-user:user.index');
