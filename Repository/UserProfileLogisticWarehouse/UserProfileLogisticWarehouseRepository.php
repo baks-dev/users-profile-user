@@ -38,7 +38,7 @@ final class UserProfileLogisticWarehouseRepository implements UserProfileLogisti
 
     public function __construct(private readonly DBALQueryBuilder $DBALQueryBuilder) {}
 
-    public function profile(UserProfileUid|UserProfile $profile): self
+    public function forProfile(UserProfileUid|UserProfile $profile): self
     {
 
         if($profile instanceof UserProfile)
@@ -75,8 +75,8 @@ final class UserProfileLogisticWarehouseRepository implements UserProfileLogisti
         $dbal->join(
             'profile',
             UserProfileWarehouse::class,
-            'warehouse',
-            'warehouse.profile = profile.id AND warehouse.value IS TRUE',
+            'profile_warehouse',
+            'profile_warehouse.event = profile.event AND profile_warehouse.value IS TRUE',
         );
 
         return $dbal->enableCache('users-profile-user', '1 day')->fetchExist();

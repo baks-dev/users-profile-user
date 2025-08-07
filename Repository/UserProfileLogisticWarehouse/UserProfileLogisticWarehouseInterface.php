@@ -23,8 +23,13 @@
 
 namespace BaksDev\Users\Profile\UserProfile\Repository\UserProfileLogisticWarehouse;
 
+use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
+use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
+
 interface UserProfileLogisticWarehouseInterface
 {
+    public function forProfile(UserProfileUid|UserProfile $profile): self;
+
     /** Метод возвращает true, если профиль является складом */
     public function isLogisticWarehouse(): bool;
 }
