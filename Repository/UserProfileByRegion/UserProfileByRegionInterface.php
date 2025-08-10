@@ -27,7 +27,11 @@ use Generator;
 
 interface UserProfileByRegionInterface
 {
+    /** Только список указанного в .env регион проекта PROJECT_REGION */
     public function onlyCurrentRegion(): self;
+
+    /** Только с флагом ПВЗ */
+    public function onlyOrders(): self;
 
     /**
      * Метод возвращает все профили пользователей с указанной региональностью

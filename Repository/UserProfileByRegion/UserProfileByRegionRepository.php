@@ -51,19 +51,27 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 final  class UserProfileByRegionRepository implements UserProfileByRegionInterface
 {
-    /**
-     * @var true
-     */
+
     private bool $onlyCurrentRegion = false;
+
+    private bool $onlyOrders;
 
     public function __construct(
         readonly private DBALQueryBuilder $DBALQueryBuilder,
         #[Autowire(env: 'PROJECT_REGION')] private readonly ?string $region = null,
     ) {}
 
+    /** Только список указанного в .env регион проекта PROJECT_REGION */
     public function onlyCurrentRegion(): self
     {
         $this->onlyCurrentRegion = true;
+        return $this;
+    }
+
+    /** Только с флагом ПВЗ */
+    public function onlyOrders(): self
+    {
+        $this->onlyOrders = true;
         return $this;
     }
 
@@ -124,7 +132,7 @@ final  class UserProfileByRegionRepository implements UserProfileByRegionInterfa
 
         $dbal
             ->addSelect('profile_orders.value AS orders')
-            ->leftJoin(
+            ->{(true === $this->onlyOrders ? 'join' : 'leftJoin')}(
                 'profile',
                 UserProfileOrders::class,
                 'profile_orders',
