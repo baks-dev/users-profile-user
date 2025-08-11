@@ -54,7 +54,7 @@ final  class UserProfileByRegionRepository implements UserProfileByRegionInterfa
 
     private bool $onlyCurrentRegion = false;
 
-    private bool $onlyOrders;
+    private bool $onlyOrders = false;
 
     public function __construct(
         readonly private DBALQueryBuilder $DBALQueryBuilder,
