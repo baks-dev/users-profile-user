@@ -28,6 +28,7 @@ use BaksDev\Users\Profile\UserProfile\Entity\Event\Avatar\UserProfileAvatarInter
 use BaksDev\Users\Profile\UserProfile\Entity\Event\UserProfileEventInterface;
 use BaksDev\Users\Profile\UserProfile\Type\Event\UserProfileEventUid;
 use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Avatar\AvatarDTO;
+use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Delivery\UserProfileDeliveryDTO;
 use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Discount\NewEditUserProfileDiscountDTO;
 use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Info\InfoDTO;
 use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Orders\NewEditUserProfileOrdersDTO;
@@ -87,6 +88,9 @@ final class UserProfileDTO implements UserProfileEventInterface
     /** Регион пользователя */
     private UserProfileRegionDTO $region;
 
+    /** Количество дней предзаказа */
+    private UserProfileDeliveryDTO $delivery;
+
 
     public function __construct()
     {
@@ -100,6 +104,7 @@ final class UserProfileDTO implements UserProfileEventInterface
         $this->warehouse = new NewEditUserProfileWarehouseDTO();
         $this->discount = new NewEditUserProfileDiscountDTO();
         $this->region = new UserProfileRegionDTO();
+        $this->delivery = new UserProfileDeliveryDTO();
     }
 
 
@@ -241,5 +246,10 @@ final class UserProfileDTO implements UserProfileEventInterface
     public function getRegion(): UserProfileRegionDTO
     {
         return $this->region;
+    }
+
+    public function getDelivery(): UserProfileDeliveryDTO
+    {
+        return $this->delivery;
     }
 }

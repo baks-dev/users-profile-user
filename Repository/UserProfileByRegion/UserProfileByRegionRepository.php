@@ -246,7 +246,7 @@ final  class UserProfileByRegionRepository implements UserProfileByRegionInterfa
         }
 
         $dbal->addOrderBy('profile_region.value');
-        $dbal->addOrderBy('event.sort');
+        $dbal->addOrderBy('event.sort', 'DESC');
 
         // CASE WHEN region = 'EU' THEN 0 ELSE 1 END,
         $dbal->addGroupBy('event.sort');

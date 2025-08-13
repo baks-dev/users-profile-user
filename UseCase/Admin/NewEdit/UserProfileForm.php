@@ -30,6 +30,7 @@ use BaksDev\Users\Profile\TypeProfile\Type\Id\Choice\Collection\TypeProfileInter
 use BaksDev\Users\Profile\TypeProfile\Type\Id\TypeProfileUid;
 use BaksDev\Users\Profile\UserProfile\Repository\FieldValueForm\FieldValueFormDTO;
 use BaksDev\Users\Profile\UserProfile\Repository\FieldValueForm\FieldValueFormInterface;
+use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Delivery\UserProfileDeliveryForm;
 use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Discount\NewEditUserProfileDiscountForm;
 use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Orders\NewEditUserProfileOrdersForm;
 use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Region\UserProfileRegionForm;
@@ -82,6 +83,9 @@ final class UserProfileForm extends AbstractType
 
         /** Регион пользователя */
         $builder->add('region', UserProfileRegionForm::class);
+
+        /** Количество дней предзаказа */
+        $builder->add('delivery', UserProfileDeliveryForm::class);
 
         $types = $this->TypeProfileChoice->getActiveTypeProfileChoice();
 
@@ -207,7 +211,6 @@ final class UserProfileForm extends AbstractType
                 }
 
             });
-
 
 
         /* Сохранить ******************************************************/
