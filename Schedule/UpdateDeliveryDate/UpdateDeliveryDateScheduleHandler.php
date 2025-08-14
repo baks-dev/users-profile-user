@@ -31,13 +31,14 @@ use BaksDev\Ozon\Orders\Messenger\Schedules\CancelOrders\CancelOzonOrdersSchedul
 use BaksDev\Ozon\Orders\Schedule\CancelOrders\CancelOrdersScheduleMessage;
 use BaksDev\Ozon\Repository\AllProfileToken\AllProfileOzonTokenInterface;
 use BaksDev\Users\Profile\UserProfile\Messenger\Scheduler\UpdateDeliveryDateMessage;
+use BaksDev\Users\Profile\UserProfile\Repository\UserProfileByRegion\UserProfileByRegionInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
 final class UpdateDeliveryDateScheduleHandler
 {
     public function __construct(
-        private AllProfileOzonTokenInterface $allProfileToken,
+        private UserProfileByRegionInterface $allProfileToken,
         private MessageDispatchInterface $messageDispatch,
     ) {}
 
@@ -45,19 +46,21 @@ final class UpdateDeliveryDateScheduleHandler
     {
         /** Получаем активные токены авторизации профилей */
         $profiles = $this->allProfileToken
-            ->onlyActiveToken()
+            ->onlyCurrentRegion()
             ->findAll();
 
-        if($profiles->valid())
+        if(false === $profiles || false === $profiles->valid())
         {
-            foreach($profiles as $profile)
-            {
-                $this->messageDispatch->dispatch(
-                    message: new UpdateDeliveryDateMessage($profile),
-                    stamps: [new MessageDelay('15 seconds')],
-                    transport: (string) $profile,
-                );
-            }
+            return;
+        }
+
+        foreach($profiles as $UserProfileByRegionResult)
+        {
+            $this->messageDispatch->dispatch(
+                message: new UpdateDeliveryDateMessage($UserProfileByRegionResult->getId()),
+                stamps: [new MessageDelay('15 seconds')],
+                transport: (string) $UserProfileByRegionResult->getId(),
+            );
         }
     }
 }
