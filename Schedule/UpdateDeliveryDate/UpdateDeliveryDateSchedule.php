@@ -38,7 +38,7 @@ final class UpdateDeliveryDateSchedule implements ScheduleInterface
      */
     public function getMessage(): object
     {
-        return new CancelOrdersScheduleMessage();
+        return new UpdateDeliveryDateScheduleMessage();
     }
 
     /**
