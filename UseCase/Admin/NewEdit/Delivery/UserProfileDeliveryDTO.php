@@ -33,7 +33,7 @@ final class UserProfileDeliveryDTO implements UserProfileDeliveryInterface
 {
     /** Значение свойства */
     #[Assert\NotBlank]
-    private ?int $day = 1;
+    private ?int $day = null;
 
     public function getDay(): ?int
     {

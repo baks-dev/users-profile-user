@@ -64,6 +64,7 @@ class UserProfileDelivery extends EntityEvent
 
     public function __construct(UserProfileEvent $event)
     {
+        $this->value = new DateTimeImmutable();
         $this->event = $event;
     }
 
@@ -113,6 +114,11 @@ class UserProfileDelivery extends EntityEvent
     {
         if($dto instanceof UserProfileDeliveryInterface)
         {
+            if(method_exists($dto, 'getDay') && empty($dto->getDay()))
+            {
+                return false;
+            }
+
             return parent::setEntity($dto);
         }
 
