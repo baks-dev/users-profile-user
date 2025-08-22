@@ -43,7 +43,7 @@
 
         <div class="w-100">
 
-        <div class="d-flex gap-2 align-items-center mb-2">
+            <div class="d-flex gap-2 align-items-center mb-2">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                      class="text-muted" viewBox="0 0 16 16" role="tooltip" data-bs-toggle="tooltip"
                      data-bs-placement="bottom"
@@ -77,37 +77,41 @@
 
     <div class="w-100 d-flex justify-content-between gap-3 mb-3">
 
-
-        <label class="btn w-100 p-3 border-dotted rounded-3 {{ form.shop.value.vars.data ? 'active' : '' }}">
-            <div class="d-flex align-items-center">
-                <div class="flex-grow-1">
-					<span class="h5">
-						{{ form_widget(form.shop.value, { label: 'Магазин'|trans }) }}
-					</span>
+        <div class="w-100" data-buttons="true">
+            <label class="btn w-100 p-3 border-dotted rounded-3 {{ form.shop.value.vars.data ? 'active' : '' }}">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <span class="h5">
+                            {{ form_widget(form.shop.value, { label: 'Магазин'|trans }) }}
+                        </span>
+                    </div>
                 </div>
-            </div>
-        </label>
+            </label>
+        </div>
 
-
-        <label class="btn w-100 p-3 border-dotted rounded-3 {{ form.orders.value.vars.data ? 'active' : '' }}">
-            <div class="d-flex align-items-center">
-                <div class="flex-grow-1">
+        <div class="w-100" data-buttons="true">
+            <label class="btn w-100 p-3 border-dotted rounded-3 {{ form.orders.value.vars.data ? 'active' : '' }}">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1">
 					<span class="h5">
 						{{ form_widget(form.orders.value, { label: 'ПВЗ'|trans }) }}
 					</span>
+                    </div>
                 </div>
-            </div>
-        </label>
+            </label>
+        </div>
 
-        <label class="btn w-100 p-3 border-dotted rounded-3 {{ form.warehouse.value.vars.data ? 'active' : '' }}">
-            <div class="d-flex align-items-center">
-                <div class="flex-grow-1">
+        <div class="w-100" data-buttons="true">
+            <label class="btn w-100 p-3 border-dotted rounded-3 {{ form.warehouse.value.vars.data ? 'active' : '' }}">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1">
 					<span class="h5">
 						{{ form_widget(form.warehouse.value, { label: 'Склад'|trans }) }}
 					</span>
+                    </div>
                 </div>
-            </div>
-        </label>
+            </label>
+        </div>
 
     </div>
 
