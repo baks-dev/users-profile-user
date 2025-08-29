@@ -89,7 +89,6 @@ final class UserProfileByIdRepository implements UserProfileByIdInterface
                 'users_profile_personal.event = profile.event',
             );
 
-
         $dbal
             ->leftJoin(
                 'profile',

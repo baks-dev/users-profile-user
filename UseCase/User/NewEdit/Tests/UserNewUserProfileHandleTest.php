@@ -52,14 +52,20 @@ use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\DependencyInjection\Attribute\When;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use function PHPUnit\Framework\assertEquals;
+use PHPUnit\Framework\Attributes\Group;
 
 /**
  * @group users-profile-user
  * @group users-profile-user-usecase
  * @group orders-order-controller
+ *
+ * @group products-review-repository
  */
 #[When(env: 'test')]
+#[Group('users-profile-user')]
+#[Group('users-profile-user-usecase')]
+#[Group('users-profile-user-controller')]
+#[Group('products-review-repository')]
 final class UserNewUserProfileHandleTest extends KernelTestCase
 {
     public static function setUpBeforeClass(): void
