@@ -30,12 +30,11 @@ use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatusType;
 use BaksDev\Wildberries\Orders\Type\WildberriesStatus\Status\Collection\WildberriesStatusInterface;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
+use PHPUnit\Framework\Attributes\Group;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\DependencyInjection\Attribute\When;
 
-/**
- * @group users-profile-user
- */
+#[Group('users-profile-user')]
 #[When(env: 'test')]
 final class UserProfileStatusTest extends KernelTestCase
 {

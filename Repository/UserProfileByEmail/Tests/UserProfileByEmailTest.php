@@ -28,13 +28,11 @@ namespace BaksDev\Users\Profile\UserProfile\Repository\UserProfileByEmail\Tests;
 use BaksDev\Auth\Email\Type\Email\AccountEmail;
 use BaksDev\Users\Profile\UserProfile\Repository\UserProfileByEmail\UserProfileByEmailInterface;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
+use PHPUnit\Framework\Attributes\Group;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\DependencyInjection\Attribute\When;
 
-
-/**
- * @group users-profile-user
- */
+#[Group('users-profile-user')]
 #[When(env: 'test')]
 class UserProfileByEmailTest extends KernelTestCase
 {

@@ -45,6 +45,7 @@ use BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\Value\ValueDTO;
 use BaksDev\Users\User\Type\Id\UserUid;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
+use PHPUnit\Framework\Attributes\Group;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
@@ -52,20 +53,9 @@ use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\DependencyInjection\Attribute\When;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use PHPUnit\Framework\Attributes\Group;
 
-/**
- * @group users-profile-user
- * @group users-profile-user-usecase
- * @group orders-order-controller
- *
- * @group products-review-repository
- */
-#[When(env: 'test')]
 #[Group('users-profile-user')]
-#[Group('users-profile-user-usecase')]
-#[Group('users-profile-user-controller')]
-#[Group('products-review-repository')]
+#[When(env: 'test')]
 final class UserNewUserProfileHandleTest extends KernelTestCase
 {
     public static function setUpBeforeClass(): void

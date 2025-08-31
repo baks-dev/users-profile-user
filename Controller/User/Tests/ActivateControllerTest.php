@@ -1,17 +1,17 @@
 <?php
 /*
  *  Copyright 2025.  Baks.dev <admin@baks.dev>
- *
+ *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
  *  in the Software without restriction, including without limitation the rights
  *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  *  copies of the Software, and to permit persons to whom the Software is furnished
  *  to do so, subject to the following conditions:
- *
+ *  
  *  The above copyright notice and this permission notice shall be included in all
  *  copies or substantial portions of the Software.
- *
+ *  
  *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  *  FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL THE
@@ -24,31 +24,22 @@
 namespace BaksDev\Users\Profile\UserProfile\Controller\User\Tests;
 
 use BaksDev\Users\Profile\UserProfile\Type\Event\UserProfileEventUid;
+use BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\Tests\UserNewUserProfileHandleTest;
 use BaksDev\Users\User\Tests\TestUserAccount;
 use Doctrine\ORM\EntityManagerInterface;
+use PHPUnit\Framework\Attributes\DependsOnClass;
+use PHPUnit\Framework\Attributes\Group;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DependencyInjection\Attribute\When;
 
-/**
- * @group users-profile-user
- *
- * @depends BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\Tests\UserNewUserProfileHandleTest::class
- */
+#[Group('users-profile-user')]
 #[When(env: 'test')]
 final class ActivateControllerTest extends WebTestCase
 {
     private const string URL = '/user/profile/activate/%s';
-    //
-    //    private static ?UserProfileEventUid $identifier;
-    //
-    //    public static function setUpBeforeClass(): void
-    //    {
-    //        $em = self::getContainer()->get(EntityManagerInterface::class);
-    //        self::$identifier = $em->getRepository(UserProfile::class)->findOneBy([], ['id' => 'DESC'])?->getEvent();
-    //    }
-
 
     /** Доступ по роли ROLE_ADMIN */
+    #[DependsOnClass(UserNewUserProfileHandleTest::class)]
     public function testRoleAdminSuccessful(): void
     {
         self::ensureKernelShutdown();
@@ -70,6 +61,7 @@ final class ActivateControllerTest extends WebTestCase
     }
 
     /** Доступ по роли ROLE_USER */
+    #[DependsOnClass(UserNewUserProfileHandleTest::class)]
     public function testRoleUserSuccessful(): void
     {
 
@@ -93,6 +85,7 @@ final class ActivateControllerTest extends WebTestCase
     }
 
     /** Доступ закрыт без роли */
+    #[DependsOnClass(UserNewUserProfileHandleTest::class)]
     public function testGuestDeny(): void
     {
 

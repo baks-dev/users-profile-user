@@ -37,10 +37,6 @@ use ReflectionMethod;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\DependencyInjection\Attribute\When;
 
-
-/**
- * @group users-profile-user
- */
 #[Group('users-profile-user')]
 #[When(env: 'test')]
 class UserProfileByIdRepositoryTest extends KernelTestCase

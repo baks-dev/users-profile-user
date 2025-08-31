@@ -33,11 +33,7 @@ use PHPUnit\Framework\Attributes\Group;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\DependencyInjection\Attribute\When;
 
-
-/**
- * @group user-profile-organization-repository-test
- */
-#[Group('user-profile')]
+#[Group('users-profile-user')]
 #[When(env: 'test')]
 class UserProfileOrganizationRepositoryTest extends KernelTestCase
 {

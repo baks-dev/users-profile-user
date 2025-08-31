@@ -32,28 +32,24 @@ use BaksDev\Users\Profile\UserProfile\Entity\Event\UserProfileEvent;
 use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\Collection\UserProfileStatusCollection;
+use BaksDev\Users\Profile\UserProfile\UseCase\User\Activate\Tests\UserActivateUserProfileHandleTest;
 use BaksDev\Users\Profile\UserProfile\UseCase\User\Delete\DeleteUserProfileDTO;
 use BaksDev\Users\Profile\UserProfile\UseCase\User\Delete\DeleteUserProfileHandler;
+use BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\Tests\UserEditUserProfileHandleTest;
+use BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\Tests\UserNewUserProfileHandleTest;
 use Doctrine\ORM\EntityManagerInterface;
+use PHPUnit\Framework\Attributes\DependsOnClass;
+use PHPUnit\Framework\Attributes\Group;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\DependencyInjection\Attribute\When;
 
-/**
- * @group users-profile-user
- * @group users-profile-user-usecase
- *
- * @depends BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\Tests\UserNewUserProfileHandleTest::class
- * @depends BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\Tests\UserEditUserProfileHandleTest::class
- * @depends BaksDev\Users\Profile\UserProfile\UseCase\User\Activate\Tests\UserActivateUserProfileHandleTest::class
- *
- * @see UserNewUserProfileHandleTest
- * @see UserEditUserProfileHandleTest
- * @see UserActivateUserProfileHandleTest
- */
+#[Group('users-profile-user')]
 #[When(env: 'test')]
 final class UserDeleteUserProfileTest extends KernelTestCase
 {
-
+    #[DependsOnClass(UserNewUserProfileHandleTest::class)]
+    #[DependsOnClass(UserEditUserProfileHandleTest::class)]
+    #[DependsOnClass(UserActivateUserProfileHandleTest::class)]
     public function testUseCase(): void
     {
         $container = self::getContainer();
@@ -103,6 +99,9 @@ final class UserDeleteUserProfileTest extends KernelTestCase
         self::assertTrue(($handle instanceof UserProfile), $handle.': Ошибка UserProfile');
     }
 
+    #[DependsOnClass(UserNewUserProfileHandleTest::class)]
+    #[DependsOnClass(UserEditUserProfileHandleTest::class)]
+    #[DependsOnClass(UserActivateUserProfileHandleTest::class)]
     public function testComplete(): void
     {
         $container = self::getContainer();
