@@ -225,12 +225,16 @@ final  class UserProfileByRegionRepository implements UserProfileByRegionInterfa
             ) AS profile_value",
         );
 
+        if($dbal->isProjectProfile())
+        {
+            $dbal->addOrderBy('CASE WHEN profile.id = :'.$dbal::PROJECT_PROFILE_KEY.' THEN 0 ELSE 1 END');
+        }
 
         if(false === is_null($this->region))
         {
             if(false === $this->onlyCurrentRegion)
             {
-                $dbal->orderBy('CASE WHEN profile_region.value = :region THEN 0 ELSE 1 END');
+                $dbal->addOrderBy('CASE WHEN profile_region.value = :region THEN 0 ELSE 1 END');
             }
             else
             {
