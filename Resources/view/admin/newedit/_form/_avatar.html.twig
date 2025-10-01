@@ -4,7 +4,7 @@
 <div class="card-body text-center pt-0">
 
     {# Обложка #}
-    {% set image_path = '/assets/img/blank.svg' %}
+    {% set image_path = '/assets/'~version~'/img/blank.svg' %}
 
     {% if form.avatar.vars.data.ext is defined and form.avatar.vars.data.ext is not null %}
         {% set img_host =  form.avatar.vars.data.cdn == true  ? CDN_HOST : '' %}
