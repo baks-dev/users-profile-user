@@ -1,4 +1,4 @@
-{% trans_default_domain 'user.user.profile' %}
+{% trans_default_domain 'user.profile' %}
 
 
 <nav class="small" style="--bs-breadcrumb-divider: '-';" aria-label="breadcrumb">
@@ -29,17 +29,17 @@
 		<li class="breadcrumb-item">
 			<a href="{{ path('users-profile-user:user.index') }}"
 					class="text-decoration-none"
-					aria-label="{{ 'user.breadcrumb.index'|trans }}"
-					title="{{ 'user.breadcrumb.index'|trans }}">
-				{{ 'user.breadcrumb.index'|trans }}
+               aria-label="{{ 'breadcrumb.index'|trans }}"
+               title="{{ 'breadcrumb.index'|trans }}">
+                {{ 'breadcrumb.index'|trans }}
 			</a>
 		</li>
 		
 		
 		<li class="breadcrumb-item active" aria-current="page"
-				aria-label="{{ 'user.breadcrumb.edit'|trans }}"
-				title="{{ 'user.breadcrumb.edit'|trans }}">
-			{{ 'user.breadcrumb.edit'|trans }}
+            aria-label="{{ 'breadcrumb.edit'|trans }}"
+            title="{{ 'breadcrumb.edit'|trans }}">
+            {{ 'breadcrumb.edit'|trans }}
 		</li>
 	
 	</ol>

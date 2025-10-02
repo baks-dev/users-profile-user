@@ -94,7 +94,7 @@ final class DeleteController extends AbstractController
             (
                 type: 'page.delete',
                 message: $handle instanceof UserProfile ? 'user.success.delete' : 'user.danger.delete',
-                domain: 'user.user.profile',
+                domain: 'user.profile',
                 arguments: $handle,
             );
 

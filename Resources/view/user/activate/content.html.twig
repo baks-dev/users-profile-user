@@ -1,4 +1,4 @@
-{% trans_default_domain 'userprofile' %}
+{% trans_default_domain 'user.profile' %}
 
 <div class="modal-dialog modal-dialog-centered" style="max-width: 800px;">
     {{ form_start(form) }}
@@ -7,7 +7,7 @@
 
             <h5 class="modal-title">
                 {# Заголовок модального окна #}
-                {{ 'user.form.activate.header'|trans }}
+                {{ 'form.activate.header'|trans }}
             </h5>
 
             <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="Close">
@@ -18,13 +18,13 @@
         <div class="modal-body">
             <h4>
                 {# Вы уверены, что желаете удалить #}
-                {{ 'user.form.activate.h4'|trans }} "{{ name }}"?
+                {{ 'form.activate.h4'|trans }} "{{ name }}"?
             </h4>
             <br>
             <p>
                 {# Убедитесь, что выбран именно тот объект, который нужно удалить, и нажмите Удалить. Если вы не
                     желаете удалять выбранный объект, нажмите кнопку Отмена.  #}
-                {{ 'user.form.activate.txt'|trans }}
+                {{ 'form.activate.txt'|trans }}
             </p>
         </div>
 
@@ -41,7 +41,7 @@
                 </button>
 
                 {# Удалить #}
-                {{ form_widget(form.activate, { label: 'user.form.activate.btn'|trans }) }}
+                {{ form_widget(form.activate, { label: 'form.activate.btn'|trans }) }}
             </div>
         </div>
     </div>

@@ -79,7 +79,7 @@ final class EditController extends AbstractController
             (
                 type: 'page.edit',
                 message: $handle instanceof UserProfile ? 'user.success.edit' : 'user.danger.edit',
-                domain: 'user.user.profile',
+                domain: 'user.profile',
                 arguments: $handle,
             );
 

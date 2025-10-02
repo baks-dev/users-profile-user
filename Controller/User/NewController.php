@@ -108,9 +108,9 @@ final class NewController extends AbstractController
 
             $this->addFlash
             (
-                type: 'user.page.new',
+                type: 'page.new',
                 message: $handle instanceof UserProfile ? 'user.success.new' : 'user.danger.new',
-                domain: 'user.user.profile',
+                domain: 'user.profile',
                 arguments: $handle,
             );
 
