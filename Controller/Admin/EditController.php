@@ -32,6 +32,7 @@ use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\UserProfileDTO;
 use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\UserProfileForm;
 use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\UserProfileHandler;
 use Doctrine\ORM\EntityManagerInterface;
+use InvalidArgumentException;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -56,6 +57,11 @@ final class EditController extends AbstractController
         $UserProfileInfo = $entityManager
             ->getRepository(UserProfileInfo::class)
             ->findOneBy(['profile' => $Event->getMain()]);
+
+        if(false === ($UserProfileInfo instanceof UserProfileInfo))
+        {
+            throw new InvalidArgumentException('Invalid Argument Exception');
+        }
 
         $UserProfileInfo->getDto($UserProfileDTO->getInfo());
 
