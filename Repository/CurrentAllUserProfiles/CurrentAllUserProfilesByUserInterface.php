@@ -23,18 +23,28 @@
 
 namespace BaksDev\Users\Profile\UserProfile\Repository\CurrentAllUserProfiles;
 
+use BaksDev\Users\User\Entity\User;
 use BaksDev\Users\User\Type\Id\UserUid;
+use Generator;
 
 interface CurrentAllUserProfilesByUserInterface
 {
+
     /**
      * Список профилей пользователя в меню
-	 *
-	 * Возвращает массив с ключами: <br>
-	 * user_profile_event - идентификатор события для активации профиля <br>
-	 * user_profile_username - username профиля <br>
-	 *
-	 */
-	public function fetchUserProfilesAllAssociative() : ?array;
+     *
+     * Возвращает массив с ключами: <br>
+     * user_profile_event - идентификатор события для активации профиля <br>
+     * user_profile_username - username профиля <br>
+     *
+     */
+
+    public function forUser(User|UserUid|false|null $user): self;
+
+    public function findAll(): Generator|false;
+
+
+    /** @deprecated использовать findAll() */
+    public function fetchUserProfilesAllAssociative(): ?array;
 
 }
