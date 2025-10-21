@@ -74,6 +74,7 @@ final  class CurrentAllUserProfilesByUserRepository implements CurrentAllUserPro
      * user_profile_event - идентификатор события для активации профиля <br>
      * user_profile_username - username профиля <br>
      *
+     * @return Generator<UserProfileUid>|false
      */
     public function findAll(): Generator|false
     {

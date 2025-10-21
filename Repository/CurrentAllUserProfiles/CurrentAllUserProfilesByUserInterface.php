@@ -23,6 +23,7 @@
 
 namespace BaksDev\Users\Profile\UserProfile\Repository\CurrentAllUserProfiles;
 
+use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use BaksDev\Users\User\Entity\User;
 use BaksDev\Users\User\Type\Id\UserUid;
 use Generator;
@@ -41,6 +42,7 @@ interface CurrentAllUserProfilesByUserInterface
 
     public function forUser(User|UserUid|false|null $user): self;
 
+    /** @return Generator<UserProfileUid>|false */
     public function findAll(): Generator|false;
 
 
