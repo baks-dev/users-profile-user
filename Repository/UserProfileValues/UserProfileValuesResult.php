@@ -21,21 +21,14 @@
  *  THE SOFTWARE.
  */
 
+declare(strict_types=1);
+
 namespace BaksDev\Users\Profile\UserProfile\Repository\UserProfileValues;
 
-use BaksDev\Core\Type\Field\InputField;
-use BaksDev\Users\Profile\UserProfile\Entity\Event\UserProfileEvent;
-use BaksDev\Users\Profile\UserProfile\Type\Event\UserProfileEventUid;
+use Symfony\Component\Validator\Constraints as Assert;
 
-interface UserProfileValuesInterface
+/** @see UserProfileValuesResult */
+final class UserProfileValuesResult
 {
-    public function forFieldType(InputField|string $field): self;
-
-    public function forUserProfileEvent(UserProfileEvent|UserProfileEventUid $event): self;
-
-    /**
-     * Метод получает все заполненные динамические свойства профиля
-     */
-    public function find(): UserProfileValuesResult|false;
-
+    public function __construct($data) {}
 }

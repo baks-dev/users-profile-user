@@ -39,9 +39,18 @@ final class CurrentUserProfileEventRepository implements CurrentUserProfileEvent
 {
     private ORMQueryBuilder $ORMQueryBuilder;
 
+    private bool $active = false;
+
     public function __construct(ORMQueryBuilder $ORMQueryBuilder)
     {
         $this->ORMQueryBuilder = $ORMQueryBuilder;
+    }
+
+    public function onlyActive(): self
+    {
+        $this->active = true;
+
+        return $this;
     }
 
     public function findByUser(User|UserUid|string $user): UserProfileEvent|false
@@ -62,30 +71,38 @@ final class CurrentUserProfileEventRepository implements CurrentUserProfileEvent
 
         $orm
             ->from(UserProfileInfo::class, 'info')
-            ->andWhere('info.active = true');
-
-        $orm->andWhere('info.usr = :usr')
-            ->setParameter('usr', $user, UserUid::TYPE);
-
-        $orm->andWhere('info.status = :status')
+            ->andWhere('info.usr = :usr')
             ->setParameter(
-                'status',
-                UserProfileStatusActive::class,
-                UserProfileStatus::TYPE
+                key: 'usr',
+                value: $user,
+                type: UserUid::TYPE,
             );
+
+        if(true === $this->active)
+        {
+            $orm
+                ->andWhere('info.active = true')
+                ->andWhere('info.status = :status')
+                ->setParameter(
+                    key: 'status',
+                    value: UserProfileStatusActive::class,
+                    type: UserProfileStatus::TYPE,
+                );
+        }
+
 
         $orm->leftJoin(
             UserProfile::class,
             'profile',
             'WITH',
-            'profile.id = info.profile'
+            'profile.id = info.profile',
         );
 
         $orm->leftJoin(
             UserProfileEvent::class,
             'event',
             'WITH',
-            'event.id = profile.event'
+            'event.id = profile.event',
         );
 
         return $orm->getOneOrNullResult() ?: false;
@@ -111,14 +128,14 @@ final class CurrentUserProfileEventRepository implements CurrentUserProfileEvent
             UserProfile::class,
             'profile',
             'WITH',
-            'profile.id = event_param.profile'
+            'profile.id = event_param.profile',
         );
 
         $orm->leftJoin(
             UserProfileEvent::class,
             'event',
             'WITH',
-            'event.id = profile.event'
+            'event.id = profile.event',
         );
 
         return $orm->getOneOrNullResult() ?: false;
