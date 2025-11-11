@@ -30,6 +30,7 @@ use BaksDev\Users\Profile\UserProfile\Type\Event\UserProfileEventUid;
 use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Avatar\AvatarDTO;
 use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Delivery\UserProfileDeliveryDTO;
 use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Discount\NewEditUserProfileDiscountDTO;
+use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Domain\UserProfileDomainDTO;
 use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Info\InfoDTO;
 use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Orders\NewEditUserProfileOrdersDTO;
 use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Personal\PersonalDTO;
@@ -91,6 +92,8 @@ final class UserProfileDTO implements UserProfileEventInterface
     /** Количество дней предзаказа */
     private UserProfileDeliveryDTO $delivery;
 
+    /** Домен для переадресации */
+    private UserProfileDomainDTO $domain;
 
     public function __construct()
     {
@@ -105,6 +108,7 @@ final class UserProfileDTO implements UserProfileEventInterface
         $this->discount = new NewEditUserProfileDiscountDTO();
         $this->region = new UserProfileRegionDTO();
         $this->delivery = new UserProfileDeliveryDTO();
+        $this->domain = new UserProfileDomainDTO();
     }
 
 
@@ -251,5 +255,10 @@ final class UserProfileDTO implements UserProfileEventInterface
     public function getDelivery(): UserProfileDeliveryDTO
     {
         return $this->delivery;
+    }
+
+    public function getDomain(): UserProfileDomainDTO
+    {
+        return $this->domain;
     }
 }

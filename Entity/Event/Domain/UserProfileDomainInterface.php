@@ -21,43 +21,14 @@
  *  THE SOFTWARE.
  */
 
-declare(strict_types=1);
+namespace BaksDev\Users\Profile\UserProfile\Entity\Event\Domain;
 
-namespace BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Delivery;
-
-use BaksDev\Users\Profile\UserProfile\Entity\Event\Delivery\UserProfileDeliveryInterface;
-use DateTimeImmutable;
-use Doctrine\DBAL\Types\Types;
-use Symfony\Component\Validator\Constraints as Assert;
-
-/** @see UserProfileDelivery */
-final class UserProfileDeliveryDTO implements UserProfileDeliveryInterface
+interface UserProfileDomainInterface
 {
-    /** Дата предыдущей поставки */
-    private readonly DateTimeImmutable $value;
-
-    /** Значение свойства */
-    #[Assert\NotBlank]
-    private ?int $day = null;
-
-    public function __construct()
-    {
-        $this->value = new DateTimeImmutable();
-    }
-
-    public function getDay(): ?int
-    {
-        return $this->day ?: 0;
-    }
-
-    public function setDay(?int $day): self
-    {
-        $this->day = $day;
-        return $this;
-    }
-
-    public function getValue(): DateTimeImmutable
-    {
-        return $this->value;
-    }
+    /**
+     * Значение свойства
+     *
+     * @see UserProfileDomain
+     */
+    public function getValue(): ?string;
 }

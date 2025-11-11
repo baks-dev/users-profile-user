@@ -25,6 +25,7 @@ namespace BaksDev\Users\Profile\UserProfile\Repository\CurrentAllUserProfiles;
 
 use BaksDev\Core\Doctrine\DBALQueryBuilder;
 use BaksDev\Core\Doctrine\ORMQueryBuilder;
+use BaksDev\Users\Profile\UserProfile\Entity\Event\Domain\UserProfileDomain;
 use BaksDev\Users\Profile\UserProfile\Entity\Event\Info\UserProfileInfo;
 use BaksDev\Users\Profile\UserProfile\Entity\Event\Personal\UserProfilePersonal;
 use BaksDev\Users\Profile\UserProfile\Entity\Event\UserProfileEvent;
@@ -114,6 +115,15 @@ final  class CurrentAllUserProfilesByUserRepository implements CurrentAllUserPro
                 'user_profile.id = user_profile_info.profile',
             );
 
+        $dbal
+            //->addSelect('user_profile_domain.value AS user_profile_domain')
+            ->leftJoin(
+                'user_profile',
+                UserProfileDomain::class,
+                'user_profile_domain',
+                'user_profile_domain.main = user_profile.id',
+            );
+
 
         $dbal->leftJoin(
             'user_profile',
@@ -140,7 +150,8 @@ final  class CurrentAllUserProfilesByUserRepository implements CurrentAllUserPro
         $dbal->addSelect("
             JSONB_BUILD_OBJECT (
                 'event', user_profile.event, 
-                'username', user_profile_profile.username
+                'username', user_profile_profile.username,
+                'domain', user_profile_domain.value
             ) AS params",
         );
 
@@ -206,6 +217,15 @@ final  class CurrentAllUserProfilesByUserRepository implements CurrentAllUserPro
             'user_profile_event',
             'user_profile_event.id = user_profile.event',
         );
+
+        $dbal
+            ->addSelect('user_profile_domain.value AS user_profile_domain')
+            ->leftJoin(
+                'user_profile',
+                UserProfileDomain::class,
+                'user_profile_domain',
+                'user_profile_domain.main = user_profile.id',
+            );
 
         $dbal
             ->addSelect('user_profile_profile.username AS user_profile_username')

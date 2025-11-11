@@ -28,6 +28,7 @@ namespace BaksDev\Users\Profile\UserProfile\Decorator\UserProfile;
 use BaksDev\Users\Profile\UserProfile\Repository\CurrentAllUserProfiles\CurrentAllUserProfilesByUserInterface;
 use BaksDev\Users\User\Decorator\UserProfile\UserProfileInterface;
 use BaksDev\Users\User\Type\Id\UserUid;
+use Generator;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /** Массив добавленных профилей пользователя */
@@ -44,9 +45,10 @@ final class UserProfileProfiles implements UserProfileInterface
     }
 
     /** Возвращает значение (value) */
-    public function getValue(UserUid $usr): bool|array
+    public function getValue(UserUid $usr): bool|Generator
     {
-        return $this->currentAllUserProfiles->fetchUserProfilesAllAssociative();
+        //return $this->currentAllUserProfiles->fetchUserProfilesAllAssociative();
+        return $this->currentAllUserProfiles->findAll();
     }
 
     public static function priority(): int

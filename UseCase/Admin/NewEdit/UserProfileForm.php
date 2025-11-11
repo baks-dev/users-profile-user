@@ -30,9 +30,13 @@ use BaksDev\Users\Profile\TypeProfile\Type\Id\Choice\Collection\TypeProfileInter
 use BaksDev\Users\Profile\TypeProfile\Type\Id\TypeProfileUid;
 use BaksDev\Users\Profile\UserProfile\Repository\FieldValueForm\FieldValueFormDTO;
 use BaksDev\Users\Profile\UserProfile\Repository\FieldValueForm\FieldValueFormInterface;
+use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Avatar\AvatarForm;
 use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Delivery\UserProfileDeliveryForm;
 use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Discount\NewEditUserProfileDiscountForm;
+use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Domain\UserProfileDomainForm;
+use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Info\InfoForm;
 use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Orders\NewEditUserProfileOrdersForm;
+use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Personal\PersonalForm;
 use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Region\UserProfileRegionForm;
 use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Shop\NewEditUserProfileShopForm;
 use BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Value\ValueDTO;
@@ -61,31 +65,33 @@ final class UserProfileForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
 
-        $builder->add('personal', Personal\PersonalForm::class);
+        $builder->add('personal', PersonalForm::class);
 
-        $builder->add('info', Info\InfoForm::class);
+        $builder->add('info', InfoForm::class);
 
-        $builder->add('avatar', Avatar\AvatarForm::class);
+        $builder->add('avatar', AvatarForm::class);
 
         $builder->add('sort', IntegerType::class);
 
         /** Флаг, означающий, что профиль пользователя является магазином */
-        $builder->add('shop', NewEditUserProfileShopForm::class);
+        $builder->add('shop', NewEditUserProfileShopForm::class, ['label' => false]);
 
         /** Флаг, означающий, что профиль пользователя является ПВЗ */
-        $builder->add('orders', NewEditUserProfileOrdersForm::class);
+        $builder->add('orders', NewEditUserProfileOrdersForm::class, ['label' => false]);
 
         /** Флаг, означающий, что профиль пользователя является Складом */
-        $builder->add('warehouse', NewEditUserProfileWarehouseForm::class);
+        $builder->add('warehouse', NewEditUserProfileWarehouseForm::class, ['label' => false]);
 
         /** Персональная скидка профиля */
-        $builder->add('discount', NewEditUserProfileDiscountForm::class);
+        $builder->add('discount', NewEditUserProfileDiscountForm::class, ['label' => false]);
 
         /** Регион пользователя */
-        $builder->add('region', UserProfileRegionForm::class);
+        $builder->add('region', UserProfileRegionForm::class, ['label' => false]);
 
         /** Количество дней предзаказа */
-        $builder->add('delivery', UserProfileDeliveryForm::class);
+        $builder->add('delivery', UserProfileDeliveryForm::class, ['label' => false]);
+
+        $builder->add('domain', UserProfileDomainForm::class, ['label' => false]);
 
         $types = $this->TypeProfileChoice->getActiveTypeProfileChoice();
 

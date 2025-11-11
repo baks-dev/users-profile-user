@@ -29,6 +29,7 @@ use BaksDev\Users\Profile\TypeProfile\Type\Id\TypeProfileUid;
 use BaksDev\Users\Profile\UserProfile\Entity\Event\Avatar\UserProfileAvatar;
 use BaksDev\Users\Profile\UserProfile\Entity\Event\Delivery\UserProfileDelivery;
 use BaksDev\Users\Profile\UserProfile\Entity\Event\Discount\UserProfileDiscount;
+use BaksDev\Users\Profile\UserProfile\Entity\Event\Domain\UserProfileDomain;
 use BaksDev\Users\Profile\UserProfile\Entity\Event\Info\UserProfileInfo;
 use BaksDev\Users\Profile\UserProfile\Entity\Event\Modify\UserProfileModify;
 use BaksDev\Users\Profile\UserProfile\Entity\Event\Orders\UserProfileOrders;
@@ -149,6 +150,10 @@ class UserProfileEvent extends EntityEvent
     /** Количество дней предзаказа */
     #[ORM\OneToOne(targetEntity: UserProfileDelivery::class, mappedBy: 'event', cascade: ['all'])]
     private ?UserProfileDelivery $delivery = null;
+
+    /** UserProfileDomain */
+    #[ORM\OneToOne(targetEntity: UserProfileDomain::class, mappedBy: 'event', cascade: ['all'])]
+    private ?UserProfileDomain $domain = null;
 
     public function __construct()
     {

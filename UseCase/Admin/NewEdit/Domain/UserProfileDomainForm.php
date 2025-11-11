@@ -23,41 +23,29 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Delivery;
+namespace BaksDev\Users\Profile\UserProfile\UseCase\Admin\NewEdit\Domain;
 
-use BaksDev\Users\Profile\UserProfile\Entity\Event\Delivery\UserProfileDeliveryInterface;
-use DateTimeImmutable;
-use Doctrine\DBAL\Types\Types;
-use Symfony\Component\Validator\Constraints as Assert;
 
-/** @see UserProfileDelivery */
-final class UserProfileDeliveryDTO implements UserProfileDeliveryInterface
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
+final class UserProfileDomainForm extends AbstractType
 {
-    /** Дата предыдущей поставки */
-    private readonly DateTimeImmutable $value;
 
-    /** Значение свойства */
-    #[Assert\NotBlank]
-    private ?int $day = null;
-
-    public function __construct()
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $this->value = new DateTimeImmutable();
+        $builder->add('value', TextType::class, ['required' => false]);
     }
 
-    public function getDay(): ?int
+    public function configureOptions(OptionsResolver $resolver): void
     {
-        return $this->day ?: 0;
-    }
-
-    public function setDay(?int $day): self
-    {
-        $this->day = $day;
-        return $this;
-    }
-
-    public function getValue(): DateTimeImmutable
-    {
-        return $this->value;
+        $resolver->setDefaults([
+            'data_class' => UserProfileDomainDTO::class,
+            'method' => 'POST',
+            'attr' => ['class' => 'w-100'],
+        ]);
     }
 }
