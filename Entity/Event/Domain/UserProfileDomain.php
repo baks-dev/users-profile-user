@@ -103,6 +103,11 @@ class UserProfileDomain extends EntityReadonly
     {
         if($dto instanceof UserProfileDomainInterface || $dto instanceof self)
         {
+            if(empty($dto->getValue()))
+            {
+                return false;
+            }
+
             return parent::setEntity($dto);
         }
 
