@@ -26,162 +26,165 @@ namespace BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit;
 use BaksDev\Users\Profile\TypeProfile\Type\Id\TypeProfileUid;
 use BaksDev\Users\Profile\UserProfile\Entity\Event\UserProfileEventInterface;
 use BaksDev\Users\Profile\UserProfile\Type\Event\UserProfileEventUid;
-use BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\Orders\NewEditUserProfileOrdersDTO;
-use BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\Shop\NewEditUserProfileShopDTO;
-use BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\Warehouse\NewEditUserProfileWarehouseDTO;
+use BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\Avatar\AvatarDTO;
+use BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\Info\InfoDTO;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /** @see UserProfileEvent */
 final class UserProfileDTO implements UserProfileEventInterface
 {
-	
-	#[Assert\Uuid]
-	private ?UserProfileEventUid $id = null;
-	
-	/** Тип профиля */
-	#[Assert\NotBlank]
-	#[Assert\Uuid]
-	private readonly TypeProfileUid $type;
-	
-	/** Аватарка */
-	#[Assert\Valid]
-	private ?Avatar\AvatarDTO $avatar;
-	
-	/** Информация профиля */
-	#[Assert\Valid]
-	private Info\InfoDTO $info;
-	
-	/** Персональные данные */
-	#[Assert\Valid]
-	private Personal\PersonalDTO $personal;
-	
-	/** Значения профиля */
-	#[Assert\Valid]
-	private ArrayCollection $value;
-	
-	/** Сортировка */
-	private int $sort = 500;
+
+    #[Assert\Uuid]
+    private ?UserProfileEventUid $id = null;
+
+    /** Тип профиля */
+    #[Assert\NotBlank]
+    #[Assert\Uuid]
+    private readonly TypeProfileUid $type;
+
+    /** Аватарка */
+    #[Assert\Valid]
+    private ?Avatar\AvatarDTO $avatar;
+
+    /** Информация профиля */
+    #[Assert\Valid]
+    private Info\InfoDTO $info;
+
+    /** Персональные данные */
+    #[Assert\Valid]
+    private Personal\PersonalDTO $personal;
+
+    /** Значения профиля */
+    #[Assert\Valid]
+    private ArrayCollection $value;
+
+    /** Сортировка */
+    private int $sort = 500;
 
 
     public function __construct()
-	{
-		$this->avatar = new Avatar\AvatarDTO();
-		$this->info = new Info\InfoDTO();
-		$this->personal = new Personal\PersonalDTO();
-		$this->value = new ArrayCollection();
+    {
+        $this->avatar = new AvatarDTO();
+        $this->info = new InfoDTO();
+        $this->personal = new Personal\PersonalDTO();
+        $this->value = new ArrayCollection();
 
 
     }
-	
-	
-	/* EVENT */
-	
-	public function getEvent() : ?UserProfileEventUid
-	{
-		return $this->id;
-	}
-	
-	
-	/* TYPE */
-	
-	public function getType() : TypeProfileUid
-	{
-		return $this->type;
-	}
-	
-	
-	public function setType(TypeProfileUid $type) : void
-	{
+
+
+    /* EVENT */
+
+    public function getEvent(): ?UserProfileEventUid
+    {
+        return $this->id;
+    }
+
+
+    /* TYPE */
+
+    public function getType(): TypeProfileUid
+    {
+        return $this->type;
+    }
+
+
+    public function setType(TypeProfileUid $type): void
+    {
         if(!isset($this->type))
         {
             $this->type = $type;
         }
 
-//        if(!(new ReflectionProperty(self::class, 'type'))->isInitialized($this))
-//        {
-//            $this->type = $type;
-//        }
-	}
-	
-	
-	/* INFO */
-	
-	public function getInfo() : Info\InfoDTO
-	{
-		return $this->info;
-	}
-	
-	
-	public function setInfo(Info\InfoDTO $info) : void
-	{
-		$this->info = $info;
-	}
-	
-	
-	/* SORT */
-	
-	public function getSort() : int
-	{
-		return $this->sort;
-	}
-	
-	
-	public function setSort(int $sort) : void
-	{
-		$this->sort = $sort;
-	}
-	
-	
-	/* PERSONAL */
-	
-	public function getPersonal() : Personal\PersonalDTO
-	{
-		return $this->personal;
-	}
-	
-	
-	public function setPersonal(Personal\PersonalDTO $personal) : void
-	{
-		$this->personal = $personal;
-	}
-	
-	
-	/* AVATAR */
-	
-	public function getAvatar() : Avatar\AvatarDTO
-	{
-		return $this->avatar ?: new Avatar\AvatarDTO();
-	}
-	
-	
-	public function setAvatar(?Avatar\AvatarDTO $avatar) : void
-	{
-		$this->avatar = $avatar;
-	}
-	
-	
-	/* VALUE */
-	
-	/**
-	 * @return ArrayCollection
-	 */
-	public function getValue() : ArrayCollection
-	{
-		return $this->value;
-	}
-	
-	
-	public function addValue(Value\ValueDTO $value) : void
-	{
-		$this->value->add($value);
-	}
-	
-	
-	public function removeValue(Value\ValueDTO $value) : void
-	{
-		$this->value->removeElement($value);
-	}
+        //        if(!(new ReflectionProperty(self::class, 'type'))->isInitialized($this))
+        //        {
+        //            $this->type = $type;
+        //        }
+    }
+
+
+    /* INFO */
+
+    public function getInfo(): Info\InfoDTO
+    {
+        return $this->info;
+    }
+
+
+    public function setInfo(Info\InfoDTO $info): self
+    {
+        $this->info = $info;
+        return $this;
+    }
+
+
+    /* SORT */
+
+    public function getSort(): int
+    {
+        return $this->sort;
+    }
+
+
+    public function setSort(int $sort): self
+    {
+        $this->sort = $sort;
+        return $this;
+    }
+
+
+    /* PERSONAL */
+
+    public function getPersonal(): Personal\PersonalDTO
+    {
+        return $this->personal;
+    }
+
+
+    public function setPersonal(Personal\PersonalDTO $personal): self
+    {
+        $this->personal = $personal;
+        return $this;
+    }
+
+
+    /* AVATAR */
+
+    public function getAvatar(): AvatarDTO
+    {
+        return $this->avatar ?: new AvatarDTO();
+    }
+
+
+    public function setAvatar(?AvatarDTO $avatar): self
+    {
+        $this->avatar = $avatar;
+        return $this;
+    }
+
+
+    /* VALUE */
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getValue(): ArrayCollection
+    {
+        return $this->value;
+    }
+
+
+    public function addValue(Value\ValueDTO $value): void
+    {
+        $this->value->add($value);
+    }
+
+
+    public function removeValue(Value\ValueDTO $value): void
+    {
+        $this->value->removeElement($value);
+    }
 
 
 }

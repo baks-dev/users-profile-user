@@ -25,7 +25,10 @@ namespace BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit;
 
 use BaksDev\Users\Profile\UserProfile\Repository\FieldValueForm\FieldValueFormDTO;
 use BaksDev\Users\Profile\UserProfile\Repository\FieldValueForm\FieldValueFormInterface;
+use BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\Avatar\AvatarForm;
+use BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\Info\InfoForm;
 use BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\Orders\NewEditUserProfileOrdersForm;
+use BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\Personal\PersonalForm;
 use BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\Shop\NewEditUserProfileShopForm;
 use BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\Value\ValueDTO;
 use BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\Warehouse\NewEditUserProfileWarehouseForm;
@@ -57,11 +60,11 @@ final class UserProfileForm extends AbstractType
 
         $builder->add('sort', IntegerType::class);
 
-        $builder->add('personal', Personal\PersonalForm::class);
+        $builder->add('personal', PersonalForm::class);
 
-        $builder->add('info', Info\InfoForm::class);
+        $builder->add('info', InfoForm::class);
 
-        $builder->add('avatar', Avatar\AvatarForm::class);
+        $builder->add('avatar', AvatarForm::class);
 
 
         $profileType = $options['data']->getType();
@@ -112,7 +115,7 @@ final class UserProfileForm extends AbstractType
                     $current = $value->current();
                     $current->updSection($field);
                 }
-            }
+            },
         );
 
         /* Сохранить ******************************************************/
@@ -120,7 +123,7 @@ final class UserProfileForm extends AbstractType
         (
             'Save',
             SubmitType::class,
-            ['label' => 'Save', 'label_html' => true, 'attr' => ['class' => 'btn-primary']]
+            ['label' => 'Save', 'label_html' => true, 'attr' => ['class' => 'btn-primary']],
         );
 
     }
@@ -134,7 +137,7 @@ final class UserProfileForm extends AbstractType
                 'data_class' => UserProfileDTO::class,
                 'method' => 'POST',
                 'attr' => ['class' => 'w-100'],
-            ]
+            ],
         );
     }
 
