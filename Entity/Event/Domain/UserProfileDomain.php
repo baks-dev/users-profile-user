@@ -60,8 +60,8 @@ class UserProfileDomain extends EntityReadonly
 
     /** Значение свойства */
     #[Assert\NotBlank]
-    #[ORM\Column(type: Types::STRING)]
-    private string $value;
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    private ?string $value;
 
 
     public function __construct(UserProfileEvent $event)
@@ -75,7 +75,7 @@ class UserProfileDomain extends EntityReadonly
         return (string) $this->main;
     }
 
-    public function setEvent(UserProfileDomainEvent $event): self
+    public function setEvent(UserProfileEvent $event): self
     {
         $this->event = $event;
         return $this;
@@ -103,11 +103,6 @@ class UserProfileDomain extends EntityReadonly
     {
         if($dto instanceof UserProfileDomainInterface || $dto instanceof self)
         {
-            if(empty($dto->getValue()))
-            {
-                return false;
-            }
-
             return parent::setEntity($dto);
         }
 

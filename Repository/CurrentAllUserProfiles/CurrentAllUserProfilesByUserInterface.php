@@ -30,19 +30,13 @@ use Generator;
 
 interface CurrentAllUserProfilesByUserInterface
 {
-
-    /**
-     * Список профилей пользователя в меню
-     *
-     * Возвращает массив с ключами: <br>
-     * user_profile_event - идентификатор события для активации профиля <br>
-     * user_profile_username - username профиля <br>
-     *
-     */
-
     public function forUser(User|UserUid|false|null $user): self;
 
-    /** @return Generator<UserProfileUid>|false */
+    /**
+     * Список профилей пользователя в меню (по умолчанию текущего пользователя)
+     *
+     * @return Generator<UserProfileUid>|false
+     */
     public function findAll(): Generator|false;
 
 

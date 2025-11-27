@@ -69,11 +69,7 @@ final  class CurrentAllUserProfilesByUserRepository implements CurrentAllUserPro
     }
 
     /**
-     * Список профилей пользователя в меню
-     *
-     * Возвращает массив с ключами: <br>
-     * user_profile_event - идентификатор события для активации профиля <br>
-     * user_profile_username - username профиля <br>
+     * Список профилей пользователя (по умолчанию текущего пользователя)
      *
      * @return Generator<UserProfileUid>|false
      */
