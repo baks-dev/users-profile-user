@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2025.  Baks.dev <admin@baks.dev>
+ *  Copyright 2026.  Baks.dev <admin@baks.dev>
  *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -29,6 +29,7 @@ use BaksDev\Core\Doctrine\ORMQueryBuilder;
 use BaksDev\Users\Profile\TypeProfile\Entity\Trans\TypeProfileTrans;
 use BaksDev\Users\Profile\TypeProfile\Entity\TypeProfile;
 use BaksDev\Users\Profile\UserProfile\Entity\Event\Avatar\UserProfileAvatar;
+use BaksDev\Users\Profile\UserProfile\Entity\Event\Discount\UserProfileDiscount;
 use BaksDev\Users\Profile\UserProfile\Entity\Event\Info\UserProfileInfo;
 use BaksDev\Users\Profile\UserProfile\Entity\Event\Personal\UserProfilePersonal;
 use BaksDev\Users\Profile\UserProfile\Entity\Event\UserProfileEvent;
@@ -83,10 +84,7 @@ final readonly class CurrentUserProfileRepository implements CurrentUserProfileI
         }
 
         /* PROFILE */
-        $dbal
-            ->addSelect('profile_info.url AS profile_url')/* URL профиля */
-            ->addSelect('profile_info.discount AS profile_discount');  /* URL профиля */
-
+        $dbal->addSelect('profile_info.url AS profile_url'); /* URL профиля */
 
         if(empty($authority))
         {
@@ -104,19 +102,19 @@ final readonly class CurrentUserProfileRepository implements CurrentUserProfileI
                     profile_info.profile = :profile
                     AND profile_info.usr = users.usr 
                     AND profile_info.status = :profile_status 
-                '
+                ',
             )
                 ->setParameter(
                     'profile',
                     $this->userProfileTokenStorage->getProfile(),
-                    UserProfileUid::TYPE
+                    UserProfileUid::TYPE,
                 );
         }
         else
         {
             $dbal
                 ->from(UserProfileInfo::class, 'profile_info')
-                ->andWhere('profile_info.status = :profile_status')//->andWhere(' profile_info.active = true') !!! ???
+                ->andWhere('profile_info.status = :profile_status') //->andWhere(' profile_info.active = true') !!! ???
             ;
 
             $dbal
@@ -128,14 +126,14 @@ final readonly class CurrentUserProfileRepository implements CurrentUserProfileI
                 'profile_info',
                 User::class,
                 'users',
-                'users.usr = profile_info.usr'
+                'users.usr = profile_info.usr',
             );
         }
 
         $dbal->setParameter(
             'profile_status',
             UserProfileStatusActive::class,
-            UserProfileStatus::TYPE
+            UserProfileStatus::TYPE,
         );
 
 
@@ -146,7 +144,16 @@ final readonly class CurrentUserProfileRepository implements CurrentUserProfileI
                 'profile_info',
                 UserProfile::class,
                 'profile',
-                'profile.id = profile_info.profile'
+                'profile.id = profile_info.profile',
+            );
+
+        $dbal
+            ->addSelect('user_profile_discount.value AS profile_discount')
+            ->leftJoin(
+                'profile_event',
+                UserProfileDiscount::class,
+                'user_profile_discount',
+                'user_profile_discount.event = profile.event',
             );
 
 
@@ -157,7 +164,7 @@ final readonly class CurrentUserProfileRepository implements CurrentUserProfileI
                 'profile',
                 UserProfileEvent::class,
                 'profile_event',
-                'profile_event.id = profile.event'
+                'profile_event.id = profile.event',
             );
 
         $dbal
@@ -166,7 +173,7 @@ final readonly class CurrentUserProfileRepository implements CurrentUserProfileI
                 'profile',
                 UserProfilePersonal::class,
                 'profile_personal',
-                'profile_personal.event = profile.event'
+                'profile_personal.event = profile.event',
             );
 
         $dbal
@@ -177,7 +184,7 @@ final readonly class CurrentUserProfileRepository implements CurrentUserProfileI
                 'profile_event',
                 UserProfileAvatar::class,
                 'profile_avatar',
-                'profile_avatar.event = profile_event.id'
+                'profile_avatar.event = profile_event.id',
             );
 
 
@@ -185,7 +192,7 @@ final readonly class CurrentUserProfileRepository implements CurrentUserProfileI
             'profile_event',
             TypeProfile::class,
             'profile_type',
-            'profile_type.id = profile_event.type'
+            'profile_type.id = profile_event.type',
         );
 
 
@@ -195,7 +202,7 @@ final readonly class CurrentUserProfileRepository implements CurrentUserProfileI
                 'profile_type',
                 TypeProfileTrans::class,
                 'profile_type_trans',
-                'profile_type_trans.event = profile_type.event AND profile_type_trans.local = :local'
+                'profile_type_trans.event = profile_type.event AND profile_type_trans.local = :local',
             );
 
         /* Кешируем результат DBAL */
@@ -227,13 +234,13 @@ final readonly class CurrentUserProfileRepository implements CurrentUserProfileI
 			'%s',
 			
 			profile_info.url,
-			profile_info.discount,
+			profile_discount.value AS discount,
 			
 			profile_type.id,
 			profile_type_trans.name
 		)",
             CurrentUserProfileDTO::class,
-            $this->CDN_HOST
+            $this->CDN_HOST,
         );
 
         $orm->select($select);
@@ -259,14 +266,14 @@ final readonly class CurrentUserProfileRepository implements CurrentUserProfileI
             ->setParameter(
                 'profile_status',
                 UserProfileStatusActive::class,
-                UserProfileStatus::TYPE
+                UserProfileStatus::TYPE,
             );
 
         $orm->leftJoin(
             UserProfile::class,
             'profile',
             'WITH',
-            'profile.id = profile_info.profile'
+            'profile.id = profile_info.profile',
         );
 
 
@@ -274,7 +281,14 @@ final readonly class CurrentUserProfileRepository implements CurrentUserProfileI
             UserProfilePersonal::class,
             'profile_personal',
             'WITH',
-            'profile_personal.event = profile.event'
+            'profile_personal.event = profile.event',
+        );
+
+        $orm->leftJoin(
+            UserProfileDiscount::class,
+            'profile_discount',
+            'WITH',
+            'profile_discount.event = profile.event',
         );
 
 
@@ -282,7 +296,7 @@ final readonly class CurrentUserProfileRepository implements CurrentUserProfileI
             UserProfileAvatar::class,
             'profile_avatar',
             'WITH',
-            'profile_avatar.event = profile.event'
+            'profile_avatar.event = profile.event',
         );
 
 
@@ -290,7 +304,7 @@ final readonly class CurrentUserProfileRepository implements CurrentUserProfileI
             UserProfileEvent::class,
             'profile_event',
             'WITH',
-            'profile_event.id = profile.event'
+            'profile_event.id = profile.event',
         );
 
         /* Тип профиля */
@@ -299,7 +313,7 @@ final readonly class CurrentUserProfileRepository implements CurrentUserProfileI
             TypeProfile::class,
             'profile_type',
             'WITH',
-            'profile_type.id = profile_event.type'
+            'profile_type.id = profile_event.type',
         );
 
 
@@ -307,7 +321,7 @@ final readonly class CurrentUserProfileRepository implements CurrentUserProfileI
             TypeProfileTrans::class,
             'profile_type_trans',
             'WITH',
-            'profile_type_trans.event = profile_type.event AND profile_type_trans.local = :local'
+            'profile_type_trans.event = profile_type.event AND profile_type_trans.local = :local',
         );
 
 

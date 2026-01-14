@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2025.  Baks.dev <admin@baks.dev>
+ *  Copyright 2026.  Baks.dev <admin@baks.dev>
  *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -72,15 +72,6 @@ class UserProfileInfo extends EntityReadonly
     private UserUid $usr;
 
     /**
-     * Персональная скидка профиля
-     *
-     * @deprecated Переносится в UserProfileDiscount
-     */
-    #[Deprecated]
-    #[ORM\Column(type: Types::STRING, length: 5, nullable: true)]
-    private ?string $discount = null;
-
-    /**
      * Текущий активный профиль, выбранный пользователем
      */
     #[ORM\Column(type: Types::BOOLEAN)]
@@ -99,6 +90,16 @@ class UserProfileInfo extends EntityReadonly
     #[Assert\NotBlank]
     #[ORM\Column(type: Types::STRING, unique: true)]
     private string $url;
+
+    /**
+     * Персональная скидка профиля
+     *
+     * @deprecated Переносится в UserProfileDiscount
+     */
+    #[Deprecated]
+    #[ORM\Column(type: Types::STRING, length: 5, nullable: true)]
+    private ?string $discount = null;
+
 
     //public function __construct(UserProfileUid|UserProfile $profile)
     public function __construct(UserProfileEvent $event)
