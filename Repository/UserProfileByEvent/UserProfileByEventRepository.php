@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2025.  Baks.dev <admin@baks.dev>
+ *  Copyright 2026.  Baks.dev <admin@baks.dev>
  *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -100,7 +100,7 @@ final class UserProfileByEventRepository implements UserProfileByEventInterface
             'event',
             UserProfileValue::class,
             'user_profile_value',
-            'user_profile_value.event = event.id'
+            'user_profile_value.event = event.id',
         );
 
         $dbal
@@ -109,7 +109,7 @@ final class UserProfileByEventRepository implements UserProfileByEventInterface
                 'user_profile_value',
                 TypeProfileSectionField::class,
                 'user_profile_field',
-                'user_profile_field.id = user_profile_value.field AND user_profile_field.card = true'
+                'user_profile_field.id = user_profile_value.field AND user_profile_field.card = true',
             );
 
 
@@ -121,10 +121,11 @@ final class UserProfileByEventRepository implements UserProfileByEventInterface
                 'user_profile_field_trans',
                 '
                 user_profile_field_trans.field = user_profile_field.id 
-                AND user_profile_field_trans.local = :local'
+                AND user_profile_field_trans.local = :local',
             );
 
-
-        return $dbal->fetchAllAssociative();
+        return $dbal
+            ->enableCache('users-profile-user')
+            ->fetchAllAssociative();
     }
 }
