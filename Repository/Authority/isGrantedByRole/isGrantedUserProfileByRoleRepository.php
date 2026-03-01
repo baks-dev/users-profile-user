@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2025.  Baks.dev <admin@baks.dev>
+ *  Copyright 2026.  Baks.dev <admin@baks.dev>
  *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,11 @@ use BaksDev\Users\Profile\Group\Entity\Role\Voter\ProfileVoter;
 use BaksDev\Users\Profile\Group\Entity\Users\ProfileGroupUsers;
 use BaksDev\Users\Profile\Group\Type\Prefix\Voter\RoleVoterPrefix;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
+use Exception;
+use InvalidArgumentException;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 
+#[Autoconfigure(public: true)]
 final class isGrantedUserProfileByRoleRepository implements isGrantedUserProfileByRoleInterface
 {
     private UserProfileUid|false $profile = false;
@@ -187,12 +191,12 @@ final class isGrantedUserProfileByRoleRepository implements isGrantedUserProfile
     {
         if(false === class_exists(BaksDevUsersProfileGroupBundle::class))
         {
-            throw new \Exception('Для выполнения запроса необходим модуль BaksDevUsersProfileGroupBundle');
+            throw new Exception('Для выполнения запроса необходим модуль BaksDevUsersProfileGroupBundle');
         }
 
         if(false === ($this->profile instanceof UserProfileUid))
         {
-            throw new \InvalidArgumentException(sprintf(
+            throw new InvalidArgumentException(sprintf(
                 'Некорректной тип для параметра $this->profile: `%s`. Ожидаемый тип %s',
                 var_export($this->profile, true), UserProfileUid::class
             ));
@@ -200,7 +204,7 @@ final class isGrantedUserProfileByRoleRepository implements isGrantedUserProfile
 
         if(false === ($this->authority instanceof UserProfileUid))
         {
-            throw new \InvalidArgumentException(sprintf(
+            throw new InvalidArgumentException(sprintf(
                 'Некорректной тип для параметра $this->authority: `%s`. Ожидаемый тип %s',
                 var_export($this->authority, true), UserProfileUid::class
             ));
@@ -208,7 +212,7 @@ final class isGrantedUserProfileByRoleRepository implements isGrantedUserProfile
 
         if(false === ($this->voter instanceof RoleVoterPrefix))
         {
-            throw new \InvalidArgumentException(sprintf(
+            throw new InvalidArgumentException(sprintf(
                 'Некорректной тип для параметра $this->voter: `%s`. Ожидаемый тип %s',
                 var_export($this->voter, true), RoleVoterPrefix::class
             ));

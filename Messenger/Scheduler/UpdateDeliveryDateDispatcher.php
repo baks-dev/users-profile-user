@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2025.  Baks.dev <admin@baks.dev>
+ *  Copyright 2026.  Baks.dev <admin@baks.dev>
  *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -32,11 +32,13 @@ use BaksDev\Users\Profile\UserProfile\UseCase\Admin\UpdateDelivery\UserProfileDe
 use BaksDev\Users\Profile\UserProfile\UseCase\Admin\UpdateDelivery\UserProfileDeliveryHandler;
 use DateInterval;
 use DateTimeImmutable;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 /**
  * Обновляет дату последней поставки
  */
+#[Autoconfigure(public: true)]
 #[AsMessageHandler(priority: 0)]
 final readonly class UpdateDeliveryDateDispatcher
 {
