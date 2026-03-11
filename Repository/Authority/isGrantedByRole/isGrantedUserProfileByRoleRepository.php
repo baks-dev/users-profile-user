@@ -37,7 +37,7 @@ use Exception;
 use InvalidArgumentException;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 
-#[Autoconfigure(public: true)]
+// #[Autoconfigure(public: true)]
 final class isGrantedUserProfileByRoleRepository implements isGrantedUserProfileByRoleInterface
 {
     private UserProfileUid|false $profile = false;

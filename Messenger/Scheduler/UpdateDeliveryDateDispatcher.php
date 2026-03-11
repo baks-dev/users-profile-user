@@ -38,7 +38,7 @@ use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 /**
  * Обновляет дату последней поставки
  */
-#[Autoconfigure(public: true)]
+// #[Autoconfigure(public: true)]
 #[AsMessageHandler(priority: 0)]
 final readonly class UpdateDeliveryDateDispatcher
 {
