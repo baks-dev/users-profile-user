@@ -101,7 +101,7 @@ final class UserProfileByAuthorityRepository implements UserProfileByAuthorityIn
      * Фильтр по конкретному профилю либо профилю активного пользователя
      *
      * @return Generator<int, UserProfileUid>
-     *@example  $this->withProfile('018d3196-6c42-7822-9366-c023860f90bb');
+     * @example  $this->withProfile('018d3196-6c42-7822-9366-c023860f90bb');
      *
      * Фильтр по роли
      * @see withRole
@@ -134,14 +134,14 @@ final class UserProfileByAuthorityRepository implements UserProfileByAuthorityIn
                 'profile_group_usr',
                 ProfileGroup::class,
                 'profile_group',
-                'profile_group.prefix = profile_group_usr.prefix'
+                'profile_group.prefix = profile_group_usr.prefix',
             );
 
             $dbal->join(
                 'profile_group',
                 ProfileRole::class,
                 'profile_group_role',
-                'profile_group_role.event = profile_group.event'.($this->role ? ' AND profile_group_role.prefix = :role' : '')
+                'profile_group_role.event = profile_group.event'.($this->role ? ' AND profile_group_role.prefix = :role' : ''),
             )
                 ->setParameter('role', $this->role, GroupRolePrefix::TYPE);
 
@@ -153,7 +153,7 @@ final class UserProfileByAuthorityRepository implements UserProfileByAuthorityIn
                     'profile_group_role',
                     ProfileVoter::class,
                     'profile_group_voter',
-                    'profile_group_voter.role = profile_group_role.id AND profile_group_voter.prefix = :voter'
+                    'profile_group_voter.role = profile_group_role.id AND profile_group_voter.prefix = :voter',
                 )
                     ->setParameter('voter', $this->voter, RoleVoterPrefix::TYPE);
 
@@ -168,7 +168,7 @@ final class UserProfileByAuthorityRepository implements UserProfileByAuthorityIn
                 'profile_group_usr',
                 UserProfile::class,
                 'users_profile',
-                'users_profile.id = profile_group_usr.profile'
+                'users_profile.id = profile_group_usr.profile',
             );
 
         $dbal
@@ -176,7 +176,7 @@ final class UserProfileByAuthorityRepository implements UserProfileByAuthorityIn
                 'users_profile',
                 UserProfilePersonal::class,
                 'users_profile_personal',
-                'users_profile_personal.event = users_profile.event'
+                'users_profile_personal.event = users_profile.event',
             );
 
 

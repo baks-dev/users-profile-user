@@ -29,38 +29,38 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 final class ActivateUserProfileDTO implements UserProfileEventInterface
 {
-	#[Assert\NotBlank]
-	#[Assert\Uuid]
-	private readonly UserProfileEventUid $id;
-	
-	/** Тип профиля */
-	#[Assert\Valid]
-	private Info\InfoDTO $info;
-	
-	
-	public function __construct()
-	{
-		$this->info = new Info\InfoDTO();
-	}
-	
-	
-	/* EVENT */
-	public function getEvent() : UserProfileEventUid
-	{
-		return $this->id;
-	}
-	
-	
-	/* INFO */
-	public function getInfo() : Info\InfoDTO
-	{
-		return $this->info;
-	}
-	
-	
-	public function setInfo(Info\InfoDTO $info) : void
-	{
-		$this->info = $info;
-	}
-	
+    #[Assert\NotBlank]
+    #[Assert\Uuid]
+    private readonly UserProfileEventUid $id;
+
+    /** Тип профиля */
+    #[Assert\Valid]
+    private Info\InfoDTO $info;
+
+
+    public function __construct()
+    {
+        $this->info = new Info\InfoDTO();
+    }
+
+
+    /* EVENT */
+    public function getEvent(): UserProfileEventUid
+    {
+        return $this->id;
+    }
+
+
+    /* INFO */
+    public function getInfo(): Info\InfoDTO
+    {
+        return $this->info;
+    }
+
+
+    public function setInfo(Info\InfoDTO $info): void
+    {
+        $this->info = $info;
+    }
+
 }

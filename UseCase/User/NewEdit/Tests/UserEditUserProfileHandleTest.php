@@ -97,16 +97,14 @@ final class UserEditUserProfileHandleTest extends KernelTestCase
         self::assertTrue($InfoDTO->getStatus()->equals(UserProfileStatusModeration::class));
 
 
-
         /** @var PersonalDTO $PersonalDTO */
         $PersonalDTO = $UserProfileDTO->getPersonal();
         self::assertEquals('ZuUXSSPtpW', $PersonalDTO->getUsername());
         $PersonalDTO->setUsername('pKgraBObwG');
 
 
-
         self::assertNotNull($PersonalDTO->getBirthday());
-        self::assertInstanceOf(DateTimeImmutable::class,  $PersonalDTO->getBirthday());
+        self::assertInstanceOf(DateTimeImmutable::class, $PersonalDTO->getBirthday());
         $birthday = new DateTimeImmutable();
         $PersonalDTO->setBirthday($birthday);
 

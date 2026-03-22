@@ -29,38 +29,38 @@ use Twig\TwigFunction;
 
 final class UserProfileDiscountExtension extends AbstractExtension
 {
-	
-	public function getFunctions() : array
-	{
-		return [
-			new TwigFunction('user_profile_discount', [$this, 'discount'], ['needs_environment' => true]),
-		];
-	}
-	
-	/** Пользовательская скидка */
-	public function discount(Environment $twig, $number): mixed
-	{
+
+    public function getFunctions(): array
+    {
+        return [
+            new TwigFunction('user_profile_discount', [$this, 'discount'], ['needs_environment' => true]),
+        ];
+    }
+
+    /** Пользовательская скидка */
+    public function discount(Environment $twig, $number): mixed
+    {
         if(empty($number))
         {
             return false;
         }
 
-		$globals = $twig->getGlobals();
+        $globals = $twig->getGlobals();
 
-		if(array_key_exists('baks_profile', $globals))
-		{
-			if(array_key_exists('profile_discount', $globals['baks_profile']))
-			{
+        if(array_key_exists('baks_profile', $globals))
+        {
+            if(array_key_exists('profile_discount', $globals['baks_profile']))
+            {
                 if(false === empty($globals['baks_profile']['profile_discount']))
-				{
-					$discount = $globals['baks_profile']['profile_discount'];
+                {
+                    $discount = $globals['baks_profile']['profile_discount'];
 
                     return $number - ($number / 100 * $discount);
-				}
-			}
-		}
-		
-		return false;
-	}
-	
+                }
+            }
+        }
+
+        return false;
+    }
+
 }

@@ -27,6 +27,6 @@ use BaksDev\Users\Profile\UserProfile\Type\Event\UserProfileEventUid;
 
 interface UserProfileEventInterface
 {
-	public function getEvent() : ?UserProfileEventUid;
+    public function getEvent(): ?UserProfileEventUid;
 
 }

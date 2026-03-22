@@ -62,11 +62,6 @@ class UserProfileDiscount extends EntityEvent
         return (string) $this->event;
     }
 
-    public function getValue(): string
-    {
-        return $this->value;
-    }
-
     /** @return UserProfileDiscountInterface */
     public function getDto($dto): mixed
     {
@@ -97,5 +92,10 @@ class UserProfileDiscount extends EntityEvent
         }
 
         throw new InvalidArgumentException(sprintf('Class %s interface error', $dto::class));
+    }
+
+    public function getValue(): string
+    {
+        return $this->value;
     }
 }

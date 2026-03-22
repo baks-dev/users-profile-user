@@ -88,7 +88,7 @@ final class ActivateUserProfileHandler extends AbstractHandler
         $this->messageDispatch
             ->dispatch(
                 message: new UserProfileMessage($this->main->getId(), $this->main->getEvent(), $command->getEvent()),
-                transport: 'users-profile-user'
+                transport: 'users-profile-user',
             );
 
         return $this->main;

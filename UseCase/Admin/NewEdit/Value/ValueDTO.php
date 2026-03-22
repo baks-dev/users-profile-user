@@ -31,91 +31,91 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 final class ValueDTO implements UserProfileValueInterface
 {
-	/** Связь на поле */
-	private TypeProfileSectionFieldUid $field;
-	
-	/** Заполненное значение */
-	private ?string $value = null;
-	
-	/* Вспомогательные свойства */
-	
-	private ?TypeProfileSectionUid $section = null;
-	
-	private ?string $sectionName = null;
-	
-	private ?string $sectionDescription = null;
-	
-	private string $type;
+    /** Связь на поле */
+    private TypeProfileSectionFieldUid $field;
+
+    /** Заполненное значение */
+    private ?string $value = null;
+
+    /* Вспомогательные свойства */
+
+    private ?TypeProfileSectionUid $section = null;
+
+    private ?string $sectionName = null;
+
+    private ?string $sectionDescription = null;
+
+    private string $type;
 
 
     private bool $remove = false;
-	
-	
-	/** Связь на поле */
-	
-	public function getField() : TypeProfileSectionFieldUid
-	{
-		return $this->field;
-	}
-	
-	
-	public function setField(TypeProfileSectionFieldUid $field) : void
-	{
-		$this->field = $field;
-	}
-	
-	
-	/** Заполненное значение */
-	
-	public function getValue() : ?string
-	{
-		return $this->value;
-	}
-	
-	
-	public function setValue(?string $value) : void
-	{
-		$this->value = $value;
-	}
-	
-	
-	/* Вспомогательные методы */
-	
-	public function updSection(FieldValueFormDTO $fieldValueFormDTO)
-	{
-		
-		$this->section = $fieldValueFormDTO->getSection();
-		$this->sectionName = $fieldValueFormDTO->getSectionName();
-		$this->sectionDescription = $fieldValueFormDTO->getSectionDescription();
-		$this->type = $fieldValueFormDTO->getType();
-	}
-	
-	
-	/**
-	 * @return TypeProfileSectionUid
-	 */
-	public function getSection() : ?TypeProfileSectionUid
-	{
-		return $this->section;
-	}
-	
-	
-	public function getSectionName(): string
-	{
-		return $this->sectionName;
-	}
-	
-	
-	public function getSectionDescription() : ?string
-	{
-		return $this->sectionDescription;
-	}
-	
-	
-	public function getType(): string
-	{
-		return $this->type;
-	}
+
+
+    /** Связь на поле */
+
+    public function getField(): TypeProfileSectionFieldUid
+    {
+        return $this->field;
+    }
+
+
+    public function setField(TypeProfileSectionFieldUid $field): void
+    {
+        $this->field = $field;
+    }
+
+
+    /** Заполненное значение */
+
+    public function getValue(): ?string
+    {
+        return $this->value;
+    }
+
+
+    public function setValue(?string $value): void
+    {
+        $this->value = $value;
+    }
+
+
+    /* Вспомогательные методы */
+
+    public function updSection(FieldValueFormDTO $fieldValueFormDTO)
+    {
+
+        $this->section = $fieldValueFormDTO->getSection();
+        $this->sectionName = $fieldValueFormDTO->getSectionName();
+        $this->sectionDescription = $fieldValueFormDTO->getSectionDescription();
+        $this->type = $fieldValueFormDTO->getType();
+    }
+
+
+    /**
+     * @return TypeProfileSectionUid
+     */
+    public function getSection(): ?TypeProfileSectionUid
+    {
+        return $this->section;
+    }
+
+
+    public function getSectionName(): string
+    {
+        return $this->sectionName;
+    }
+
+
+    public function getSectionDescription(): ?string
+    {
+        return $this->sectionDescription;
+    }
+
+
+    public function getType(): string
+    {
+        return $this->type;
+    }
 
     public function isRemove(): bool
     {

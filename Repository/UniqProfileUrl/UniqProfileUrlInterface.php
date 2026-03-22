@@ -25,5 +25,5 @@ namespace BaksDev\Users\Profile\UserProfile\Repository\UniqProfileUrl;
 
 interface UniqProfileUrlInterface
 {
-	
+
 }

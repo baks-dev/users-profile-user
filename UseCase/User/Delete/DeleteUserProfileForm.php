@@ -32,30 +32,30 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class DeleteUserProfileForm extends AbstractType
 {
-	
-	public function buildForm(FormBuilderInterface $builder, array $options) : void
-	{
-		/* Удалить ******************************************************/
-		$builder->add
-		(
-			'delete',
-			SubmitType::class,
-			['label' => 'Delete', 'label_html' => true, 'attr' => ['class' => 'btn-danger']]
-		);
-		
-	}
-	
-	
-	public function configureOptions(OptionsResolver $resolver) : void
-	{
-		$resolver->setDefaults
-		(
-			[
-				'data_class' => DeleteUserProfileDTO::class,
-				'method' => 'POST',
-				'attr' => ['class' => 'w-100'],
-			]
-		);
-	}
-	
+
+    public function buildForm(FormBuilderInterface $builder, array $options): void
+    {
+        /* Удалить ******************************************************/
+        $builder->add
+        (
+            'delete',
+            SubmitType::class,
+            ['label' => 'Delete', 'label_html' => true, 'attr' => ['class' => 'btn-danger']],
+        );
+
+    }
+
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults
+        (
+            [
+                'data_class' => DeleteUserProfileDTO::class,
+                'method' => 'POST',
+                'attr' => ['class' => 'w-100'],
+            ],
+        );
+    }
+
 }

@@ -104,11 +104,11 @@ final class InfoDTO implements UserProfileInfoInterface
         return $this->active;
     }
 
-//    public function activate(): self
-//    {
-//        $this->active = true;
-//        return $this;
-//    }
+    //    public function activate(): self
+    //    {
+    //        $this->active = true;
+    //        return $this;
+    //    }
 
 
     /* URL */

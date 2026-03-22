@@ -12,32 +12,33 @@
 
 		{# Закрываем секцию, eсли она не первая в цикле #}
 		{% if loop.first != true %}
-			</div></div>
-		{% endif %}
+            </div></div>
+        {% endif %}
 		
 
 		{# Открываем новую секцию #}
-		<div class="card border-light">
-		
-		<div class="card-header border-light bg-body">
-			<div class="card-title">
-				<h4>
-					{# Название секции #}
-					{{ value.vars.data.sectionName }}
-				</h4>
-			</div>
-		</div>
-		
-		<div class="card-body">
-	
-	{% endif %}
+<div class="card border-light">
 
-	{{ form_widget(value) }}
+    <div class="card-header border-light bg-body">
+        <div class="card-title">
+            <h4>
+                {# Название секции #}
+                {{ value.vars.data.sectionName }}
+            </h4>
+        </div>
+    </div>
 
-{% endfor %}
+    <div class="card-body">
+
+        {% endif %}
+
+        {{ form_widget(value) }}
+
+        {% endfor %}
 
 
-	{# Закрываем секцию, eсли такова имеется #}
-	{% if section is not null %}
-		</div></div>
-	{% endif %}
+        {# Закрываем секцию, eсли такова имеется #}
+        {% if section is not null %}
+    </div>
+</div>
+{% endif %}

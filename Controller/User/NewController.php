@@ -81,7 +81,7 @@ final class NewController extends AbstractController
 
             /** сбрасываем и присваиваем активный профиль с соответствующими только с правами ROLE_USER */
 
-            if($handle instanceof  UserProfile)
+            if($handle instanceof UserProfile)
             {
 
                 //$Session = $request->getSession();
@@ -100,7 +100,7 @@ final class NewController extends AbstractController
                 $impersonationToken = new  UsernamePasswordToken(
                     $CurrentUsr,
                     "user",
-                    ['ROLE_USER']
+                    ['ROLE_USER'],
                 );
 
                 $tokenStorage->setToken($impersonationToken);

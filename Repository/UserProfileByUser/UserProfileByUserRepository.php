@@ -92,7 +92,7 @@ final class UserProfileByUserRepository implements UserProfileByUserInterface
                 'userprofile',
                 UserProfileInfo::class,
                 'info',
-                'info.profile = userprofile.id AND info.usr = :usr '.($status ? 'AND info.status = :status' : '')
+                'info.profile = userprofile.id AND info.usr = :usr '.($status ? 'AND info.status = :status' : ''),
             );
 
         $dbal->setParameter('usr', $usr?->getId(), UserUid::TYPE);
@@ -108,7 +108,7 @@ final class UserProfileByUserRepository implements UserProfileByUserInterface
                 'userprofile',
                 UserProfileEvent::class,
                 'userprofile_event',
-                'userprofile_event.id = userprofile.event'
+                'userprofile_event.id = userprofile.event',
             );
 
 
@@ -119,7 +119,7 @@ final class UserProfileByUserRepository implements UserProfileByUserInterface
                 'userprofile',
                 UserProfilePersonal::class,
                 'personal',
-                'personal.event = userprofile.event'
+                'personal.event = userprofile.event',
             );
 
         $dbal
@@ -130,7 +130,7 @@ final class UserProfileByUserRepository implements UserProfileByUserInterface
                 'userprofile_event',
                 UserProfileAvatar::class,
                 'avatar',
-                'avatar.event = userprofile_event.id'
+                'avatar.event = userprofile_event.id',
             );
 
         /** Аккаунт пользователя */
@@ -139,7 +139,7 @@ final class UserProfileByUserRepository implements UserProfileByUserInterface
             'info',
             Account::class,
             'account',
-            'account.id = info.usr'
+            'account.id = info.usr',
         );
 
         $dbal
@@ -149,7 +149,7 @@ final class UserProfileByUserRepository implements UserProfileByUserInterface
                 'account',
                 AccountEvent::class,
                 'account_event',
-                'account_event.id = account.event'
+                'account_event.id = account.event',
             );
 
 
@@ -159,7 +159,7 @@ final class UserProfileByUserRepository implements UserProfileByUserInterface
             'userprofile_event',
             TypeProfile::class,
             'type',
-            'type.id = userprofile_event.type'
+            'type.id = userprofile_event.type',
         );
 
 
@@ -169,7 +169,7 @@ final class UserProfileByUserRepository implements UserProfileByUserInterface
                 'type',
                 TypeProfileTrans::class,
                 'type_trans',
-                'type_trans.event = type.event AND type_trans.local = :local'
+                'type_trans.event = type.event AND type_trans.local = :local',
             );
 
 

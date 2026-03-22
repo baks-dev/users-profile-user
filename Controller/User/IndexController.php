@@ -57,7 +57,7 @@ final class IndexController extends AbstractController
             ->createForm(
                 type: SearchForm::class,
                 data: $search,
-                options: ['action' => $this->generateUrl('users-profile-user:user.index')]
+                options: ['action' => $this->generateUrl('users-profile-user:user.index')],
             )
             ->handleRequest($request);
 
@@ -71,7 +71,7 @@ final class IndexController extends AbstractController
                 'profiles' => $profile,
                 'query' => $query,
                 'search' => $searchForm->createView(),
-            ]
+            ],
         );
     }
 }

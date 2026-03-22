@@ -32,72 +32,73 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 final class InfoDTO implements UserProfileInfoInterface
 {
-	/**
+    /**
      * Пользователь, кому принадлежит профиль
      */
     #[Assert\Uuid]
     #[Assert\NotBlank]
-	private readonly UserUid $usr;
-	
-	/**
+    private readonly UserUid $usr;
+
+    /**
      * Статус активности профиля
      */
     #[Assert\NotBlank]
-	private readonly UserProfileStatus $status;
+    private readonly UserProfileStatus $status;
 
     /** Текущий активный профиль, выбранный пользователем */
     #[Assert\IsFalse]
     private readonly bool $active;
-	
-	/**
+
+    /**
      * Ссылка на профиль пользователя
      */
     #[Assert\NotBlank]
-	private string $url;
+    private string $url;
 
-	public function __construct() {
+    public function __construct()
+    {
         $this->status = new UserProfileStatus(UserProfileStatusBlock::class);
         $this->active = false;
     }
-	
-	
-	/* USER */
-	public function getUsr() : UserUid
-	{
-		return $this->usr;
-	}
 
-	public function setUsr(UserUid $usr) : void
-	{
-		$this->usr = $usr;
-	}
-	
-	/* STATUS */
-	
-	/**
-	 * Обновляем статус на Модерация
-	 *
-	 * @return UserProfileStatus
-	 */
-	public function getStatus() : UserProfileStatus
-	{
-		return $this->status;
-	}
 
-	/* URL */
-	public function getUrl(): string
-	{
+    /* USER */
+    public function getUsr(): UserUid
+    {
+        return $this->usr;
+    }
+
+    public function setUsr(UserUid $usr): void
+    {
+        $this->usr = $usr;
+    }
+
+    /* STATUS */
+
+    /**
+     * Обновляем статус на Модерация
+     *
+     * @return UserProfileStatus
+     */
+    public function getStatus(): UserProfileStatus
+    {
+        return $this->status;
+    }
+
+    /* URL */
+    public function getUrl(): string
+    {
         $this->updateUrlUniq();
-		return $this->url;
-	}
+        return $this->url;
+    }
 
-	public function setUrl(string $url) : void
-	{
-		$this->url = $url;
-	}
+    public function setUrl(string $url): void
+    {
+        $this->url = $url;
+    }
 
-	public function updateUrlUniq() : void
-	{
-		$this->url = uniqid($this->url.'_', false);
-	}
+    public function updateUrlUniq(): void
+    {
+        $this->url = uniqid($this->url.'_', false);
+    }
 }

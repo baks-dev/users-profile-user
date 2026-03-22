@@ -34,11 +34,6 @@ final class UserProfileStatusActive implements UserProfileStatusInterface
 {
     public const STATUS = 'act';
 
-    public function getValue(): string
-    {
-        return self::STATUS;
-    }
-
     /**
      * Сортировка (чем меньше число - тем первым в итерации будет значение)
      */
@@ -50,5 +45,10 @@ final class UserProfileStatusActive implements UserProfileStatusInterface
     public static function equals(string $status): bool
     {
         return self::STATUS === $status;
+    }
+
+    public function getValue(): string
+    {
+        return self::STATUS;
     }
 }

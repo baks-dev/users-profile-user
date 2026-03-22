@@ -61,11 +61,6 @@ class UserProfileShop extends EntityEvent
         return (string) $this->event;
     }
 
-    public function getValue(): bool
-    {
-        return $this->value === true;
-    }
-
     /** @return UserProfileShopInterface */
     public function getDto($dto): mixed
     {
@@ -96,5 +91,10 @@ class UserProfileShop extends EntityEvent
         }
 
         throw new InvalidArgumentException(sprintf('Class %s interface error', $dto::class));
+    }
+
+    public function getValue(): bool
+    {
+        return $this->value === true;
     }
 }

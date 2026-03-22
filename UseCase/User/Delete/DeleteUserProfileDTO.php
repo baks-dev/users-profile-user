@@ -29,55 +29,55 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 final class DeleteUserProfileDTO implements UserProfileEventInterface
 {
-	#[Assert\NotBlank]
-	#[Assert\Uuid]
-	private readonly UserProfileEventUid $id;
-	
-	/** Тип профиля */
-	#[Assert\Valid]
-	private Info\InfoDTO $info;
-	
-	/** Модификатор профиля пользователя */
-	#[Assert\Valid]
-	private Modify\ModifyDTO $modify;
-	
-	
-	public function __construct()
-	{
-		$this->modify = new Modify\ModifyDTO();
-		$this->info = new Info\InfoDTO();
-	}
-	
-	
-	/* EVENT */
-	
-	public function getEvent() : ?UserProfileEventUid
-	{
-		return $this->id;
-	}
-	
-	
-	/* INFO */
-	public function getInfo() : Info\InfoDTO
-	{
-		return $this->info;
-	}
-	
-	
-	public function setInfo(Info\InfoDTO $info) : void
-	{
-		$this->info = $info;
-	}
-	
-	
-	/* MODIFY  */
-	
-	/**
-	 * @return Modify\ModifyDTO
-	 */
-	public function getModify() : Modify\ModifyDTO
-	{
-		return $this->modify;
-	}
-	
+    #[Assert\NotBlank]
+    #[Assert\Uuid]
+    private readonly UserProfileEventUid $id;
+
+    /** Тип профиля */
+    #[Assert\Valid]
+    private Info\InfoDTO $info;
+
+    /** Модификатор профиля пользователя */
+    #[Assert\Valid]
+    private Modify\ModifyDTO $modify;
+
+
+    public function __construct()
+    {
+        $this->modify = new Modify\ModifyDTO();
+        $this->info = new Info\InfoDTO();
+    }
+
+
+    /* EVENT */
+
+    public function getEvent(): ?UserProfileEventUid
+    {
+        return $this->id;
+    }
+
+
+    /* INFO */
+    public function getInfo(): Info\InfoDTO
+    {
+        return $this->info;
+    }
+
+
+    public function setInfo(Info\InfoDTO $info): void
+    {
+        $this->info = $info;
+    }
+
+
+    /* MODIFY  */
+
+    /**
+     * @return Modify\ModifyDTO
+     */
+    public function getModify(): Modify\ModifyDTO
+    {
+        return $this->modify;
+    }
+
 }

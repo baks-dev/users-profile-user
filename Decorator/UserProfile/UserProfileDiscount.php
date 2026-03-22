@@ -43,16 +43,16 @@ final class UserProfileDiscount implements UserProfileInterface
         $this->currentUserProfile = $currentUserProfile;
     }
 
+    public static function priority(): int
+    {
+        return 700;
+    }
+
     /** Возвращает значение (value) */
     public function getValue(UserUid $usr): string|bool
     {
         $current = $this->currentUserProfile->fetchProfileAssociative($usr);
 
         return empty($current['profile_discount']) ? false : (string) $current['profile_discount'];
-    }
-
-    public static function priority(): int
-    {
-        return 700;
     }
 }

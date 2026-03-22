@@ -29,40 +29,39 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 final class AvatarDTO implements UserProfileAvatarInterface
 {
-	public ?File $file = null;
-	
-	/** Название файла без расширения */
-	private ?string $name = null;
-	
-	/** Расширение файла  */
-	private ?string $ext = null;
-	
-	/** Флаг загрузки файла CDN */
-	private bool $cdn = false;
+    public ?File $file = null;
 
-	
-	/** Название файла без расширения */
-	
-	public function getName() : ?string
-	{
-		return $this->name;
-	}
-	
+    /** Название файла без расширения */
+    private ?string $name = null;
 
-	
-	/** Расширение файла  */
-	
-	public function getExt() : ?string
-	{
-		return $this->ext;
-	}
+    /** Расширение файла  */
+    private ?string $ext = null;
 
-	
-	/** Флаг загрузки файла CDN */
-	
-	public function getCdn() : bool
-	{
-		return $this->cdn;
-	}
-	
+    /** Флаг загрузки файла CDN */
+    private bool $cdn = false;
+
+
+    /** Название файла без расширения */
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+
+    /** Расширение файла  */
+
+    public function getExt(): ?string
+    {
+        return $this->ext;
+    }
+
+
+    /** Флаг загрузки файла CDN */
+
+    public function getCdn(): bool
+    {
+        return $this->cdn;
+    }
+
 }

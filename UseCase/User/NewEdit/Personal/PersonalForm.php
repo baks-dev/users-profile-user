@@ -37,12 +37,12 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class PersonalForm extends AbstractType
 {
-	public function buildForm(FormBuilderInterface $builder, array $options) : void
-	{
-		/* TextType */
-		$builder->add('username', TextType::class);
-		
-		//$builder->add('location', TextType::class, ['help' => '&nbsp;', 'help_html' => true,]);
+    public function buildForm(FormBuilderInterface $builder, array $options): void
+    {
+        /* TextType */
+        $builder->add('username', TextType::class);
+
+        //$builder->add('location', TextType::class, ['help' => '&nbsp;', 'help_html' => true,]);
 
         $builder->add('location', TextType::class, ['attr' => ['data-address' => true]]);
 
@@ -51,13 +51,13 @@ final class PersonalForm extends AbstractType
 
         $builder->get('latitude')->addModelTransformer(
             new CallbackTransformer(
-                function ($gps) {
+                function($gps) {
                     return $gps instanceof GpsLatitude ? $gps->getValue() : $gps;
                 },
-                function ($gps) {
+                function($gps) {
                     return new GpsLatitude($gps);
-                }
-            )
+                },
+            ),
         );
 
         /* GPS долгота:*/
@@ -66,53 +66,52 @@ final class PersonalForm extends AbstractType
 
         $builder->get('longitude')->addModelTransformer(
             new CallbackTransformer(
-                function ($gps) {
+                function($gps) {
                     return $gps instanceof GpsLongitude ? $gps->getValue() : $gps;
                 },
-                function ($gps) {
+                function($gps) {
                     return new GpsLongitude($gps);
-                }
-            )
+                },
+            ),
         );
 
 
-		$builder
-			->add('gender', ChoiceType::class, [
+        $builder
+            ->add('gender', ChoiceType::class, [
                 'choices' => Gender::cases(false),
-				'choice_value' => function(?Gender $gender) {
-					return $gender?->getGenderValue();
-				},
-				'choice_label' => function(Gender $gender) {
-					return $gender->getGenderValue();
-				},
-				
-				'label' => false,
-				'expanded' => true,
-				'multiple' => false,
-				'required' => true,
+                'choice_value' => function(?Gender $gender) {
+                    return $gender?->getGenderValue();
+                },
+                'choice_label' => function(Gender $gender) {
+                    return $gender->getGenderValue();
+                },
+
+                'label' => false,
+                'expanded' => true,
+                'multiple' => false,
+                'required' => true,
                 'translation_domain' => 'gender_type',
-			])
-		;
-		
-		$builder->add('birthday', DateType::class, [
-			'widget' => 'single_text',
-			'html5' => false,
-			'attr' => ['class' => 'js-datepicker'],
-			'required' => false,
-			'format' => 'dd.MM.yyyy',
-			'input' => 'datetime_immutable',
-		]);
-	}
-	
-	
-	public function configureOptions(OptionsResolver $resolver) : void
-	{
-		$resolver->setDefaults
-		(
-			[
-				'data_class' => PersonalDTO::class,
-			]
-		);
-	}
-	
+            ]);
+
+        $builder->add('birthday', DateType::class, [
+            'widget' => 'single_text',
+            'html5' => false,
+            'attr' => ['class' => 'js-datepicker'],
+            'required' => false,
+            'format' => 'dd.MM.yyyy',
+            'input' => 'datetime_immutable',
+        ]);
+    }
+
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults
+        (
+            [
+                'data_class' => PersonalDTO::class,
+            ],
+        );
+    }
+
 }

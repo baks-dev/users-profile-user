@@ -24,7 +24,6 @@
 namespace BaksDev\Users\Profile\UserProfile\UseCase\User\NewEdit\Info;
 
 use BaksDev\Users\Profile\UserProfile\Repository\UsersChoiceForm\UsersChoiceInterface;
-use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
 use BaksDev\Users\User\Type\Id\UserUid;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -34,24 +33,24 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class InfoForm extends AbstractType
 {
-	
-	//    private UsersChoiceInterface $usersChoice;
-	//
-	//    public function __construct(UsersChoiceInterface $usersChoice) {
-	//        $this->usersChoice = $usersChoice;
-	//    }
-	
-	public function buildForm(FormBuilderInterface $builder, array $options) : void
-	{
-		$builder->add('url', TextType::class);
-	}
-	
-	
-	public function configureOptions(OptionsResolver $resolver) : void
-	{
-		$resolver->setDefaults([
-			'data_class' => InfoDTO::class,
-		]);
-	}
-	
+
+    //    private UsersChoiceInterface $usersChoice;
+    //
+    //    public function __construct(UsersChoiceInterface $usersChoice) {
+    //        $this->usersChoice = $usersChoice;
+    //    }
+
+    public function buildForm(FormBuilderInterface $builder, array $options): void
+    {
+        $builder->add('url', TextType::class);
+    }
+
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'data_class' => InfoDTO::class,
+        ]);
+    }
+
 }

@@ -7,12 +7,12 @@
 
 {# ---- CSS ------------------------------------------------------------ #}
 {% block title %}
-	{{ 'admin.page.index'|trans }}
+    {{ 'admin.page.index'|trans }}
 {% endblock %}
 
 {# ---- CSS ------------------------------------------------------------ #}
 {% block stylesheets %}
-	{# <link href="{{ path(app.request.attributes.get('_route')~'.css') }}" rel="stylesheet"> #}
+    {# <link href="{{ path(app.request.attributes.get('_route')~'.css') }}" rel="stylesheet"> #}
 {% endblock %}
 
 {# ---- HEADER-БЛОК ------------------------------------------------------------ #}
@@ -29,7 +29,7 @@
 
 {# ---- КОНТЕНТ-БЛОК ------------------------------------------------------------ #}
 {% block content %}
-	{{ include(_self|replace({ "template.html.twig": baks_settings.device~"/content.html.twig" })) }}
+    {{ include(_self|replace({ "template.html.twig": baks_settings.device~"/content.html.twig" })) }}
 
 {% endblock %}
 

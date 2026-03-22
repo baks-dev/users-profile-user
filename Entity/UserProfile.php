@@ -56,16 +56,6 @@ class UserProfile
         return (string) $this->id;
     }
 
-    public function getId(): UserProfileUid
-    {
-        return $this->id;
-    }
-
-    public function setId(UserProfileUid $id): void
-    {
-        $this->id = $id;
-    }
-
     public function getEvent(): UserProfileEventUid
     {
         return $this->event;
@@ -74,5 +64,15 @@ class UserProfile
     public function setEvent(UserProfileEventUid|UserProfileEvent $event): void
     {
         $this->event = $event instanceof UserProfileEvent ? $event->getId() : $event;
+    }
+
+    public function getId(): UserProfileUid
+    {
+        return $this->id;
+    }
+
+    public function setId(UserProfileUid $id): void
+    {
+        $this->id = $id;
     }
 }

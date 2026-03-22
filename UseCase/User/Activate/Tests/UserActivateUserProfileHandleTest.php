@@ -78,7 +78,7 @@ final class UserActivateUserProfileHandleTest extends KernelTestCase
             UserProfileEvent::class,
             'event',
             'WITH',
-            'event.id = profile.event'
+            'event.id = profile.event',
         );
 
         /** @var UserProfileEvent $UserProfileEvent */
@@ -103,7 +103,6 @@ final class UserActivateUserProfileHandleTest extends KernelTestCase
         $AvatarDTO = $UserProfileDTO->getAvatar();
 
 
-
         /** @var InfoDTO $InfoDTO */
         $InfoDTO = $UserProfileDTO->getInfo();
         self::assertEquals('peZKhJNBpR', $InfoDTO->getUrl());
@@ -115,9 +114,8 @@ final class UserActivateUserProfileHandleTest extends KernelTestCase
         $PersonalDTO = $UserProfileDTO->getPersonal();
         self::assertEquals('pKgraBObwG', $PersonalDTO->getUsername());
         self::assertNotNull($PersonalDTO->getBirthday());
-        self::assertInstanceOf(DateTimeImmutable::class,  $PersonalDTO->getBirthday());
+        self::assertInstanceOf(DateTimeImmutable::class, $PersonalDTO->getBirthday());
         self::assertEquals('pyOwknWCtO', $PersonalDTO->getLocation());
-
 
 
         /** ACTIVATE */

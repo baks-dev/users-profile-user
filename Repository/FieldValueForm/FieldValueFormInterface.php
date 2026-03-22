@@ -28,5 +28,5 @@ use BaksDev\Users\User\Type\Id\UserUid;
 
 interface FieldValueFormInterface
 {
-    public function userFilter(User|UserUid|string $user) : self;
+    public function userFilter(User|UserUid|string $user): self;
 }

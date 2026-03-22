@@ -47,71 +47,6 @@ use Symfony\Component\DependencyInjection\Attribute\When;
 #[When(env: 'test')]
 final class UserDeleteUserProfileTest extends KernelTestCase
 {
-    #[DependsOnClass(UserNewUserProfileHandleTest::class)]
-    #[DependsOnClass(UserEditUserProfileHandleTest::class)]
-    #[DependsOnClass(UserActivateUserProfileHandleTest::class)]
-    public function testUseCase(): void
-    {
-        $container = self::getContainer();
-
-        /** @var EntityManagerInterface $em */
-        //$em = $container->get(EntityManagerInterface::class);
-
-        /** @var ORMQueryBuilder $ORMQueryBuilder */
-        $ORMQueryBuilder = $container->get(ORMQueryBuilder::class);
-
-        $qb = $ORMQueryBuilder->createQueryBuilder(self::class);
-
-        $qb->select('event')
-            ->from(UserProfile::class, 'profile')
-            ->where('profile.id = :profile')
-            ->setParameter('profile', UserProfileUid::TEST);
-
-        $qb->leftJoin(
-            UserProfileEvent::class,
-            'event',
-            'WITH',
-            'event.id = profile.event'
-        );
-
-        /** @var UserProfileEvent $UserProfileEvent */
-        $UserProfileEvent = $qb->getOneOrNullResult();
-        self::assertNotNull($UserProfileEvent);
-
-
-        $DeleteUserProfileDTO = $UserProfileEvent->getDto(DeleteUserProfileDTO::class);
-
-        /** @var ValidatorCollectionInterface $ValidatorCollection */
-        $ValidatorCollection = $container->get(ValidatorCollectionInterface::class);
-
-        $ValidatorCollection->add($DeleteUserProfileDTO);
-        self::assertFalse($ValidatorCollection->isInvalid());
-
-
-        /** @var DeleteUserProfileHandler $DeleteUserProfileHandler */
-        $UserProfileHandler = self::getContainer()->get(DeleteUserProfileHandler::class);
-        $handle = $UserProfileHandler->handle($DeleteUserProfileDTO);
-
-        self::assertTrue(($handle instanceof UserProfile), $handle.': Ошибка UserProfile');
-    }
-
-    #[DependsOnClass(UserNewUserProfileHandleTest::class)]
-    #[DependsOnClass(UserEditUserProfileHandleTest::class)]
-    #[DependsOnClass(UserActivateUserProfileHandleTest::class)]
-    public function testComplete(): void
-    {
-        $container = self::getContainer();
-
-        /** @var EntityManagerInterface $em */
-        $em = $container->get(EntityManagerInterface::class);
-        $UserProfile = $em->getRepository(UserProfile::class)
-            ->find(UserProfileUid::TEST);
-        self::assertNull($UserProfile);
-
-        $em->clear();
-        //$em->close();
-    }
-
     /**
      * Этот метод вызывается после выполнения последнего теста этого тестового класса.
      */
@@ -147,6 +82,71 @@ final class UserDeleteUserProfileTest extends KernelTestCase
         }
 
         $em->flush();
+
+        $em->clear();
+        //$em->close();
+    }
+
+    #[DependsOnClass(UserNewUserProfileHandleTest::class)]
+    #[DependsOnClass(UserEditUserProfileHandleTest::class)]
+    #[DependsOnClass(UserActivateUserProfileHandleTest::class)]
+    public function testUseCase(): void
+    {
+        $container = self::getContainer();
+
+        /** @var EntityManagerInterface $em */
+        //$em = $container->get(EntityManagerInterface::class);
+
+        /** @var ORMQueryBuilder $ORMQueryBuilder */
+        $ORMQueryBuilder = $container->get(ORMQueryBuilder::class);
+
+        $qb = $ORMQueryBuilder->createQueryBuilder(self::class);
+
+        $qb->select('event')
+            ->from(UserProfile::class, 'profile')
+            ->where('profile.id = :profile')
+            ->setParameter('profile', UserProfileUid::TEST);
+
+        $qb->leftJoin(
+            UserProfileEvent::class,
+            'event',
+            'WITH',
+            'event.id = profile.event',
+        );
+
+        /** @var UserProfileEvent $UserProfileEvent */
+        $UserProfileEvent = $qb->getOneOrNullResult();
+        self::assertNotNull($UserProfileEvent);
+
+
+        $DeleteUserProfileDTO = $UserProfileEvent->getDto(DeleteUserProfileDTO::class);
+
+        /** @var ValidatorCollectionInterface $ValidatorCollection */
+        $ValidatorCollection = $container->get(ValidatorCollectionInterface::class);
+
+        $ValidatorCollection->add($DeleteUserProfileDTO);
+        self::assertFalse($ValidatorCollection->isInvalid());
+
+
+        /** @var DeleteUserProfileHandler $DeleteUserProfileHandler */
+        $UserProfileHandler = self::getContainer()->get(DeleteUserProfileHandler::class);
+        $handle = $UserProfileHandler->handle($DeleteUserProfileDTO);
+
+        self::assertTrue(($handle instanceof UserProfile), $handle.': Ошибка UserProfile');
+    }
+
+    #[DependsOnClass(UserNewUserProfileHandleTest::class)]
+    #[DependsOnClass(UserEditUserProfileHandleTest::class)]
+    #[DependsOnClass(UserActivateUserProfileHandleTest::class)]
+    public function testComplete(): void
+    {
+        $container = self::getContainer();
+
+        /** @var EntityManagerInterface $em */
+        $em = $container->get(EntityManagerInterface::class);
+        $UserProfile = $em->getRepository(UserProfile::class)
+            ->find(UserProfileUid::TEST);
+        self::assertNull($UserProfile);
 
         $em->clear();
         //$em->close();

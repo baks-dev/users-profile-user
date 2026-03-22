@@ -56,7 +56,7 @@ final readonly class UserProfileGpsRepository implements UserProfileGpsInterface
                 'main',
                 UserProfilePersonal::class,
                 'personal',
-                'personal.event = main.event'
+                'personal.event = main.event',
             );
 
         $result = $dbal

@@ -106,7 +106,7 @@ final class AllUserProfileRepository implements AllUserProfileInterface
                 'user_profile',
                 UserProfileInfo::class,
                 'user_profile_info',
-                'user_profile_info.profile = user_profile.id '.($status ? 'AND user_profile_info.status = :status' : '')
+                'user_profile_info.profile = user_profile.id '.($status ? 'AND user_profile_info.status = :status' : ''),
             );
 
         if($status)
@@ -120,7 +120,7 @@ final class AllUserProfileRepository implements AllUserProfileInterface
             'user_profile',
             UserProfileModify::class,
             'user_profile_modify',
-            'user_profile_modify.event = user_profile.event'
+            'user_profile_modify.event = user_profile.event',
         );
 
 
@@ -132,7 +132,7 @@ final class AllUserProfileRepository implements AllUserProfileInterface
                 'user_profile',
                 UserProfilePersonal::class,
                 'user_profile_personal',
-                'user_profile_personal.event = user_profile.event'
+                'user_profile_personal.event = user_profile.event',
             );
 
 
@@ -144,7 +144,7 @@ final class AllUserProfileRepository implements AllUserProfileInterface
                 'user_profile',
                 UserProfileAvatar::class,
                 'user_profile_avatar',
-                'user_profile_avatar.event = user_profile.event'
+                'user_profile_avatar.event = user_profile.event',
             );
 
         /* Аккаунт пользователя */
@@ -154,7 +154,7 @@ final class AllUserProfileRepository implements AllUserProfileInterface
             'user_profile_info',
             Account::class,
             'account',
-            'account.id = user_profile_info.usr'
+            'account.id = user_profile_info.usr',
         );
 
         /** Событие пользователя User\Event */
@@ -165,7 +165,7 @@ final class AllUserProfileRepository implements AllUserProfileInterface
                 'account',
                 AccountEvent::class,
                 'account_event',
-                'account_event.id = account.event'
+                'account_event.id = account.event',
             );
 
 
@@ -177,7 +177,7 @@ final class AllUserProfileRepository implements AllUserProfileInterface
                 'user_profile_info',
                 AccountTelegram::class,
                 'telegram',
-                'telegram.id = user_profile_info.usr'
+                'telegram.id = user_profile_info.usr',
             );
 
             /** Событие пользователя User\Event */
@@ -188,11 +188,10 @@ final class AllUserProfileRepository implements AllUserProfileInterface
                     'telegram',
                     AccountTelegramEvent::class,
                     'telegram_event',
-                    'telegram_event.id = telegram.event'
+                    'telegram_event.id = telegram.event',
                 );
         }
 
-        
 
         /* Тип профиля */
 
@@ -200,14 +199,14 @@ final class AllUserProfileRepository implements AllUserProfileInterface
             'user_profile',
             UserProfileEvent::class,
             'user_profile_event',
-            'user_profile_event.id = user_profile.event'
+            'user_profile_event.id = user_profile.event',
         );
 
         $dbal->leftJoin(
             'user_profile_event',
             TypeProfile::class,
             'profile_type',
-            'profile_type.id = user_profile_event.type'
+            'profile_type.id = user_profile_event.type',
         );
 
         /*$dbal->leftJoin(
@@ -223,7 +222,7 @@ final class AllUserProfileRepository implements AllUserProfileInterface
                 'profile_type',
                 TypeProfileTrans::class,
                 'profile_type_trans',
-                'profile_type_trans.event = profile_type.event AND profile_type_trans.local = :local'
+                'profile_type_trans.event = profile_type.event AND profile_type_trans.local = :local',
             );
 
 

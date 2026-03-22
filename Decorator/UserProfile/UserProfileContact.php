@@ -43,15 +43,15 @@ final class UserProfileContact implements UserProfileInterface
         $this->currentUserAccount = $currentUserProfile;
     }
 
+    public static function priority(): int
+    {
+        return 700;
+    }
+
     /** Возвращает значение (value) */
     public function getValue(UserUid $usr): bool|string
     {
         $current = $this->currentUserAccount->fetchAccountAssociative($usr);
         return $current['account_email'] ?? false;
-    }
-
-    public static function priority(): int
-    {
-        return 700;
     }
 }

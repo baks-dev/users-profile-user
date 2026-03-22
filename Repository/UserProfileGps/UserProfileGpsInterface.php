@@ -29,6 +29,7 @@ interface UserProfileGpsInterface
 {
     /**
      * Метод возвращает данные геолокации и адрес профиля пользователя
+     *
      * @return array{
      *     'location' : string,
      *     'latitude': string,

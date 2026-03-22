@@ -44,27 +44,27 @@ final class UserProfileAvatar implements UserProfileInterface
     public function __construct(
         CurrentUserProfileInterface $currentUserProfile,
         #[Autowire(env: 'CDN_HOST')] string $CDN_HOST
-    ) {
+    )
+    {
         $this->currentUserProfile = $currentUserProfile;
         $this->CDN_HOST = $CDN_HOST;
     }
 
+    public static function priority(): int
+    {
+        return 700;
+    }
 
     /** Возвращает значение (value) */
     public function getValue(UserUid $usr): bool|string
     {
         $current = $this->currentUserProfile->fetchProfileAssociative($usr);
 
-        if ($current && !empty($current['profile_avatar_ext']))
+        if($current && !empty($current['profile_avatar_ext']))
         {
             return ($current['profile_avatar_cdn'] ? 'https://'.$this->CDN_HOST : '').$current['profile_avatar_name'].($current['profile_avatar_cdn'] ? '/min.' : '/image.').$current['profile_avatar_ext'];
         }
 
         return false;
-    }
-
-    public static function priority(): int
-    {
-        return 700;
     }
 }

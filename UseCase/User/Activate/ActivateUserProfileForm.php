@@ -32,29 +32,29 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class ActivateUserProfileForm extends AbstractType
 {
-	public function buildForm(FormBuilderInterface $builder, array $options) : void
-	{
-		/* Удалить ******************************************************/
-		$builder->add
-		(
-			'activate',
-			SubmitType::class,
-			['attr' => ['class' => 'btn-danger']]
-		);
-		
-	}
-	
-	
-	public function configureOptions(OptionsResolver $resolver) : void
-	{
-		$resolver->setDefaults
-		(
-			[
-				'data_class' => ActivateUserProfileDTO::class,
-				'method' => 'POST',
-				'attr' => ['class' => 'w-100'],
-			]
-		);
-	}
-	
+    public function buildForm(FormBuilderInterface $builder, array $options): void
+    {
+        /* Удалить ******************************************************/
+        $builder->add
+        (
+            'activate',
+            SubmitType::class,
+            ['attr' => ['class' => 'btn-danger']],
+        );
+
+    }
+
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults
+        (
+            [
+                'data_class' => ActivateUserProfileDTO::class,
+                'method' => 'POST',
+                'attr' => ['class' => 'w-100'],
+            ],
+        );
+    }
+
 }

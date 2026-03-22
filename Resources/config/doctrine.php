@@ -34,7 +34,7 @@ use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatusType;
 use Symfony\Config\DoctrineConfig;
 
-return static function (ContainerConfigurator $container, DoctrineConfig $doctrine) {
+return static function(ContainerConfigurator $container, DoctrineConfig $doctrine) {
 
     $doctrine->dbal()->type(UserProfileUid::TYPE)->class(UserProfileUidType::class);
 

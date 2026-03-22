@@ -42,7 +42,7 @@ interface UserProfileByAuthorityInterface
      * Фильтр по конкретному профилю либо профилю активного пользователя
      *
      * @return Generator<int, UserProfileUid>
-     *@example  $this->withProfile('018d3196-6c42-7822-9366-c023860f90bb');
+     * @example  $this->withProfile('018d3196-6c42-7822-9366-c023860f90bb');
      *
      * Фильтр по роли
      * @see withRole

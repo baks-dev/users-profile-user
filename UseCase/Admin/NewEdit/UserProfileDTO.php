@@ -45,17 +45,14 @@ use Symfony\Component\Validator\Constraints as Assert;
 final class UserProfileDTO implements UserProfileEventInterface
 {
 
-    /** Идентификатор события */
-    #[Assert\Uuid]
-    private ?UserProfileEventUid $id = null;
-
-    /** Тип профиля */
-    private TypeProfileUid $type;
-
     /** Аватарка профиля */
     #[Assert\Valid]
     protected ?AvatarDTO $avatar;
-
+    /** Идентификатор события */
+    #[Assert\Uuid]
+    private ?UserProfileEventUid $id = null;
+    /** Тип профиля */
+    private TypeProfileUid $type;
     /** Постоянная информация профиля */
     #[Assert\Valid]
     private InfoDTO $info;
@@ -195,15 +192,6 @@ final class UserProfileDTO implements UserProfileEventInterface
         $this->avatar = $avatar;
     }
 
-
-    /** Значения профиля */
-
-    public function getValue(): ArrayCollection
-    {
-        return $this->value;
-    }
-
-
     public function addValue(ValueDTO $value): void
     {
         $filter = $this->value->filter(function(ValueDTO $element) use ($value) {
@@ -221,6 +209,12 @@ final class UserProfileDTO implements UserProfileEventInterface
         $ValueDTO->setValue($value->getValue());
     }
 
+    /** Значения профиля */
+
+    public function getValue(): ArrayCollection
+    {
+        return $this->value;
+    }
 
     public function removeValue(ValueDTO $value): void
     {

@@ -53,6 +53,7 @@ final class InfoDTO implements UserProfileInfoInterface
 
     /**
      * Персональная скидка профиля
+     *
      * @deprecated Переносится в UserProfileDiscount
      */
     #[Deprecated]
@@ -137,6 +138,7 @@ final class InfoDTO implements UserProfileInfoInterface
 
     /**
      * Персональная скидка профиля
+     *
      * @deprecated Переносится в UserProfileDiscount
      */
     #[Deprecated]
@@ -147,6 +149,7 @@ final class InfoDTO implements UserProfileInfoInterface
 
     /**
      * Персональная скидка профиля
+     *
      * @deprecated Переносится в UserProfileDiscount
      */
     #[Deprecated]

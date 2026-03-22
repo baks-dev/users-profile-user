@@ -29,90 +29,90 @@ use BaksDev\Users\Profile\TypeProfile\Type\Section\Id\TypeProfileSectionUid;
 
 final class FieldValueFormDTO
 {
-	private TypeProfileSectionUid $section;
-	
-	private string $sectionName;
-	
-	private ?string $sectionDescription;
-	
-	private TypeProfileSectionFieldUid $field;
-	
-	private string $fieldName;
-	
-	private ?string $fieldDescription;
-	
-	private InputField $type;
-	
-	private bool $required;
-	
-	
-	public function __construct(
-		$section,
-		string $sectionName,
-		?string $sectionDescription,
-		$field,
-		string $fieldName,
-		?string $fieldDescription,
-		InputField $type,
-		bool $required,
-	)
-	{
-		$this->section = $section;
-		$this->sectionName = $sectionName;
-		$this->sectionDescription = $sectionDescription;
-		$this->field = $field;
-		$this->fieldName = $fieldName;
-		$this->fieldDescription = $fieldDescription;
-		$this->type = $type;
-		$this->required = $required;
-	}
-	
-	
-	public function getSection() : TypeProfileSectionUid
-	{
-		return $this->section;
-	}
-	
-	
-	public function getSectionName(): string
-	{
-		return $this->sectionName;
-	}
-	
-	
-	public function getSectionDescription() : ?string
-	{
-		return $this->sectionDescription;
-	}
-	
-	
-	public function getField() : TypeProfileSectionFieldUid
-	{
-		return $this->field;
-	}
-	
-	
-	public function getFieldName(): string
-	{
-		return $this->fieldName;
-	}
-	
-	
-	public function getFieldDescription() : ?string
-	{
-		return $this->fieldDescription;
-	}
-	
-	
-	public function getType() : InputField
-	{
-		return $this->type;
-	}
-	
-	
-	public function isRequired() : bool
-	{
-		return $this->required;
-	}
-	
+    private TypeProfileSectionUid $section;
+
+    private string $sectionName;
+
+    private ?string $sectionDescription;
+
+    private TypeProfileSectionFieldUid $field;
+
+    private string $fieldName;
+
+    private ?string $fieldDescription;
+
+    private InputField $type;
+
+    private bool $required;
+
+
+    public function __construct(
+        $section,
+        string $sectionName,
+        ?string $sectionDescription,
+        $field,
+        string $fieldName,
+        ?string $fieldDescription,
+        InputField $type,
+        bool $required,
+    )
+    {
+        $this->section = $section;
+        $this->sectionName = $sectionName;
+        $this->sectionDescription = $sectionDescription;
+        $this->field = $field;
+        $this->fieldName = $fieldName;
+        $this->fieldDescription = $fieldDescription;
+        $this->type = $type;
+        $this->required = $required;
+    }
+
+
+    public function getSection(): TypeProfileSectionUid
+    {
+        return $this->section;
+    }
+
+
+    public function getSectionName(): string
+    {
+        return $this->sectionName;
+    }
+
+
+    public function getSectionDescription(): ?string
+    {
+        return $this->sectionDescription;
+    }
+
+
+    public function getField(): TypeProfileSectionFieldUid
+    {
+        return $this->field;
+    }
+
+
+    public function getFieldName(): string
+    {
+        return $this->fieldName;
+    }
+
+
+    public function getFieldDescription(): ?string
+    {
+        return $this->fieldDescription;
+    }
+
+
+    public function getType(): InputField
+    {
+        return $this->type;
+    }
+
+
+    public function isRequired(): bool
+    {
+        return $this->required;
+    }
+
 }

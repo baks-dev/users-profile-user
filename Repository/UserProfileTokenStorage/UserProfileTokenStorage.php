@@ -43,30 +43,6 @@ final class UserProfileTokenStorage implements UserProfileTokenStorageInterface
     ) {}
 
     /**
-     * Метод возвращает идентификатор профиля текущего пользователя либо идентификатор олицетворенного
-     */
-    public function getProfile(): UserProfileUid|false
-    {
-        if($this->env === 'test')
-        {
-            return new UserProfileUid(UserProfileUid::TEST);
-        }
-
-        if(is_null($this->profile))
-        {
-            $user = $this->userTokenStorage->getUserInterface();
-            $this->profile = $user instanceof UserInterface ? new UserProfileUid($user->getProfile()) : false;
-        }
-
-        if($this->profile === false)
-        {
-            throw new UserProfileAccessDeniedException('Для доступа к ресурсу необходима полная аутентификация');
-        }
-
-        return $this->profile;
-    }
-
-    /**
      * Метод всегда возвращает идентификатор профиля текущего пользователя вне зависимости от олицетворения
      */
     public function getProfileCurrent(): UserProfileUid|false
@@ -88,6 +64,30 @@ final class UserProfileTokenStorage implements UserProfileTokenStorageInterface
         }
 
         return $this->current;
+    }
+
+    /**
+     * Метод возвращает идентификатор профиля текущего пользователя либо идентификатор олицетворенного
+     */
+    public function getProfile(): UserProfileUid|false
+    {
+        if($this->env === 'test')
+        {
+            return new UserProfileUid(UserProfileUid::TEST);
+        }
+
+        if(is_null($this->profile))
+        {
+            $user = $this->userTokenStorage->getUserInterface();
+            $this->profile = $user instanceof UserInterface ? new UserProfileUid($user->getProfile()) : false;
+        }
+
+        if($this->profile === false)
+        {
+            throw new UserProfileAccessDeniedException('Для доступа к ресурсу необходима полная аутентификация');
+        }
+
+        return $this->profile;
     }
 
     /**

@@ -25,7 +25,7 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use BaksDev\Users\Profile\UserProfile\BaksDevUsersProfileUserProfileBundle;
 
-return static function (ContainerConfigurator $configurator) {
+return static function(ContainerConfigurator $configurator) {
 
     $services = $configurator->services()
         ->defaults()
@@ -46,7 +46,7 @@ return static function (ContainerConfigurator $configurator) {
 
     $services->load(
         $NAMESPACE.'Type\UserProfileStatus\Status\\',
-        $PATH.implode(DIRECTORY_SEPARATOR, ['Type', 'UserProfileStatus', 'Status'])
+        $PATH.implode(DIRECTORY_SEPARATOR, ['Type', 'UserProfileStatus', 'Status']),
     );
 
 };

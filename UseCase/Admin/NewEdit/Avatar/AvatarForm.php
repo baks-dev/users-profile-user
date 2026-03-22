@@ -30,31 +30,30 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class AvatarForm extends AbstractType
 {
-	
-	public function buildForm(FormBuilderInterface $builder, array $options): void
+
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-		$builder
-			->add(
-				'file', FileType::class,
-				[
-					'label' => false,
-					'required' => false,
-					'attr' => ['accept' => ".png, .jpg, .jpeg, .webp, .gif"],
-				]
-			)
-		;
-		
-	}
-	
-	
-	public function configureOptions(OptionsResolver $resolver): void
+        $builder
+            ->add(
+                'file', FileType::class,
+                [
+                    'label' => false,
+                    'required' => false,
+                    'attr' => ['accept' => ".png, .jpg, .jpeg, .webp, .gif"],
+                ],
+            );
+
+    }
+
+
+    public function configureOptions(OptionsResolver $resolver): void
     {
-		$resolver->setDefaults
-		(
-			[
-				'data_class' => AvatarDTO::class,
-			]
-		);
-	}
-	
+        $resolver->setDefaults
+        (
+            [
+                'data_class' => AvatarDTO::class,
+            ],
+        );
+    }
+
 }

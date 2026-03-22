@@ -33,7 +33,6 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Core\Authentication\Token\SwitchUserToken;
 
 /** Идентификатор профиля пользователя */
-
 #[AutoconfigureTag('baks.user.profile')]
 final class UserProfileCurrent implements UserProfileInterface
 {
@@ -47,7 +46,12 @@ final class UserProfileCurrent implements UserProfileInterface
     {
         $this->tokenStorage = $tokenStorage;
     }
-    
+
+    public static function priority(): int
+    {
+        return 700;
+    }
+
     /** Возвращает значение (value) */
     public function getValue(UserUid $usr): bool|string
     {
@@ -66,10 +70,5 @@ final class UserProfileCurrent implements UserProfileInterface
         }
 
         return (string) $user?->getProfile();
-    }
-
-    public static function priority(): int
-    {
-        return 700;
     }
 }

@@ -34,65 +34,68 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: 'users_profile_settings')]
 class UserProfileSettings
 {
-	/** ID */
-	#[ORM\Id]
-	#[ORM\Column(type: UserProfileSettingsIdentifier::TYPE)]
-	private UserProfileSettingsIdentifier $id;
-	
-	/** Очищать корзину старше n дней */
-	#[ORM\Column(name: 'settings_truncate', type: Types::SMALLINT, length: 3, nullable: false)]
-	private int $settingsTruncate = 365;
-	
-	/** Очищать события старше n дней */
-	#[ORM\Column(name: 'settings_history', type: Types::SMALLINT, length: 3, nullable: false)]
-	private int $settingsHistory = 365;
-	
-	
-	public function __construct() { $this->id = new UserProfileSettingsIdentifier(); }
-	
-	
-	/**
-	 * @return UserProfileSettingsIdentifier
-	 */
-	public function getId() : UserProfileSettingsIdentifier
-	{
-		return $this->id;
-	}
-	
-	
-	/**
-	 * @return int
-	 */
-	public function getSettingsTruncate() : int
-	{
-		return $this->settingsTruncate;
-	}
-	
-	
-	/**
-	 * @param int $settingsTruncate
-	 */
-	public function setSettingsTruncate(int $settingsTruncate) : void
-	{
-		$this->settingsTruncate = $settingsTruncate;
-	}
-	
-	
-	/**
-	 * @return int
-	 */
-	public function getSettingsHistory() : int
-	{
-		return $this->settingsHistory;
-	}
-	
-	
-	/**
-	 * @param int $settingsHistory
-	 */
-	public function setSettingsHistory(int $settingsHistory) : void
-	{
-		$this->settingsHistory = $settingsHistory;
-	}
-	
+    /** ID */
+    #[ORM\Id]
+    #[ORM\Column(type: UserProfileSettingsIdentifier::TYPE)]
+    private UserProfileSettingsIdentifier $id;
+
+    /** Очищать корзину старше n дней */
+    #[ORM\Column(name: 'settings_truncate', type: Types::SMALLINT, length: 3, nullable: false)]
+    private int $settingsTruncate = 365;
+
+    /** Очищать события старше n дней */
+    #[ORM\Column(name: 'settings_history', type: Types::SMALLINT, length: 3, nullable: false)]
+    private int $settingsHistory = 365;
+
+
+    public function __construct()
+    {
+        $this->id = new UserProfileSettingsIdentifier();
+    }
+
+
+    /**
+     * @return UserProfileSettingsIdentifier
+     */
+    public function getId(): UserProfileSettingsIdentifier
+    {
+        return $this->id;
+    }
+
+
+    /**
+     * @return int
+     */
+    public function getSettingsTruncate(): int
+    {
+        return $this->settingsTruncate;
+    }
+
+
+    /**
+     * @param int $settingsTruncate
+     */
+    public function setSettingsTruncate(int $settingsTruncate): void
+    {
+        $this->settingsTruncate = $settingsTruncate;
+    }
+
+
+    /**
+     * @return int
+     */
+    public function getSettingsHistory(): int
+    {
+        return $this->settingsHistory;
+    }
+
+
+    /**
+     * @param int $settingsHistory
+     */
+    public function setSettingsHistory(int $settingsHistory): void
+    {
+        $this->settingsHistory = $settingsHistory;
+    }
+
 }

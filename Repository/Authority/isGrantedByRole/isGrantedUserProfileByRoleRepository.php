@@ -146,7 +146,7 @@ final class isGrantedUserProfileByRoleRepository implements isGrantedUserProfile
                 'profile_group_users',
                 ProfileGroup::class,
                 'profile_group',
-                'profile_group.prefix = profile_group_users.prefix AND profile_group.profile = :authority'
+                'profile_group.prefix = profile_group_users.prefix AND profile_group.profile = :authority',
             )
                 ->setParameter('authority', $this->authority, UserProfileUid::TYPE);
         }
@@ -156,7 +156,7 @@ final class isGrantedUserProfileByRoleRepository implements isGrantedUserProfile
                 'profile_group_users',
                 ProfileGroup::class,
                 'profile_group',
-                'profile_group.prefix = profile_group_users.prefix'
+                'profile_group.prefix = profile_group_users.prefix',
             );
 
             $dbal->andWhere('profile_group_users.authority IS NULL');
@@ -169,7 +169,7 @@ final class isGrantedUserProfileByRoleRepository implements isGrantedUserProfile
                 'profile_group',
                 ProfileRole::class,
                 'profile_group_role',
-                'profile_group_role.event = profile_group.event'
+                'profile_group_role.event = profile_group.event',
             );
 
         /** Роли */
@@ -178,7 +178,7 @@ final class isGrantedUserProfileByRoleRepository implements isGrantedUserProfile
                 'profile_group_role',
                 ProfileVoter::class,
                 'profile_group_voter',
-                'profile_group_voter.role = profile_group_role.id AND profile_group_voter.prefix = :voter'
+                'profile_group_voter.role = profile_group_role.id AND profile_group_voter.prefix = :voter',
             )
             ->setParameter('voter', $this->voter, RoleVoterPrefix::TYPE);
 
@@ -198,7 +198,7 @@ final class isGrantedUserProfileByRoleRepository implements isGrantedUserProfile
         {
             throw new InvalidArgumentException(sprintf(
                 'Некорректной тип для параметра $this->profile: `%s`. Ожидаемый тип %s',
-                var_export($this->profile, true), UserProfileUid::class
+                var_export($this->profile, true), UserProfileUid::class,
             ));
         }
 
@@ -206,7 +206,7 @@ final class isGrantedUserProfileByRoleRepository implements isGrantedUserProfile
         {
             throw new InvalidArgumentException(sprintf(
                 'Некорректной тип для параметра $this->authority: `%s`. Ожидаемый тип %s',
-                var_export($this->authority, true), UserProfileUid::class
+                var_export($this->authority, true), UserProfileUid::class,
             ));
         }
 
@@ -214,7 +214,7 @@ final class isGrantedUserProfileByRoleRepository implements isGrantedUserProfile
         {
             throw new InvalidArgumentException(sprintf(
                 'Некорректной тип для параметра $this->voter: `%s`. Ожидаемый тип %s',
-                var_export($this->voter, true), RoleVoterPrefix::class
+                var_export($this->voter, true), RoleVoterPrefix::class,
             ));
         }
     }

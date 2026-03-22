@@ -33,17 +33,17 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 final class PersonalDTO implements UserProfilePersonalInterface
 {
-	/** Никнейм пользователя */
-	private string $username;
-	
-	/** Пол (m: мужской, w-женский) */
-	private Gender $gender;
-	
-	/** Дата рождения */
-	private ?DateTimeImmutable $birthday = null;
-	
-	/** Местоположение */
-	private ?string $location = null;
+    /** Никнейм пользователя */
+    private string $username;
+
+    /** Пол (m: мужской, w-женский) */
+    private Gender $gender;
+
+    /** Дата рождения */
+    private ?DateTimeImmutable $birthday = null;
+
+    /** Местоположение */
+    private ?string $location = null;
 
 
     /**
@@ -59,63 +59,65 @@ final class PersonalDTO implements UserProfilePersonalInterface
     private ?GpsLongitude $longitude = null;
 
 
+    public function __construct()
+    {
+        $this->gender = new Gender(GenderMen::class);
+    }
 
-    public function __construct() { $this->gender = new Gender(GenderMen::class); }
-	
-	
-	/** Никнейм пользователя */
-	public function getUsername(): string
-	{
-		return $this->username;
-	}
-	
-	
-	public function setUsername(string $username) : void
-	{
-		$this->username = $username;
-	}
-	
-	
-	/** Пол (m: мужской, w-женский) */
-	
-	public function getGender() : Gender
-	{
-		return $this->gender;
-	}
-	
-	
-	public function setGender(Gender $gender) : void
-	{
-		$this->gender = $gender;
-	}
-	
-	
-	/** Дата рождения */
-	
-	public function getBirthday() : ?DateTimeImmutable
-	{
-		return $this->birthday;
-	}
-	
-	
-	public function setBirthday(?DateTimeImmutable $birthday) : void
-	{
-		$this->birthday = $birthday;
-	}
-	
-	
-	/** Местоположение */
-	
-	public function getLocation() : ?string
-	{
-		return $this->location;
-	}
-	
-	
-	public function setLocation(?string $location) : void
-	{
-		$this->location = $location;
-	}
+
+    /** Никнейм пользователя */
+    public function getUsername(): string
+    {
+        return $this->username;
+    }
+
+
+    public function setUsername(string $username): void
+    {
+        $this->username = $username;
+    }
+
+
+    /** Пол (m: мужской, w-женский) */
+
+    public function getGender(): Gender
+    {
+        return $this->gender;
+    }
+
+
+    public function setGender(Gender $gender): void
+    {
+        $this->gender = $gender;
+    }
+
+
+    /** Дата рождения */
+
+    public function getBirthday(): ?DateTimeImmutable
+    {
+        return $this->birthday;
+    }
+
+
+    public function setBirthday(?DateTimeImmutable $birthday): void
+    {
+        $this->birthday = $birthday;
+    }
+
+
+    /** Местоположение */
+
+    public function getLocation(): ?string
+    {
+        return $this->location;
+    }
+
+
+    public function setLocation(?string $location): void
+    {
+        $this->location = $location;
+    }
 
     /**
      * Latitude
@@ -144,7 +146,6 @@ final class PersonalDTO implements UserProfilePersonalInterface
         $this->longitude = $longitude;
         return $this;
     }
-
 
 
 }

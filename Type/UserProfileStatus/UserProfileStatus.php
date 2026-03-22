@@ -78,22 +78,32 @@ final class UserProfileStatus
         throw new InvalidArgumentException(sprintf('Not found UserProfileStatus %s', $status));
     }
 
-    public function __toString(): string
-    {
-        return $this->status->getvalue();
-    }
-
-
     public function getUserProfileStatus(): UserProfileStatusInterface
     {
         return $this->status;
+    }
+
+    public static function getDeclared(): array
+    {
+        return array_filter(
+            get_declared_classes(),
+            static function($className) {
+                return in_array(UserProfileStatusInterface::class, class_implements($className), true);
+            },
+        );
+    }
+
+    public function equals(mixed $status): bool
+    {
+        $status = new self($status);
+
+        return $this->getUserProfileStatusValue() === $status->getUserProfileStatusValue();
     }
 
     public function getUserProfileStatusValue(): string
     {
         return $this->status->getValue();
     }
-
 
     public static function cases(): array
     {
@@ -109,22 +119,9 @@ final class UserProfileStatus
         return $case;
     }
 
-    public static function getDeclared(): array
+    public function __toString(): string
     {
-        return array_filter(
-            get_declared_classes(),
-            static function ($className) {
-                return in_array(UserProfileStatusInterface::class, class_implements($className), true);
-            }
-        );
-    }
-
-
-    public function equals(mixed $status): bool
-    {
-        $status = new self($status);
-
-        return $this->getUserProfileStatusValue() === $status->getUserProfileStatusValue();
+        return $this->status->getvalue();
     }
 
 

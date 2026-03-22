@@ -29,21 +29,21 @@ use BaksDev\Users\Profile\UserProfile\Entity\Event\Modify\UserProfileModifyInter
 
 final class ModifyDTO implements UserProfileModifyInterface
 {
-	/** Модификатор */
-	private readonly ModifyAction $action;
+    /** Модификатор */
+    private readonly ModifyAction $action;
 
-	public function __construct()
-	{
-		$this->action = new ModifyAction(ModifyActionDelete::class);
-	}
+    public function __construct()
+    {
+        $this->action = new ModifyAction(ModifyActionDelete::class);
+    }
 
-	/**
-	 * @return ModifyAction
-	 */
-	public function getAction() : ModifyAction
-	{
-		return $this->action;
-	}
+    /**
+     * @return ModifyAction
+     */
+    public function getAction(): ModifyAction
+    {
+        return $this->action;
+    }
 
 }
 

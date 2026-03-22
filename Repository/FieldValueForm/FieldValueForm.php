@@ -48,7 +48,8 @@ final class FieldValueForm implements FieldValueFormInterface
 
     public function __construct(
         ORMQueryBuilder $ORMQueryBuilder
-    ) {
+    )
+    {
         $this->ORMQueryBuilder = $ORMQueryBuilder;
     }
 
@@ -76,7 +77,7 @@ final class FieldValueForm implements FieldValueFormInterface
             field.required
             
         )',
-            FieldValueFormDTO::class
+            FieldValueFormDTO::class,
         );
 
         $orm->select($select);
@@ -90,21 +91,21 @@ final class FieldValueForm implements FieldValueFormInterface
             TypeProfileSection::class,
             'section',
             'WITH',
-            'section.id = field.section'
+            'section.id = field.section',
         );
 
         $orm->join(
             TypeProfileSectionTrans::class,
             'section_trans',
             'WITH',
-            'section_trans.section = section.id AND section_trans.local = :local'
+            'section_trans.section = section.id AND section_trans.local = :local',
         );
 
         $orm->join(
             TypeProfileSectionFieldTrans::class,
             'field_trans',
             'WITH',
-            'field_trans.field = field.id AND field_trans.local = :local'
+            'field_trans.field = field.id AND field_trans.local = :local',
         );
 
         return $orm->enableCache('users-profile-type', 86400)->getOneOrNullResult();
@@ -134,7 +135,7 @@ final class FieldValueForm implements FieldValueFormInterface
             field.required
             
         )',
-            FieldValueFormDTO::class
+            FieldValueFormDTO::class,
         );
 
 
@@ -147,14 +148,14 @@ final class FieldValueForm implements FieldValueFormInterface
             TypeProfileSection::class,
             'section',
             'WITH',
-            'section.id = field.section'
+            'section.id = field.section',
         );
 
         $orm->join(
             TypeProfileSectionTrans::class,
             'section_trans',
             'WITH',
-            'section_trans.section = section.id AND section_trans.local = :local'
+            'section_trans.section = section.id AND section_trans.local = :local',
         );
 
 
@@ -162,7 +163,7 @@ final class FieldValueForm implements FieldValueFormInterface
             TypeProfileSectionFieldTrans::class,
             'field_trans',
             'WITH',
-            'field_trans.field = field.id AND field_trans.local = :local'
+            'field_trans.field = field.id AND field_trans.local = :local',
         );
 
         $orm->orderBy('section.sort');
@@ -218,7 +219,7 @@ final class FieldValueForm implements FieldValueFormInterface
             field.required
             
         )',
-            FieldValueFormDTO::class
+            FieldValueFormDTO::class,
         );
 
         $orm->select($select);
@@ -229,28 +230,28 @@ final class FieldValueForm implements FieldValueFormInterface
             TypeProfile::class,
             'profile',
             'WITH',
-            'profile.id = :profile'
+            'profile.id = :profile',
         );
 
         $orm->join(
             TypeProfileEvent::class,
             'event',
             'WITH',
-            'event.id = profile.event'
+            'event.id = profile.event',
         );
 
         $orm->join(
             TypeProfileSection::class,
             'section',
             'WITH',
-            'section.id = field.section AND  section.event = event.id'
+            'section.id = field.section AND  section.event = event.id',
         );
 
         $orm->join(
             TypeProfileSectionTrans::class,
             'section_trans',
             'WITH',
-            'section_trans.section = section.id AND section_trans.local = :local'
+            'section_trans.section = section.id AND section_trans.local = :local',
         );
 
 
@@ -258,7 +259,7 @@ final class FieldValueForm implements FieldValueFormInterface
             TypeProfileSectionFieldTrans::class,
             'field_trans',
             'WITH',
-            'field_trans.field = field.id AND field_trans.local = :local'
+            'field_trans.field = field.id AND field_trans.local = :local',
         );
 
 
@@ -280,13 +281,13 @@ final class FieldValueForm implements FieldValueFormInterface
                 profile_info.usr = :user AND 
                 profile_info.status = :active AND 
                 profile_info.active = true
-            '
+            ',
                 )
                 ->setParameter('user', $this->user, UserUid::TYPE)
                 ->setParameter(
                     'active',
                     UserProfileStatusActive::class,
-                    UserProfileStatus::TYPE
+                    UserProfileStatus::TYPE,
                 );
 
 
@@ -295,7 +296,7 @@ final class FieldValueForm implements FieldValueFormInterface
                     UserProfile::class,
                     'user_profile',
                     'WITH',
-                    'user_profile.id = profile_info.profile'
+                    'user_profile.id = profile_info.profile',
                 );
 
 
@@ -341,7 +342,7 @@ final class FieldValueForm implements FieldValueFormInterface
             field.required
             
         )',
-            FieldValueFormDTO::class
+            FieldValueFormDTO::class,
         );
 
 
@@ -354,7 +355,7 @@ final class FieldValueForm implements FieldValueFormInterface
             TypeProfileSectionFieldTrans::class,
             'field_trans',
             'WITH',
-            'field_trans.field = field.id AND field_trans.local = :local'
+            'field_trans.field = field.id AND field_trans.local = :local',
         );
 
         /* SECTION */
@@ -363,14 +364,14 @@ final class FieldValueForm implements FieldValueFormInterface
             TypeProfileSection::class,
             'section',
             'WITH',
-            'section.id = field.section'
+            'section.id = field.section',
         );
 
         $orm->leftJoin(
             TypeProfileSectionTrans::class,
             'section_trans',
             'WITH',
-            'section_trans.section = section.id AND section_trans.local = :local'
+            'section_trans.section = section.id AND section_trans.local = :local',
         );
 
 
@@ -378,7 +379,7 @@ final class FieldValueForm implements FieldValueFormInterface
             TypeProfileEvent::class,
             'event',
             'WITH',
-            'event.id = section.event'
+            'event.id = section.event',
         );
 
 
@@ -386,7 +387,7 @@ final class FieldValueForm implements FieldValueFormInterface
             TypeProfile::class,
             'profile',
             'WITH',
-            'profile.id =  event.profile'
+            'profile.id =  event.profile',
         );
 
 

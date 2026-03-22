@@ -98,90 +98,90 @@ final class ValueForm extends AbstractType
                             $form->add('value', $fieldType->form(), $option);
 
 
-//                            $form->add
-//                            (
-//                                'value',
-//                                $fieldType->form(),
-//                                [
-//                                    'label' => $field->getFieldName(),
-//                                    'required' => $field->isRequired(),
-//                                ]
-//                            );
+                            //                            $form->add
+                            //                            (
+                            //                                'value',
+                            //                                $fieldType->form(),
+                            //                                [
+                            //                                    'label' => $field->getFieldName(),
+                            //                                    'required' => $field->isRequired(),
+                            //                                ]
+                            //                            );
                         }
-//                        else
-//                        {
-//                            $form->add
-//                            (
-//                                'value',
-//                                TextType::class,
-//                                [
-//                                    'label' => $field->getFieldName(),
-//                                    'required' => $field->isRequired(),
-//                                ]
-//                            );
-//                        }
+                        //                        else
+                        //                        {
+                        //                            $form->add
+                        //                            (
+                        //                                'value',
+                        //                                TextType::class,
+                        //                                [
+                        //                                    'label' => $field->getFieldName(),
+                        //                                    'required' => $field->isRequired(),
+                        //                                ]
+                        //                            );
+                        //                        }
                     }
                     else
                     {
                         $form->remove('value');
                     }
 
-//                    return;
-//
-//                    //dump($field);
-//                    //dump($fieldType);
-//
-//                    dd($data->getField());
-//
-//
-//                    if(isset($fields[(string) $data->getField()]))
-//                    {
-//                        /** @var FieldValueFormDTO $field */
-//                        $field = end($fields[(string) $data->getField()]);
-//                        $fieldType = $this->fieldsChoice->getChoice($field->getType());
-//
-//
-//
-//                        if($fieldType)
-//                        {
-//                            $form->add
-//                            (
-//                                'value',
-//                                $fieldType->form(),
-//                                [
-//                                    'label' => $field->getFieldName(),
-//                                    'required' => $field->isRequired(),
-//                                ]
-//                            );
-//                        }
-//                        else
-//                        {
-//                            $form->add
-//                            (
-//                                'value',
-//                                TextType::class,
-//                                [
-//                                    'label' => $field->getFieldName(),
-//                                    'required' => $field->isRequired(),
-//                                ]
-//                            );
-//                        }
-//                    }
-//                    else
-//                    {
-//
-//                        /** Удаляем элементы, которые были удалены  */
-//                        $form->remove('value');
-//
-////                        $form->add
-////                        (
-////                            'value',
-////                            TextType::class, ['label' => false]
-////                        );
-//                    }
+                    //                    return;
+                    //
+                    //                    //dump($field);
+                    //                    //dump($fieldType);
+                    //
+                    //                    dd($data->getField());
+                    //
+                    //
+                    //                    if(isset($fields[(string) $data->getField()]))
+                    //                    {
+                    //                        /** @var FieldValueFormDTO $field */
+                    //                        $field = end($fields[(string) $data->getField()]);
+                    //                        $fieldType = $this->fieldsChoice->getChoice($field->getType());
+                    //
+                    //
+                    //
+                    //                        if($fieldType)
+                    //                        {
+                    //                            $form->add
+                    //                            (
+                    //                                'value',
+                    //                                $fieldType->form(),
+                    //                                [
+                    //                                    'label' => $field->getFieldName(),
+                    //                                    'required' => $field->isRequired(),
+                    //                                ]
+                    //                            );
+                    //                        }
+                    //                        else
+                    //                        {
+                    //                            $form->add
+                    //                            (
+                    //                                'value',
+                    //                                TextType::class,
+                    //                                [
+                    //                                    'label' => $field->getFieldName(),
+                    //                                    'required' => $field->isRequired(),
+                    //                                ]
+                    //                            );
+                    //                        }
+                    //                    }
+                    //                    else
+                    //                    {
+                    //
+                    //                        /** Удаляем элементы, которые были удалены  */
+                    //                        $form->remove('value');
+                    //
+                    ////                        $form->add
+                    ////                        (
+                    ////                            'value',
+                    ////                            TextType::class, ['label' => false]
+                    ////                        );
+                    //                    }
                 }
 
-            }
+            },
         );
 
     }
@@ -194,7 +194,7 @@ final class ValueForm extends AbstractType
             [
                 'data_class' => ValueDTO::class,
                 'fields' => null,
-            ]
+            ],
         );
     }
 

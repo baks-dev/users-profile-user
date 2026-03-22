@@ -30,21 +30,21 @@ use Twig\TwigFunction;
 
 final class UserProfileStatusExtension extends AbstractExtension
 {
-	public function getFunctions() : array
-	{
-		return [
-			new TwigFunction(
-				UserProfileStatus::TYPE,
-				[$this, 'status'],
-				['needs_environment' => true, 'is_safe' => ['html']]
-			),
-		];
-	}
-	
-	
-	public function status(Environment $twig, ?string $status): string
-	{
-		return $twig->render('@users-profile-user/twig/status/status.html.twig', ['status' => $status]);
-	}
+    public function getFunctions(): array
+    {
+        return [
+            new TwigFunction(
+                UserProfileStatus::TYPE,
+                [$this, 'status'],
+                ['needs_environment' => true, 'is_safe' => ['html']],
+            ),
+        ];
+    }
+
+
+    public function status(Environment $twig, ?string $status): string
+    {
+        return $twig->render('@users-profile-user/twig/status/status.html.twig', ['status' => $status]);
+    }
 
 }

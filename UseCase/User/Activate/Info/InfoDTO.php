@@ -29,36 +29,36 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 final class InfoDTO implements UserProfileInfoInterface
 {
-	
-	/** Пользователь, кому принадлежит профиль */
-	#[Assert\Uuid]
-	private readonly UserUid $usr;
-	
-	/** Текущий активный профиль, выбранный пользователем */
-	private readonly bool $active;
-	
-	
-	public function __construct()
-	{
-		$this->active = true;
-	}
-	
-	
-	/**
-	 * @return UserUid
-	 */
-	public function getUsr() : UserUid
-	{
-		return $this->usr;
-	}
-	
-	
-	/**
-	 * @return bool
-	 */
-	public function getActive() : bool
-	{
-		return $this->active;
-	}
-	
+
+    /** Пользователь, кому принадлежит профиль */
+    #[Assert\Uuid]
+    private readonly UserUid $usr;
+
+    /** Текущий активный профиль, выбранный пользователем */
+    private readonly bool $active;
+
+
+    public function __construct()
+    {
+        $this->active = true;
+    }
+
+
+    /**
+     * @return UserUid
+     */
+    public function getUsr(): UserUid
+    {
+        return $this->usr;
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function getActive(): bool
+    {
+        return $this->active;
+    }
+
 }

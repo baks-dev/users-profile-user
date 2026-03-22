@@ -77,7 +77,7 @@ final class UserProfileHandler extends AbstractHandler
         $uniqProfileUrl = $this->uniqProfileUrl
             ->exist(
                 $infoDTO->getUrl(),
-                $UserProfileInfo->getProfile()
+                $UserProfileInfo->getProfile(),
             );
 
         if($uniqProfileUrl)
@@ -125,7 +125,7 @@ final class UserProfileHandler extends AbstractHandler
         /* Отправляем событие в шину  */
         $this->messageDispatch->dispatch(
             message: new UserProfileMessage($this->main->getId(), $this->main->getEvent(), $command->getEvent()),
-            transport: 'users-profile-user'
+            transport: 'users-profile-user',
         );
 
         return $this->main;

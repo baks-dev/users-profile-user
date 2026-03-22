@@ -28,16 +28,16 @@ use Doctrine\DBAL\Types\Types;
 
 final class UserProfileUidType extends UidType
 {
-	
-	public function getClassType(): string
-	{
-		return UserProfileUid::class;
-	}
-	
-	
-	public function getName(): string
-	{
+
+    public function getClassType(): string
+    {
+        return UserProfileUid::class;
+    }
+
+
+    public function getName(): string
+    {
         return UserProfileUid::TYPE;
-	}
-	
+    }
+
 }

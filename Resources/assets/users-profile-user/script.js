@@ -16,39 +16,47 @@
  */
 
 /* Статус */
-let $circle = document.getElementById('user_status_circle');
+let $circle = document.getElementById("user_status_circle");
 
-let $status = document.getElementById('user_profile_form_info_status');
+let $status = document.getElementById("user_profile_form_info_status");
 
-if ($status) {
+if($status)
+{
     changeProfileStaus($status.options[$status.selectedIndex].value);
 
-    $status.addEventListener('change', function () {
+    $status.addEventListener("change", function()
+    {
         changeProfileStaus(this.value);
-    })
+    });
 }
 
-function changeProfileStaus($status) {
+function changeProfileStaus($status)
+{
 
-    let $circle = document.getElementById('profile_status_circle');
+    let $circle = document.getElementById("profile_status_circle");
 
-    $circle.classList.remove('bg-primary');
-    $circle.classList.remove('bg-danger');
-    $circle.classList.remove('bg-warning');
+    $circle.classList.remove("bg-primary");
+    $circle.classList.remove("bg-danger");
+    $circle.classList.remove("bg-warning");
 
 
-    if ($status === 'new') {
-        $circle.classList.add('bg-warning');
-    } else if ($status === 'act') {
-        $circle.classList.add('bg-primary');
-    } else if ($status === 'ban') {
-        $circle.classList.add('bg-danger');
+    if($status === "new")
+    {
+        $circle.classList.add("bg-warning");
+    }
+    else if($status === "act")
+    {
+        $circle.classList.add("bg-primary");
+    }
+    else if($status === "ban")
+    {
+        $circle.classList.add("bg-danger");
     }
 }
 
 
-let $idLocation = 'user_profile_form_personal_location';
-let $idLocationHelp = 'user_profile_form_personal_location_help';
+let $idLocation = "user_profile_form_personal_location";
+let $idLocationHelp = "user_profile_form_personal_location_help";
 
 
 // setTimeout(function GmRrLKUUEw() {
@@ -64,19 +72,23 @@ let $idLocationHelp = 'user_profile_form_personal_location_help';
 
 
 /* Определяем поле ввода Username */
-let $name = document.getElementById('user_profile_form_personal_username');
+let $name = document.getElementById("user_profile_form_personal_username");
 
-if ($name) {
+if($name)
+{
 
     let debouncerepeat = 100;
-    setTimeout(function zZFlBXCqXd() {
+    setTimeout(function zZFlBXCqXd()
+    {
 
-        if (debouncerepeat > 500) {
+        if(debouncerepeat > 500)
+        {
             return;
         }
 
-        if (typeof profileUrl.debounce === 'function') {
-            $name.addEventListener('input', profileUrl.debounce(500));
+        if(typeof profileUrl.debounce === "function")
+        {
+            $name.addEventListener("input", profileUrl.debounce(500));
             return;
         }
 
@@ -87,10 +99,11 @@ if ($name) {
     }, 100);
 
 
-    function profileUrl() {
+    function profileUrl()
+    {
         /* Заполняем транслитом URL */
         $semantic = translitRuEn(this.value).toLowerCase();
-        document.getElementById('user_profile_form_info_url').value = $semantic;
+        document.getElementById("user_profile_form_info_url").value = $semantic;
     }
 }
 

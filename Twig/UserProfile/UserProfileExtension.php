@@ -24,7 +24,6 @@
 namespace BaksDev\Users\Profile\UserProfile\Twig\UserProfile;
 
 use BaksDev\Users\Profile\UserProfile\Repository\UserProfileByEvent\UserProfileByEventInterface;
-use BaksDev\Users\Profile\UserProfile\Type\Event\UserProfileEventUid;
 use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Extension\AbstractExtension;
@@ -94,7 +93,8 @@ final class UserProfileExtension extends AbstractExtension
         try
         {
             return $twig->render('@Template/users-profile-user/user_profile/template.html.twig', ['value' => $data]);
-        } catch(LoaderError $loaderError)
+        }
+        catch(LoaderError $loaderError)
         {
             return $twig->render('@users-profile-user/twig/user_profile/template.html.twig', ['value' => $data]);
         }

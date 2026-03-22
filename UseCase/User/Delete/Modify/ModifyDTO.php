@@ -33,24 +33,24 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 final class ModifyDTO implements UserProfileModifyInterface
 {
-	/** Модификатор */
-	#[Assert\NotBlank]
-	private readonly ModifyAction $action;
-	
-	
-	public function __construct()
-	{
-		$this->action = new ModifyAction(ModifyActionDelete::class);
-	}
-	
-	
-	/**
-	 * @return ModifyAction
-	 */
-	public function getAction() : ModifyAction
-	{
-		return $this->action;
-	}
-	
+    /** Модификатор */
+    #[Assert\NotBlank]
+    private readonly ModifyAction $action;
+
+
+    public function __construct()
+    {
+        $this->action = new ModifyAction(ModifyActionDelete::class);
+    }
+
+
+    /**
+     * @return ModifyAction
+     */
+    public function getAction(): ModifyAction
+    {
+        return $this->action;
+    }
+
 }
 

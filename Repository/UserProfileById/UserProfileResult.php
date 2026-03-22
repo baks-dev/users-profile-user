@@ -59,29 +59,6 @@ final class UserProfileResult
         return $this->longitude ? new GpsLongitude($this->longitude) : false;
     }
 
-    public function getProfileValue(): array|false
-    {
-        if(is_null($this->profile_value_decode))
-        {
-            if(empty($this->profile_value))
-            {
-                $this->profile_value_decode = false;
-                return false;
-            }
-
-            if(false === json_validate($this->profile_value))
-            {
-                $this->profile_value_decode = false;
-                return false;
-            }
-
-            $this->profile_value_decode = json_decode($this->profile_value, false, 512, JSON_THROW_ON_ERROR);
-
-        }
-
-        return $this->profile_value_decode;
-    }
-
     public function isOrganization(): bool
     {
         return true;
@@ -104,6 +81,29 @@ final class UserProfileResult
         return array_find($this->getProfileValue(), function($element) {
             return $element->type === ContactField::TYPE;
         }) ?: false;
+    }
+
+    public function getProfileValue(): array|false
+    {
+        if(is_null($this->profile_value_decode))
+        {
+            if(empty($this->profile_value))
+            {
+                $this->profile_value_decode = false;
+                return false;
+            }
+
+            if(false === json_validate($this->profile_value))
+            {
+                $this->profile_value_decode = false;
+                return false;
+            }
+
+            $this->profile_value_decode = json_decode($this->profile_value, false, 512, JSON_THROW_ON_ERROR);
+
+        }
+
+        return $this->profile_value_decode;
     }
 
     /**

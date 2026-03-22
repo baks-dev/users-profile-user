@@ -23,7 +23,6 @@
 
 namespace BaksDev\Users\Profile\UserProfile\UseCase\Admin\Delete;
 
-use BaksDev\Users\Profile\UserProfile\UseCase\Admin\Delete\DeleteUserProfileDTO;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -33,29 +32,29 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class DeleteUserProfileForm extends AbstractType
 {
-	
-	public function buildForm(FormBuilderInterface $builder, array $options): void
+
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-		/* Удалить ******************************************************/
-		$builder->add
-		(
-			'delete',
-			SubmitType::class,
-            ['label' => 'Delete', 'label_html' => true, 'attr' => ['class' => 'btn-danger']]
-		);
-	}
-	
-	
-	public function configureOptions(OptionsResolver $resolver): void
+        /* Удалить ******************************************************/
+        $builder->add
+        (
+            'delete',
+            SubmitType::class,
+            ['label' => 'Delete', 'label_html' => true, 'attr' => ['class' => 'btn-danger']],
+        );
+    }
+
+
+    public function configureOptions(OptionsResolver $resolver): void
     {
-		$resolver->setDefaults
-		(
-			[
-				'data_class' => DeleteUserProfileDTO::class,
-				'method' => 'POST',
-				'attr' => ['class' => 'w-100'],
-			]
-		);
-	}
-	
+        $resolver->setDefaults
+        (
+            [
+                'data_class' => DeleteUserProfileDTO::class,
+                'method' => 'POST',
+                'attr' => ['class' => 'w-100'],
+            ],
+        );
+    }
+
 }

@@ -52,7 +52,7 @@ final class DeleteUserProfileHandler extends AbstractHandler
         /* Отправляем сообщение в шину */
         $this->messageDispatch->dispatch(
             message: new UserProfileMessage($this->main->getId(), $this->main->getEvent(), $command->getEvent()),
-            transport: 'users-profile-user'
+            transport: 'users-profile-user',
         );
 
         return $this->main;

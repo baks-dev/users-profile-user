@@ -172,11 +172,6 @@ class UserProfileEvent extends EntityEvent
         return (string) $this->id;
     }
 
-    public function getId(): UserProfileEventUid
-    {
-        return $this->id;
-    }
-
     public function getUser(): UserUid
     {
         return $this->info->getUsr();
@@ -186,7 +181,6 @@ class UserProfileEvent extends EntityEvent
     {
         return $this->profile;
     }
-
 
     public function getType(): TypeProfileUid
     {
@@ -198,6 +192,10 @@ class UserProfileEvent extends EntityEvent
         $this->profile = $profile instanceof UserProfile ? $profile->getId() : $profile;
     }
 
+    public function getId(): UserProfileEventUid
+    {
+        return $this->id;
+    }
 
     public function getDto($dto): mixed
     {

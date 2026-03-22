@@ -126,9 +126,6 @@ final class UserNewUserProfileHandleTest extends KernelTestCase
         self::assertSame($TypeProfileSectionFieldUid, $ValueDTO->getField());
 
 
-
-
-
         /** @var AvatarDTO $AvatarDTO */
         $AvatarDTO = $UserProfileDTO->getAvatar();
 

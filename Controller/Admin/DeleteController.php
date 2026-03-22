@@ -46,7 +46,8 @@ final class DeleteController extends AbstractController
         Request $request,
         #[MapEntity] UserProfileEvent $Event,
         DeleteUserProfileHandler $deleteUserProfileHandler
-    ): Response {
+    ): Response
+    {
 
         $profile = $Event->getDto(DeleteUserProfileDTO::class);
 
@@ -55,7 +56,7 @@ final class DeleteController extends AbstractController
         ]);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid() && $form->has('delete'))
+        if($form->isSubmitted() && $form->isValid() && $form->has('delete'))
         {
             $this->refreshTokenForm($form);
 
@@ -66,7 +67,7 @@ final class DeleteController extends AbstractController
                 'admin.page.delete',
                 $handle instanceof UserProfile ? 'admin.success.delete' : 'admin.danger.delete',
                 'admin.user.profile',
-                $handle
+                $handle,
             );
 
             return $this->redirectToRoute('users-profile-user:admin.index');
@@ -76,7 +77,7 @@ final class DeleteController extends AbstractController
             [
                 'form' => $form->createView(),
                 'name' => $Event->getNameUserProfile(), // название профиля пользователя
-            ]
+            ],
         );
     }
 }

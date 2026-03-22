@@ -27,7 +27,7 @@ use Generator;
 
 interface UsersChoiceOptionalAccountEmailInterface
 {
-	/** Список объектов аккаунтов с опциональным Account Email  */
+    /** Список объектов аккаунтов с опциональным Account Email  */
     public function getChoice(): Generator|false;
-	
+
 }

@@ -31,7 +31,7 @@ final class UniqProfileUrlRepository implements UniqProfileUrlInterface
 {
     private DBALQueryBuilder $DBALQueryBuilder;
 
-    public function __construct(DBALQueryBuilder $DBALQueryBuilder,)
+    public function __construct(DBALQueryBuilder $DBALQueryBuilder)
     {
         $this->DBALQueryBuilder = $DBALQueryBuilder;
     }

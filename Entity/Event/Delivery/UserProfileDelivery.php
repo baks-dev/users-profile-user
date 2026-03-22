@@ -88,11 +88,6 @@ class UserProfileDelivery extends EntityEvent
         $this->value = new DateTimeImmutable();
     }
 
-    public function getDay(): int
-    {
-        return max($this->day, 1);
-    }
-
     /** @return UserProfileDeliveryInterface */
     public function getDto($dto): mixed
     {
@@ -123,5 +118,10 @@ class UserProfileDelivery extends EntityEvent
         }
 
         throw new InvalidArgumentException(sprintf('Class %s interface error', $dto::class));
+    }
+
+    public function getDay(): int
+    {
+        return max($this->day, 1);
     }
 }

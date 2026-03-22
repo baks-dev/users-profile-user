@@ -29,36 +29,35 @@ use Symfony\Component\HttpFoundation\File\File;
 /** @see UserProfileAvatar */
 final class AvatarDTO implements UserProfileAvatarInterface
 {
-	/** Обложка категории */
-	public ?File $file = null;
-	
-	private ?string $name = null;
-	
-	private ?string $ext = null;
-	
-	private bool $cdn = false;
+    /** Обложка категории */
+    public ?File $file = null;
+
+    private ?string $name = null;
+
+    private ?string $ext = null;
+
+    private bool $cdn = false;
 
 
-	public function getName() : ?string
-	{
-		return $this->name;
-	}
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
 
-	
-	/* EXT */
-	
-	public function getExt() : ?string
-	{
-		return $this->ext;
-	}
 
-	
-	
-	/* CDN */
-	
-	public function getCdn() : bool
-	{
-		return $this->cdn;
-	}
+    /* EXT */
+
+    public function getExt(): ?string
+    {
+        return $this->ext;
+    }
+
+
+    /* CDN */
+
+    public function getCdn(): bool
+    {
+        return $this->cdn;
+    }
 
 }

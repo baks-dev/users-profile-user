@@ -75,7 +75,7 @@ final class UserProfileByEmailRepository implements UserProfileByEmailInterface
                 'event',
                 Account::class,
                 'account',
-                'account.event = event.id'
+                'account.event = event.id',
             );
 
 
@@ -87,12 +87,12 @@ final class UserProfileByEmailRepository implements UserProfileByEmailInterface
                 '
                     account_status.event = account.event AND 
                     account_status.status = :status_account
-                '
+                ',
             )
             ->setParameter(
                 'status_account',
                 EmailStatusActive::class,
-                EmailStatus::TYPE
+                EmailStatus::TYPE,
             );
 
 
@@ -101,12 +101,12 @@ final class UserProfileByEmailRepository implements UserProfileByEmailInterface
                 'account',
                 UserProfileInfo::class,
                 'info',
-                'info.usr = account.id AND info.active = true AND info.status = :status_profile'
+                'info.usr = account.id AND info.active = true AND info.status = :status_profile',
             )
             ->setParameter(
                 'status_profile',
                 UserProfileStatusActive::class,
-                UserProfileStatus::TYPE
+                UserProfileStatus::TYPE,
             );
 
 

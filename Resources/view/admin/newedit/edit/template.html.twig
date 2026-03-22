@@ -5,14 +5,14 @@
 
 
 {% block title %}
-	{# Редактировать профиль пользователя #}
-	{{ 'admin.page.edit'|trans }}
+    {# Редактировать профиль пользователя #}
+    {{ 'admin.page.edit'|trans }}
 {% endblock %}
 
 {# ---- CSS ------------------------------------------------------------ #}
 {% block stylesheets %}
-	<link href="/assets/{{ version }}/plugins/datepicker/datepicker.min.css" rel="stylesheet">
-	<link href="/assets/{{ version }}/plugins/nice-select2/nice-select2.min.css" rel="stylesheet">
+    <link href="/assets/{{ version }}/plugins/datepicker/datepicker.min.css" rel="stylesheet">
+    <link href="/assets/{{ version }}/plugins/nice-select2/nice-select2.min.css" rel="stylesheet">
 {% endblock %}
 
 {# ---- HEADER-БЛОК ------------------------------------------------------------ #}
@@ -28,7 +28,7 @@
 
 {# ---- КОНТЕНТ-БЛОК ------------------------------------------------------------ #}
 {% block content %}
-	{{ include(_self|replace({ "template.html.twig": "content.html.twig" })) }}
+    {{ include(_self|replace({ "template.html.twig": "content.html.twig" })) }}
 {% endblock %}
 
 

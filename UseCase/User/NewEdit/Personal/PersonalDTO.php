@@ -34,19 +34,19 @@ use Symfony\Component\Validator\Constraints as Assert;
 /** @see UserProfilePersonal */
 final class PersonalDTO implements UserProfilePersonalInterface
 {
-	/** Никнейм пользователя */
-	#[Assert\NotBlank]
-	private string $username;
-	
-	/** Пол (m: мужской, w-женский) */
-	#[Assert\NotBlank]
-	private Gender $gender;
-	
-	/** Дата рождения */
-	private ?DateTimeImmutable $birthday = null;
-	
-	/** Местоположение */
-	private ?string $location = null;
+    /** Никнейм пользователя */
+    #[Assert\NotBlank]
+    private string $username;
+
+    /** Пол (m: мужской, w-женский) */
+    #[Assert\NotBlank]
+    private Gender $gender;
+
+    /** Дата рождения */
+    private ?DateTimeImmutable $birthday = null;
+
+    /** Местоположение */
+    private ?string $location = null;
 
 
     /**
@@ -60,66 +60,69 @@ final class PersonalDTO implements UserProfilePersonalInterface
      */
     //#[Assert\NotBlank]
     private ?GpsLongitude $longitude = null;
-	
-	
-	/* USERNAME */
-	
-	public function __construct() { $this->gender = new Gender(GenderMen::class); }
-	
-	
-	/* USERNAME */
-	public function getUsername(): string
-	{
-		return $this->username;
-	}
-	
-	
-	public function setUsername(string $username) : void
-	{
-		$this->username = $username;
-	}
-	
-	
-	/* GENDER */
-	
-	public function getGender() : Gender
-	{
-		return $this->gender;
-	}
-	
-	
-	public function setGender(Gender $gender) : void
-	{
-		$this->gender = $gender;
-	}
-	
-	
-	/* BIRTHDAY */
-	
-	public function getBirthday() : ?DateTimeImmutable
-	{
-		return $this->birthday;
-	}
-	
-	
-	public function setBirthday(?DateTimeImmutable $birthday) : void
-	{
-		$this->birthday = $birthday;
-	}
-	
-	
-	/* LOCATION */
-	
-	public function getLocation() : ?string
-	{
-		return $this->location;
-	}
-	
-	
-	public function setLocation(?string $location) : void
-	{
-		$this->location = $location;
-	}
+
+
+    /* USERNAME */
+
+    public function __construct()
+    {
+        $this->gender = new Gender(GenderMen::class);
+    }
+
+
+    /* USERNAME */
+    public function getUsername(): string
+    {
+        return $this->username;
+    }
+
+
+    public function setUsername(string $username): void
+    {
+        $this->username = $username;
+    }
+
+
+    /* GENDER */
+
+    public function getGender(): Gender
+    {
+        return $this->gender;
+    }
+
+
+    public function setGender(Gender $gender): void
+    {
+        $this->gender = $gender;
+    }
+
+
+    /* BIRTHDAY */
+
+    public function getBirthday(): ?DateTimeImmutable
+    {
+        return $this->birthday;
+    }
+
+
+    public function setBirthday(?DateTimeImmutable $birthday): void
+    {
+        $this->birthday = $birthday;
+    }
+
+
+    /* LOCATION */
+
+    public function getLocation(): ?string
+    {
+        return $this->location;
+    }
+
+
+    public function setLocation(?string $location): void
+    {
+        $this->location = $location;
+    }
 
     /**
      * Latitude

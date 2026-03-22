@@ -87,7 +87,7 @@ final class UserByUserProfileRepository implements UserByUserProfileInterface
                 User::class,
                 'usr',
                 'WITH',
-                'usr.id = info.usr'
+                'usr.id = info.usr',
             );
 
         return $orm

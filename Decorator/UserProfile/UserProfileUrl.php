@@ -43,15 +43,15 @@ final class UserProfileUrl implements UserProfileInterface
         $this->currentUserProfile = $currentUserProfile;
     }
 
+    public static function priority(): int
+    {
+        return 700;
+    }
+
     /** Возвращает значение (value) */
     public function getValue(UserUid $usr): bool|string
     {
         $current = $this->currentUserProfile->fetchProfileAssociative($usr);
         return $current['profile_url'] ?? false;
-    }
-
-    public static function priority(): int
-    {
-        return 700;
     }
 }

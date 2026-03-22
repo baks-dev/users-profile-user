@@ -74,6 +74,12 @@ class UpgradeUserProfileAdminCommand extends Command implements ProjectUpgradeIn
         $this->userProfileHandler = $userProfileHandler;
     }
 
+    /** Чам выше число - тем первым в итерации будет значение */
+    public static function priority(): int
+    {
+        return 99;
+    }
+
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $AccountEmail = new  AccountEmail('admin@'.$this->HOST);
@@ -124,11 +130,5 @@ class UpgradeUserProfileAdminCommand extends Command implements ProjectUpgradeIn
         }
 
         return Command::SUCCESS;
-    }
-
-    /** Чам выше число - тем первым в итерации будет значение */
-    public static function priority(): int
-    {
-        return 99;
     }
 }

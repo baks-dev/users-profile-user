@@ -29,54 +29,54 @@ use BaksDev\Users\Profile\UserProfile\Type\Event\UserProfileEventUid;
 final class DeleteUserProfileDTO implements UserProfileEventInterface
 {
 
-	private ?UserProfileEventUid $id = null;
-	
-	/** Тип профиля */
-	private Info\InfoDTO $info;
-	
-	/**
-	 * Модификатор профиля пользователя
-	 */
-	private Modify\ModifyDTO $modify;
-	
-	
-	public function __construct()
-	{
-		$this->modify = new Modify\ModifyDTO();
-		$this->info = new Info\InfoDTO();
-	}
-	
-	/* EVENT */
-	
+    private ?UserProfileEventUid $id = null;
 
-	public function getEvent() : ?UserProfileEventUid
-	{
-		return $this->id;
-	}
+    /** Тип профиля */
+    private Info\InfoDTO $info;
 
-	public function setId(UserProfileEventUid $id) : void
-	{
-		$this->id = $id;
-	}
+    /**
+     * Модификатор профиля пользователя
+     */
+    private Modify\ModifyDTO $modify;
 
-	public function getInfo() : Info\InfoDTO
-	{
-		return $this->info;
-	}
 
-	public function setInfo(Info\InfoDTO $info) : void
-	{
-		$this->info = $info;
-	}
-	
-	
-	/* Modify  */
-	
+    public function __construct()
+    {
+        $this->modify = new Modify\ModifyDTO();
+        $this->info = new Info\InfoDTO();
+    }
 
-	public function getModify() : Modify\ModifyDTO
-	{
-		return $this->modify;
-	}
+    /* EVENT */
 
-	
+
+    public function getEvent(): ?UserProfileEventUid
+    {
+        return $this->id;
+    }
+
+    public function setId(UserProfileEventUid $id): void
+    {
+        $this->id = $id;
+    }
+
+    public function getInfo(): Info\InfoDTO
+    {
+        return $this->info;
+    }
+
+    public function setInfo(Info\InfoDTO $info): void
+    {
+        $this->info = $info;
+    }
+
+
+    /* Modify  */
+
+
+    public function getModify(): Modify\ModifyDTO
+    {
+        return $this->modify;
+    }
+
+
 }

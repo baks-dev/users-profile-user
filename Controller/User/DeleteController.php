@@ -105,7 +105,7 @@ final class DeleteController extends AbstractController
             [
                 'form' => $form->createView(),
                 'name' => $Event->getNameUserProfile(), // название согласно локали
-            ]
+            ],
         );
     }
 }
