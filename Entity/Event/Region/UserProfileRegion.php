@@ -43,6 +43,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 #[ORM\Entity]
 #[ORM\Table(name: 'user_profile_region')]
+#[ORM\Index(columns: ['value'])]
 class UserProfileRegion extends EntityEvent
 {
     /** Связь на событие */
