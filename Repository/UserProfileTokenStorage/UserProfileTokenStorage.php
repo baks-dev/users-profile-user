@@ -98,6 +98,11 @@ final class UserProfileTokenStorage implements UserProfileTokenStorageInterface
         return $this->userTokenStorage->isUser();
     }
 
+    public function getUserInterface(): UserInterface|false
+    {
+        return $this->userTokenStorage->getUserInterface();
+    }
+
     /**
      * Метод возвращает идентификатор текущего пользователя либо идентификатор олицетворенного
      */

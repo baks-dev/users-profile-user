@@ -36,6 +36,11 @@ interface UserProfileTokenStorageInterface
     public function isUser(): bool;
 
     /**
+     *  Метод возвращает объект User авторизованного пользователя
+     */
+    public function getUserInterface(): UserInterface|false;
+
+    /**
      * Метод возвращает идентификатор текущего пользователя либо идентификатор олицетворенного
      */
     public function getUser(): UserUid|false;
