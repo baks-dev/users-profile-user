@@ -78,7 +78,7 @@ final class EditController extends AbstractController
             $this->addFlash
             (
                 type: 'page.edit',
-                message: $handle instanceof UserProfile ? 'user.success.edit' : 'user.danger.edit',
+                message: $handle instanceof UserProfile ? 'success.edit' : 'danger.edit',
                 domain: 'user.profile',
                 arguments: $handle,
             );

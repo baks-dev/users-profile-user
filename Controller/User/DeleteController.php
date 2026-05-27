@@ -93,7 +93,7 @@ final class DeleteController extends AbstractController
             $this->addFlash
             (
                 type: 'page.delete',
-                message: $handle instanceof UserProfile ? 'user.success.delete' : 'user.danger.delete',
+                message: $handle instanceof UserProfile ? 'success.delete' : 'danger.delete',
                 domain: 'user.profile',
                 arguments: $handle,
             );
