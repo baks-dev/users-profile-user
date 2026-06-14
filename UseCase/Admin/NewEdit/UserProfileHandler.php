@@ -102,7 +102,9 @@ final class UserProfileHandler extends AbstractHandler
 
         /* Отправляем сообщение в шину */
         $this->messageDispatch
+            // на случай изменения профиля магазина
             ->addClearCacheOther('products-product')
+            ->addClearCacheOther('settings-main')
             ->dispatch(
                 message: new UserProfileMessage($this->main->getId(), $this->main->getEvent(), $command->getEvent()),
                 transport: 'users-profile-user',
