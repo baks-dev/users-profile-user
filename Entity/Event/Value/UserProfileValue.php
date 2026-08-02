@@ -35,6 +35,7 @@ use InvalidArgumentException;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'users_profile_value')]
+#[ORM\Index(columns: ['event', 'value'])]
 class UserProfileValue extends EntityEvent
 {
     /** ID события */
